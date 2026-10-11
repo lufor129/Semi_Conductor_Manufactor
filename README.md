@@ -4,7 +4,7 @@
 
 純前端（HTML／CSS／JavaScript），不需要安裝任何套件、不需要建置就能看。
 
-![封面](docs/demo/cover.png)
+![封面](docs/demo/cover.jpg)
 
 ## 內容一覽
 
@@ -39,7 +39,7 @@
 
 **SPC 管制圖**：機台慢慢漂移時，判定階梯怎麼從放行走到扣住評估。
 
-![SPC](docs/demo/spc.png)
+![SPC](docs/demo/spc.jpg)
 
 ## 快速開始
 
