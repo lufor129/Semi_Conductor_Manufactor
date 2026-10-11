@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>先進製程技術演進（開放授權版）</title>
+<link rel="stylesheet" href="css/deck.css">
+</head>
+<body>
+<div id="viewport"><div id="stage"></div></div>
+<div id="progress"></div>
+<div id="help">←/→ 翻頁 · N 備註 · P 講者視窗 · O 總覽 · B 跳回 · F 全螢幕 · L 醒目游標</div>
+<div id="hud"><button id="btn-prev" type="button" aria-label="上一頁">◀</button><span id="hud-num"></span><button id="btn-next" type="button" aria-label="下一頁">▶</button><button id="btn-notes" type="button">備註</button><button id="btn-pv" type="button">講者視窗</button><button id="btn-ov" type="button">總覽</button></div>
+<aside id="notes" hidden></aside>
+<div id="overview" hidden></div>
+
+<script src="vendor/three.min.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/widgets/core.js"></script>
+<script src="js/widgets/transistor3d.js"></script>
+<script src="js/widgets/anim.js"></script>
+<script src="js/credits.js"></script>
+<script src="js/supply.js"></script>
+<!-- SLIDES -->
+<script src="js/slides/p0-intro.js"></script>
+<script src="js/slides/p1-evolution.js"></script>
+<script src="js/slides/p2-overview.js"></script>
+<script src="js/slides/p2-litho.js"></script>
+<script src="js/slides/p2-etch.js"></script>
+<script src="js/slides/p2-depo.js"></script>
+<script src="js/slides/p2-doping.js"></script>
+<script src="js/slides/p2-hkmg.js"></script>
+<script src="js/slides/p2-cmp.js"></script>
+<script src="js/slides/p2-2nm.js"></script>
+<script src="js/slides/p2-rcwa.js"></script>
+<script src="js/slides/p2-beol.js"></script>
+<script src="js/slides/p3-future.js"></script>
+<script src="js/slides/p3-new.js"></script>
+<script src="js/slides/p9-end.js"></script>
+<script src="js/qa-data.js"></script>
+<script src="js/slides/p9-qa.js"></script>
+<!-- /SLIDES -->
+<script>
+  /* 頁序調整（原始碼依檔案順序註冊，這裡再搬到講述順序） */
+  // 第一部分：零件 → MOSFET → nFET/pFET → 短通道 → 結構 → 閘極控制 → 名字的真相 → 時間軸 → 三大廠 → 成本
+  Deck.move('nfetpfet', 'mosfet');
+  Deck.move('nodename', 'gatectl');
+  // ③ 薄膜沉積：全貌 → 三種鋪法 → ALD → 選擇性沉積（ALD 的進階）
+  // ④ 磊晶與摻雜：磊晶 → 摻雜 → 選擇性磊晶長源汲極
+  Deck.move('depo4', 'etch4');
+  Deck.move('asd', 'depo2');
+  // ④ 磊晶與摻雜：從問題出發——摻雜（傳統離子佈植）→ 磊晶 → 選擇性磊晶邊長邊摻
+  Deck.move('dope1', 'asd');
+  // ⑧ 模擬：TCAD；⑨ 檢測量測：兩種眼睛 → 檢測 → SPC → APC → 量測工具（metro → TEM → SEM → OCD）
+  Deck.move('tem', 'metro');
+  // GAA 九步驟之後：前中後段總覽 → 中段 → 後段 → 後段難題
+  Deck.move('fmb', 'gaaflow'); Deck.move('mol', 'fmb'); Deck.move('beol', 'mol'); Deck.move('beol2', 'beol');
+  // OCD 之後補充兩頁：正著算（參數化形狀＋n、k → RCWA → 光譜）、反著查（光譜 → CD，TEM 對答案、參數相關）
+  Deck.move('ocdf', 'ocd'); Deck.move('ocdb', 'ocdf');
+  // ⑨：兩種眼睛總覽（eyes）→ 檢測 → 量到的數字：SPC（mloop）→ APC → 量測工具 → OCD 補充
+  Deck.move('mloop', 'insp'); Deck.move('apc', 'mloop');
+  // 第三部分封裝：為什麼需要（含良率）→ AI 晶片拆解（實例）→ 2D/2.5D/3D → HBM → 混合鍵合
+  Deck.move('pkg', 'pkg0');
+  Deck.move('glass', 'pkg3'); Deck.move('cowcmp', 'glass'); Deck.move('cpo', 'cowcmp');
+  // 微影：OPC 之後接曲線光罩與 GPU 運算微影
+  Deck.move('cmask', 'litho6');
+  Deck.move('bs3', 'bsx');
+  // 第三部分新增：SoIC 接在混合鍵合後；各家方案排在玻璃基板前
+  Deck.move('soic', 'pkg3'); Deck.move('glass', 'cowcmp');
+  // 沉積、磊晶與摻雜、閘極各頁：標題旁加「⌂ 全貌」按鈕，跳回薄膜全貌頁
+  ['depo1', 'depo2', 'asd', 'depo3', 'dope1', 'dope3', 'hk1'].forEach(id => { const s = Deck.slides.find(x => x.id === id); if (s) s.hub = 'depo4'; });
+  // 標題旁的橘色標籤：2 nm 世代才導入的新技術、其他新技術、未來技術
+  const BADGE = {
+    gaaflow: '2 nm 世代新技術', litho5: '2 nm 世代新技術', asd: '2 nm 世代新技術',
+    bsx: '2 nm 世代新技術', bs2: '2 nm 世代新技術', bs4: '2 nm 世代新技術', bs3: '2 nm 世代新技術',
+    etch4: '新技術', pkg3: '新技術', cfet: '未來技術', cmask: '2 nm 世代新技術', cowcmp: '新技術', glass: '新技術', cpo: '新技術'
+  };
+  Object.entries(BADGE).forEach(([id, b]) => { const s = Deck.slides.find(x => x.id === id); if (s) s.badge = b; });
+  Deck.start();
+</script>
+</body>
+</html>
