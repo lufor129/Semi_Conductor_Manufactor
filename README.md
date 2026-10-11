@@ -66,10 +66,6 @@ python3 -m http.server 8000
 
 然後用瀏覽器開 http://localhost:8000/ 。（沒有 Python 的話，任何靜態伺服器都可以，例如 `npx serve`。）
 
-### 方法三：用 GitHub Pages 放到網路上
-
-到 repo 的 Settings → Pages，Source 選這個分支、資料夾選 `/ (root)`，存檔後約一分鐘就能用 `https://<帳號>.github.io/<repo>/` 開啟（會開原始碼版；單檔版在 `/dist/`）。
-
 建議使用桌面版 Chrome、Edge、Safari 或 Firefox，視窗寬一點效果最好；簡報會自動縮放到 16:9。
 
 ## 操作方式
