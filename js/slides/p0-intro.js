@@ -19,7 +19,7 @@
             <div class="card"><h4>第二部分</h4><p><b>製造電晶體（九章）</b><br>畫圖、挖洞、鋪膜、摻雜與長晶、閘極、磨平，再組成電晶體、量測把關</p></div>
             <div class="card"><h4>第三部分</h4><p><b>突破摩爾定律：系統性解決</b><br>先進封裝、背面供電</p></div>
           </div>
-          <div class="meta">約 3 小時 · 81 頁＋Q&A 附錄 · 資料更新至 2026 年 9 月</div>
+          <div class="meta">約 3 小時 · 79 頁＋Q&A 附錄 · 資料更新至 2026 年 9 月</div>
         </div>
         <div class="cover-right">
           <img src="assets/img/wafer-12inch.jpg" alt="12 吋矽晶圓，表面布滿晶粒" style="position:absolute;inset:60px 60px 150px;width:calc(100% - 120px);height:calc(100% - 210px);object-fit:cover;border-radius:4px;border:1px solid var(--line)">
@@ -41,31 +41,32 @@
   /* 2. 議程 */
   A({
     id: 'agenda', part: 0, minutes: 1.5, short: '議程與全場地圖',
-    title: '今天的路線：先看結構，再看怎麼做，最後看未來',
+    title: '今天的路線：先看結構，再看怎麼做，最後看系統',
     thesis: '先懂電晶體為什麼要變形，就看得懂每一項製程技術<b>在解決什麼問題</b>。',
     render: () => {
       const parts = [
-        { n: '1', t: '先進製程的演進與現況', m: '約 26 分', to: 'p1', items: ['電晶體：電壓控制的水龍頭', '縮太小會漏電 → 結構變形', '「2 奈米」名字的真相', '三大廠走到哪裡'] },
-        { n: '2', t: '製造電晶體（九章）', m: '約 108 分', to: 'p2', items: ['① 微影　② 蝕刻　③ 沉積', '④ 摻雜與磊晶　⑤ 閘極', '⑥ 磨平　⑦ 環繞式電晶體與導線', '⑧ 模擬　⑨ 檢測量測'] },
-        { n: '3', t: '未來突破摩爾定律的關鍵：系統性解決', m: '約 44 分', to: 'p3', items: ['先進封裝：小晶片、HBM、各家方案、光學封裝', '把電線搬到背面', '加碼：上下疊的電晶體'] }
+        { n: '1', t: '先進製程的演進與現況', m: '約 26 分', to: 'p1', tr: '趨勢 1：結構越包越緊', items: ['電晶體：電壓控制的水龍頭', '縮太小會漏電 → 結構變形', '「2 奈米」名字的真相', '三大廠走到哪裡'] },
+        { n: '2', t: '製造電晶體（九章）', m: '約 108 分', to: 'p2', tr: '趨勢 2：精準到原子，也要量得到', items: ['① 微影　② 蝕刻　③ 沉積', '④ 摻雜與磊晶　⑤ 閘極', '⑥ 磨平　⑦ 環繞式電晶體與導線', '⑧ 模擬　⑨ 檢測量測'] },
+        { n: '3', t: '未來突破摩爾定律的關鍵：系統性解決', m: '約 44 分', to: 'p3', tr: '趨勢 3：從系統下手，不只靠縮小', items: ['先進封裝：小晶片、HBM、各家方案、光學封裝', '把電線搬到背面', '加碼：上下疊的電晶體'] }
       ];
 
       return `<div class="s-body three">${parts.map(p => `
         <div class="fig" style="cursor:pointer" data-go="${p.to}">
           <div class="fig-title"><span>PART ${p.n}</span><span>${p.m}</span></div>
           <div style="font-size:26px;font-weight:700;line-height:1.3">${p.t}</div>
+          <div style="font-size:17px;font-weight:700;color:var(--accent)">${p.tr}</div>
           <ul class="points">${p.items.map(i => `<li>${i}</li>`).join('')}</ul>
           <div style="margin-top:auto" class="caption">點擊跳到此部分 →</div>
         </div>`).join('')}</div>
         <div class="card" style="margin-top:16px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center">
           <h4 style="margin:0">閱讀方式</h4>
-          <p style="margin:0">每頁左邊是可以動手玩的動畫，右邊是三個重點和一個生活比喻。第二部分右上角的章節列會標出「現在在第幾章」。標題旁的<b style="color:var(--accent-2)">橘色標籤</b>標出「2 nm 世代新技術」「新技術」「未來技術」。</p>
+          <p style="margin:0">每頁左邊是可以動手玩的動畫，右邊是三個重點和一個生活比喻。第二部分右上角的章節列會標出「現在在第幾章」。標題旁的<b style="color:var(--accent-2)">橘色標籤</b>標出「2 nm 世代新技術」「A16 起新技術」「新技術」「未來技術」。</p>
         </div>`;
     },
     init(el) { U.$$(el, '[data-go]').forEach(c => c.onclick = () => Deck.goId(c.dataset.go)); },
     notes: `整場有一條主線：結構決定製程。第一部分先講電晶體為什麼從平面變成鰭式，再變成環繞閘極。理解「為什麼要變形」之後，第二部分的每一項製程技術就很好懂，因為它們都在回答同一個問題：怎麼用原子等級的精度把這些 3D 結構做出來。
 
-第一部分大約二十六分鐘。第二部分是重頭戲，大約一百分鐘。第三部分約四十四分鐘，看未來十年延續摩爾定律的技術。
+第一部分大約二十六分鐘。第二部分是重頭戲，大約一百一十分鐘。第三部分約四十四分鐘，看未來十年延續摩爾定律的技術。每一部分都對應一個趨勢，寫在卡片上，最後一頁會收在一起。
 
 每一頁的版面都一樣：左邊是可以動手玩的動畫，右邊是三個重點和一個生活比喻。`
   });

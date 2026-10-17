@@ -79,7 +79,7 @@
         if (i === 2) U.tag(c, n, mx, sy - 26, { align: 'center', size: 14, color: '#17202b' });
       });
       if (i === 2) {
-        U.txt(c, '測試墊（金色）：探針要扎的地方', sx + sw / 2, sy + sh + 20, { align: 'center', size: 14, w: 700, color: '#8a6a2e' });
+        U.txt(c, '測試墊（金色）：探針要扎的地方；這一整組測試結構，廠內叫 test key', sx + sw / 2, sy + sh + 20, { align: 'center', size: 14, w: 700, color: '#8a6a2e' });
         U.txt(c, '和晶片裡的電晶體、導線用同一套製程、同時做出來 → 量它，就知道晶片做得對不對', sx + sw / 2, bot - 6, { align: 'center', size: 15, w: 700, color: '#b3541e' });
       } else {
         // 探針卡壓下來，接著讀數一行一行跳出來
@@ -89,7 +89,7 @@
         const R2 = [['加電壓 → 量電流', '（數字為示意）'], ['Vt 臨界電壓', '0.30 V'], ['Ion 開啟電流', '1.02 mA/µm'], ['Ioff 關閉漏電', '0.9 nA/µm'], ['接觸電阻、導線孔鏈電阻…', '…']];
         const lh = 22, bh = R2.length * lh + 14, by = bot - bh - 6, tx = sx + sw * 0.56, bw = sw * 0.44 - 8;
         c.fillStyle = 'rgba(255,255,255,.95)'; c.fillRect(tx - 12, by, bw, bh); c.strokeStyle = '#c3ccd6'; c.lineWidth = 1; c.strokeRect(tx - 12, by, bw, bh);
-        R2.forEach(([a, b], k) => { const al = U.clamp(p * 6 - 1 - k, 0, 1), y = by + 22 + k * lh; c.globalAlpha = al; U.txt(c, a, tx, y, { size: 14, w: k ? 500 : 700, color: '#17202b' }); U.txt(c, b, tx + bw - 26, y, { align: 'right', size: k ? 14 : 11, w: k ? 700 : 500, color: k ? '#1f4fb5' : '#6a7888' }); c.globalAlpha = 1; });
+        R2.forEach(([a, b], k) => { const al = U.clamp(p * 6 - 1 - k, 0, 1), y = by + 22 + k * lh; c.globalAlpha = al; U.txt(c, a, tx, y, { size: 14, w: k ? 500 : 700, color: '#17202b' }); U.txt(c, b, tx + bw - 26, y, { align: 'right', size: k ? 14 : 13, w: k ? 700 : 500, color: k ? '#1f4fb5' : '#6a7888' }); c.globalAlpha = 1; });
       }
     } else if (i === 4) {
       // 和規格比：放行或扣住
@@ -169,13 +169,15 @@
       const steps = ['晶圓做完了', '晶片之間的走道：切割道', '走道上的測試結構', '探針扎下去，量電', '和規格比：放行或扣住', '後面還有兩關：CP、FT'].map((t, i) => ({ t, d: '', draw: (c, w, h, p, tt) => watStep(c, w, h, i, p, tt) }));
       U.animSteps(el, ctx, { canvas: 'w0-cv', stepper: 'w0-st', steps, interval: 3600, dur: 1.6 });
     },
-    notes: `製程中的檢查講完了。最後看晶圓做完之後的第三種檢查，也是出廠前的最後一關：WAT，Wafer Acceptance Test，晶圓允收測試。前面的量測和檢測，都是在製程中途看尺寸、找缺陷；WAT 是整片晶圓上千道步驟全部做完之後，直接量「電」，確認做出來的電晶體和導線，電性真的對。
+    notes: `【可略】時間緊時，第六步 CP、FT 只唸右邊表格那一行：WAT 管製程、CP 管每一顆、FT 管成品。
+
+製程中的檢查講完了。最後看晶圓做完之後的第三種檢查，也是出廠前的最後一關：WAT，Wafer Acceptance Test，晶圓允收測試。前面的量測和檢測，都是在製程中途看尺寸、找缺陷；WAT 是整片晶圓上千道步驟全部做完之後，直接量「電」，確認做出來的電晶體和導線，電性真的對。
 
 一步一步看。第一步，晶圓做完了：前面七章的步驟全部走完，一片晶圓上有幾百顆晶片。
 
 第二步，放大看晶片和晶片之間：中間有一條走道，叫切割道。之後切晶片的時候，這條走道會被切掉，所以廠裡拿它來放測試用的東西。
 
-第三步，再放大這條走道：一排金色的測試墊，中間夾著小電晶體、電阻、把很多導線孔串起來的導線孔鏈。它們和晶片裡真正的電晶體、導線，是用同一套製程、同時做出來的，所以量它，就知道晶片做得對不對，又不用去碰真正的晶片。
+第三步，再放大這條走道：一排金色的測試墊，中間夾著小電晶體、電阻、把很多導線孔串起來的導線孔鏈。它們和晶片裡真正的電晶體、導線，是用同一套製程、同時做出來的，所以量它，就知道晶片做得對不對，又不用去碰真正的晶片。這一整組測試結構，廠裡叫 test key。
 
 第四步，探針卡壓下來，探針扎在測試墊上，加電壓、量電流，讀出一串數字：臨界電壓、開啟電流、關閉漏電、電阻。下一頁用水龍頭來解釋這些數字各代表什麼。每片晶圓通常量幾個點。
 
@@ -205,7 +207,7 @@
     if (k === 'ig') { ang = 60; flowQ = 0.5; }
     // 水塔（源極）
     c.fillStyle = '#c9d3df'; c.fillRect(tx, y0 + 16, tw, py - y0 + pt / 2 - 16); c.fillStyle = '#7fb0e6'; c.fillRect(tx + 4, y0 + 46, tw - 8, py - y0 + pt / 2 - 50);
-    U.txt(c, '水塔', tx + tw / 2, y0 + 12, { align: 'center', size: 13, w: 700, color: '#3e4b5b' }); U.txt(c, '（源極）', tx + tw / 2, py + pt / 2 + 18, { align: 'center', size: 12, color: '#6a7888' });
+    U.txt(c, '水塔', tx + tw / 2, y0 + 12, { align: 'center', size: 13, w: 700, color: '#3e4b5b' }); U.txt(c, '（源極）', tx + tw / 2, py + pt / 2 + 20, { align: 'center', size: 14, color: '#3e4b5b' });
     // 水管＋兩個接頭
     c.fillStyle = '#9aa8b8'; c.fillRect(tx + tw, py - pt / 2, ox - tx - tw, pt);
     [tx + tw + 14, ox - 20].forEach(jx => {
@@ -223,7 +225,7 @@
     c.fillStyle = '#3e4b5b'; c.fillRect(vx - 4, py - pt / 2 - 52, 8, 32);
     c.save(); c.translate(vx, py - pt / 2 - 52); c.rotate(-ang * Math.PI / 180); c.fillStyle = '#b3261e'; U.rrect(c, -40, -7, 80, 14, 6); c.fill(); c.restore();
     U.txt(c, '把手（閘極）', vx, y0 + 12, { align: 'center', size: 13, w: 700, color: '#3e4b5b' });
-    U.txt(c, '墊片（絕緣層）', vx + 30, py - pt / 2 - 22, { size: 12, color: k === 'ig' ? '#b3541e' : '#6a7888' });
+    U.txt(c, '墊片（絕緣層）', vx + 30, py - pt / 2 - 22, { size: 14, color: k === 'ig' ? '#b3541e' : '#3e4b5b' });
     if (k === 'ig') for (let q = 0; q < 3; q++) { const f = (t * 0.8 + q / 3) % 1; U.dot(c, vx - 14 + q * 14, py - pt / 2 - 12 + f * 70, 3.5, '#1f4fb5'); }
     if (k === 'vt') {
       const gx = vx, gy = py - pt / 2 - 52, gr = 58;
@@ -246,7 +248,7 @@
   // 左：整棟樓的水管（導線孔鏈）
   function building(c, x0, y0, W, H, t) {
     const fl = 5, bw = W * 0.5, bx = x0 + (W - bw) / 2, fh = (H - 40) / fl, by = y0 + 20;
-    for (let f = 0; f < fl; f++) { c.fillStyle = f % 2 ? '#f2f5f8' : '#e9edf2'; c.fillRect(bx, by + f * fh, bw, fh); U.txt(c, `${fl - f} 樓`, bx - 8, by + f * fh + fh / 2 + 5, { align: 'right', size: 12, color: '#6a7888' }); }
+    for (let f = 0; f < fl; f++) { c.fillStyle = f % 2 ? '#f2f5f8' : '#e9edf2'; c.fillRect(bx, by + f * fh, bw, fh); U.txt(c, `${fl - f} 樓`, bx - 8, by + f * fh + fh / 2 + 5, { align: 'right', size: 14, color: '#3e4b5b' }); }
     // 一條水管蛇行上下樓，每層樓之間一個接頭（導線孔）；其中一個堵住
     const pts = []; for (let f = 0; f <= fl; f++) pts.push([bx + (f % 2 ? bw * 0.75 : bw * 0.25), by + (fl - f) * fh]);
     c.strokeStyle = '#9aa8b8'; c.lineWidth = 10; c.beginPath(); pts.forEach(([x, y], q) => q ? c.lineTo(x, y) : c.moveTo(x, y)); c.stroke();
@@ -260,20 +262,20 @@
     const on = (...ks) => ks.includes(k);
     U.box(c, 'si', x0, sub, W, H * 0.22);
     c.fillStyle = '#9fb5e3'; c.fillRect(x0 + W * 0.08, sub, W * 0.24, H * 0.1); c.fillRect(x0 + W * 0.68, sub, W * 0.24, H * 0.1);
-    U.txt(c, '源極', x0 + W * 0.2, sub + H * 0.07, { align: 'center', size: 12, color: '#1f4fb5' }); U.txt(c, '汲極', x0 + W * 0.8, sub + H * 0.07, { align: 'center', size: 12, color: '#1f4fb5' });
+    U.txt(c, '源極', x0 + W * 0.2, sub + H * 0.07, { align: 'center', size: 15, w: 700, color: '#17202b' }); U.txt(c, '汲極', x0 + W * 0.8, sub + H * 0.07, { align: 'center', size: 15, w: 700, color: '#17202b' });
     // 通道（亮起：Vt、Ion、Ioff）
     c.fillStyle = on('vt', 'ion', 'ioff') ? 'rgba(232,89,12,.45)' : 'rgba(0,0,0,0)'; c.fillRect(gx - gw / 2, sub, gw, 8);
     // 絕緣層、閘極
     c.fillStyle = on('ig') ? '#e8a05a' : '#f2e3b3'; c.fillRect(gx - gw / 2, sub - 8, gw, 8);
     c.fillStyle = on('vt', 'ion', 'ioff') ? '#d0621e' : '#5a6b7f'; c.fillRect(gx - gw / 2, sub - H * 0.2, gw, H * 0.2 - 8);
-    U.txt(c, '閘極', gx, sub - H * 0.1, { align: 'center', size: 12, w: 700, color: '#fff' });
+    U.txt(c, '閘極', gx, sub - H * 0.1, { align: 'center', size: 15, w: 700, color: '#fff' });
     // 接點（Rc）
     [x0 + W * 0.2, x0 + W * 0.8].forEach(x => { c.fillStyle = on('rc') ? '#d0621e' : '#8a95a3'; c.fillRect(x - 6, sub - H * 0.3, 12, H * 0.3); });
     // 導線與導線孔（via）
     const m1 = sub - H * 0.36, m2 = sub - H * 0.56;
     c.fillStyle = '#c9a86a'; c.fillRect(x0 + W * 0.05, m1, W * 0.3, 10); c.fillRect(x0 + W * 0.65, m1, W * 0.3, 10); c.fillRect(x0 + W * 0.05, m2, W * 0.9, 10);
     [x0 + W * 0.25, x0 + W * 0.75].forEach(x => { c.fillStyle = on('via') ? '#d0621e' : '#a88a52'; c.fillRect(x - 5, m2 + 10, 10, m1 - m2 - 10); });
-    U.txt(c, '導線', x0 + W * 0.5, m2 - 6, { align: 'center', size: 12, color: '#8a6a2e' });
+    U.txt(c, '導線', x0 + W * 0.5, m2 - 6, { align: 'center', size: 15, w: 700, color: '#8a6a2e' });
     // 標示：量的地方以外都淡掉，量的地方加閃爍粗框，再拉虛線到下方的說明
     const HL = { vt: [[gx - gw / 2, sub - H * 0.2, gw, H * 0.2 + 10]], ion: [[x0 + W * 0.3, sub, W * 0.4, 10]], ioff: [[x0 + W * 0.3, sub, W * 0.4, 16]], ig: [[gx - gw / 2, sub - 8, gw, 8]],
       rc: [[x0 + W * 0.2 - 6, sub - H * 0.3, 12, H * 0.3], [x0 + W * 0.8 - 6, sub - H * 0.3, 12, H * 0.3]], via: [[x0 + W * 0.25 - 5, m2 + 10, 10, m1 - m2 - 10], [x0 + W * 0.75 - 5, m2 + 10, 10, m1 - m2 - 10]] }[k];
@@ -338,7 +340,7 @@
   // s：0 正常、1 閘極太細、2 接點電阻高、5 一邊偏（3、4 是原本猜謎用的情境）
   const wCalc = s => WS.map(([x, y], k) => {
     const r = Math.hypot(x, y) / 0.9, n = q => hr(k * 11 + q * 17 + 500) - 0.5;
-    let cd = 15 + n(0) * 0.3;
+    let cd = 15 + n(0) * 1.6;   // 累積很多片、含粗細不同的實驗批，線寬才拉得開
     if (s === 1) cd -= 1.6 * (0.2 + 0.8 * r * r);
     const d = 15 - cd;
     let vt = 0.3 - 0.04 * d + n(1) * 0.012, ion = 100 + WK * d + n(2) * 2, ioff = Math.pow(10, 0.78 * d + n(3) * 0.25), ig = Math.pow(10, n(4) * 0.3), rc = 100 + n(5) * 6, via = 100 + n(6) * 6;
@@ -351,9 +353,9 @@
   /* ---------- ④ 和線上量測對照：尺寸和電性對得上嗎？ ---------- */
   const WR = [
     { s: 0, n: '① 正常', h: '點排成一條線', d: '線寬細一點，電流就大一點，關係正常。這條線本身，就是拿線上量測和 WAT 一起畫出來的。' },
-    { s: 1, n: '② 閘極太細', h: '點沿著線往左上跑：兩邊對得上', d: 'OCD 量到線寬變細，WAT 的電流就跟著變大，正好落在線上 → 問題就是閘極線寬。接著要問：線上量測早就看到線寬偏了，為什麼 SPC 沒攔下來？' },
+    { s: 1, n: '② 閘極太細', h: '點沿著線往左上跑：兩邊對得上', d: 'OCD 量到線寬變細，WAT 的電流就跟著變大，正好落在線上 → 問題就是閘極線寬。接著要問：線上量測早就看到線寬偏了，為什麼 SPC 沒攔下來？常見原因：每片只抽幾點、偏最多的外圈沒抽到，或管制線訂得太鬆。' },
     { s: 2, n: '③ 接點電阻高', h: '線寬正常，電流卻掉到線下方', d: '尺寸量起來都對，電流卻整批偏低 → 不是閘極尺寸的問題，要往尺寸以外找：WAT 的接觸電阻偏高，指向中段接點。' },
-    { s: 5, n: '④ 一邊偏', h: '線寬一樣，電流卻上下散開', d: '每個點的線寬都差不多，電流卻上下散開 → 也不是尺寸的問題。查 WAT 的 Vt 在晶圓上的分布：一邊高一邊低，指向摻雜或退火不均。' }
+    { s: 5, n: '④ 一邊偏', h: '線寬一樣，電流卻上下散開', d: '每個點的線寬都差不多，電流卻上下散開 → 也不是尺寸的問題。查 WAT 的 Vt 在晶圓上的分布：一邊高一邊低，指向閘極金屬（功函數金屬）厚度或退火不均。' }
   ];
   A({
     id: 'wat4', part: 2, chap: 9, eyebrow: EY, minutes: 2, short: 'WAT④：和線上量測對照',
@@ -361,7 +363,7 @@
     thesis: '每個測試點都有兩個數字：製程中 <b>OCD 量到的線寬</b>，和最後 <b>WAT 量到的電流</b>。正常時兩者排成<b>一條線</b>：線寬細一點，電流大一點。<b>點沿著線跑，問題就是尺寸；點離開這條線，就要往尺寸以外找。</b>',
     render: () => `<div class="s-body w66">
       <div class="col"><div class="controls">${U.seg('w4-s', WR.map(x => x.n), 0)}<button class="btn" type="button" id="w4-rp">↻ 重畫</button></div>
-        ${U.figHTML('w4-cv', '每個點是一個測試點：橫軸＝線上量到的閘極線寬，縱軸＝WAT 量到的開啟電流', '')}</div>
+        ${U.figHTML('w4-cv', '每個點是一個量測位置（累積很多片晶圓）：橫軸＝線上量到的閘極線寬，縱軸＝WAT 量到的開啟電流', '')}</div>
       ${U.side({
         top: `<div class="card key"><h4 id="w4-h" style="text-transform:none;letter-spacing:0;font-family:inherit;font-size:19px;font-weight:700"></h4><p id="w4-d" style="font-size:16px;margin:0"></p></div>`,
         points: ['<b>沿著線跑</b> → 問題就是尺寸', '<b>尺寸正常、電流離開線</b> → 往尺寸以外找', '廠裡也用這條線，決定線上量測的規格要訂多嚴'],
@@ -376,7 +378,7 @@
       U.$(el, '#w4-rp').onclick = () => { pt = 0; };
       ctx.raf(dt => {
         pt += dt; c.clearRect(0, 0, w, h);
-        const x0 = 80, x1 = w * 0.7, y0 = 24, y1 = h - 56, cmin = 12.8, cmax = 16.2, imin = 70, imax = 130;
+        const x0 = 80, x1 = w * 0.7, y0 = 24, y1 = h - 56, cmin = 12.4, cmax = 16.2, imin = 70, imax = 130;
         const X = v => x0 + (v - cmin) / (cmax - cmin) * (x1 - x0), Y = v => y1 - (U.clamp(v, imin, imax) - imin) / (imax - imin) * (y1 - y0), L = cd => 100 + WK * (15 - cd);
         // 正常關係的帶子與線
         c.fillStyle = 'rgba(106,120,136,.16)'; c.beginPath(); c.moveTo(X(cmin), Y(L(cmin) + WB)); c.lineTo(X(cmax), Y(L(cmax) + WB)); c.lineTo(X(cmax), Y(L(cmax) - WB)); c.lineTo(X(cmin), Y(L(cmin) - WB)); c.fill();
@@ -404,18 +406,18 @@
         tip.forEach(([a, b], k) => { U.txt(c, a, rx, y1 - 70 + k * 44, { size: 14, w: 700, color: '#17202b' }); U.txt(c, '→ ' + b, rx, y1 - 50 + k * 44, { size: 14, color: '#3e4b5b' }); });
       });
     },
-    notes: `第九章最後一頁，把 WAT 和前面的 OCD 放在一起看。每個測試點都有兩個數字：製程中 OCD 量到的閘極線寬，和最後 WAT 量到的開啟電流。橫軸是線寬，縱軸是電流，每個點是一個測試點。
+    notes: `第九章最後一頁，把 WAT 和前面的 OCD 放在一起看。每個測試點都有兩個數字：製程中 OCD 量到的閘極線寬，和最後 WAT 量到的開啟電流。橫軸是線寬，縱軸是電流，每個點是一個量測位置，累積了很多片晶圓，還有故意做粗、做細的實驗批，線才畫得出來。
 
 ① 正常的時候，點會排成一條線：線寬細一點，電流就大一點。這條線本身，就是廠裡拿線上量測和 WAT 一起畫出來的。
 
-② 閘極太細：點沿著這條線往左上跑，線寬變細、電流變大，兩邊對得上，所以問題就是閘極線寬。接著要問：線上量測早就看到線寬偏了，為什麼 SPC 沒攔下來？
+② 閘極太細：點沿著這條線往左上跑，線寬變細、電流變大，兩邊對得上，所以問題就是閘極線寬。接著要問：線上量測早就看到線寬偏了，為什麼 SPC 沒攔下來？常見原因有兩個：線上量測每片只抽幾個點，偏最多的外圈沒抽到；或管制線訂得比電性需要的鬆。所以廠裡會拿這條線，回頭決定線上量測的規格要訂多嚴。
 
 ③ 接點電阻高：線寬都正常，電流卻整批掉到線下方。尺寸量起來都對，電流卻不對，就不是尺寸的問題，要往尺寸以外找，WAT 的接觸電阻偏高，指向中段接點。
 
-④ 一邊偏：線寬都差不多，電流卻上下散開，也不是尺寸的問題，查 WAT 的 Vt 在晶圓上的分布，一邊高一邊低，是摻雜或退火不均。
+④ 一邊偏：線寬都差不多，電流卻上下散開，也不是尺寸的問題，查 WAT 的 Vt 在晶圓上的分布，一邊高一邊低。環繞式的通道幾乎不摻雜，Vt 主要由閘極金屬決定，所以指向閘極金屬的厚度或退火不均。
 
 就像體重和跑步成績：體重重一點，通常跑慢一點；體重正常卻跑很慢，就要找別的原因。廠裡也靠這條線決定線上量測的規格要訂多嚴：線寬差多少，電流就會超規格。WAT 量到的電流和漏電，也是第八章 TCAD 校正、以及給晶片設計者用的元件模型的重要資料。數字都是示意。
 
-第九章到這裡。整理一下，量測工程師的工作是四件事：選對工具和量測點、設好管制線、看到數字偏了就判定並回饋機台、量不準的時候追出原因。WAT 合格之後，晶圓送去 CP、切割、封裝，封裝就是第三部分要講的。`
+第九章到這裡。WAT 合格之後，晶圓送去 CP、切割、封裝，封裝就是第三部分要講的。`
   });
 })();

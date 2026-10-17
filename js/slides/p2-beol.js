@@ -125,9 +125,9 @@
     },
     notes: `中段，英文 Middle of Line。電晶體做好之後，它的源極、汲極、閘極都還埋在下面，外面接不到。
 
-第一步，先蓋一層絕緣層，把電晶體整個包起來保護。第二步，用微影和蝕刻挖出接觸孔，直通到源極、汲極和閘極。這些孔只有十幾奈米寬，比電晶體還小，而且要對得非常準，偏一點就接不到，或是碰到旁邊短路。
+畫面第一步是做好的電晶體，按下一步開始。第二步，先蓋一層絕緣層，把電晶體整個包起來保護。第三步，用微影和蝕刻挖出接觸孔，直通到源極、汲極和閘極。這些孔只有十幾奈米寬，比電晶體還小，而且要對得非常準，偏一點就接不到，或是碰到旁邊短路。
 
-第三步，在孔底讓金屬和矽反應，長出一層金屬矽化物。金屬直接碰矽，接觸的地方電阻很大；有了這一層，電子進出就順很多。第四步，把孔填滿金屬，常用鎢或鈷，再用 CMP 磨平。第五步，接上第一層導線 M0，交棒給後段。
+第四步，在孔底讓金屬和矽反應，長出一層金屬矽化物。金屬直接碰矽，接觸的地方電阻很大；有了這一層，電子進出就順很多。第五步，把孔填滿金屬，常用鎢或鈷，再用 CMP 磨平。第六步，接上第一層導線 M0，交棒給後段。
 
 電晶體越做越小，接觸孔也越小，這一小段的電阻反而變成拖慢速度的瓶頸，所以先進製程花很多力氣在降低接觸電阻。另外，新的做法會把閘極的接點直接打在電晶體正上方，不用拉到旁邊，又省下一點面積。就像房子蓋好後在牆上鑽孔接水管，孔太小、接頭沒鎖緊，水壓再大也流不進來。`
   });
@@ -138,7 +138,7 @@
   }
   function beolInner(c, w, h, i, p) {
     const L = 30, R = w - 30, W = R - L, base = h - 10;
-    U.box(c, '#e8edf3', L, base - 30, W, 30); U.txt(c, '下面：中段＋電晶體', L + 10, base - 8, { size: 11, color: '#6a7888' });
+    U.box(c, '#e8edf3', L, base - 30, W, 30); U.txt(c, '下面：中段＋電晶體', L + 10, base - 8, { size: 14, color: '#6a7888' });
     [0.12 + 0.1, 0.72 + 0.09, 0.42 + 0.09].forEach(f => U.box(c, 'cu', L + W * f - 10, base - 30, 20, 10, { stroke: false }));
     const L1 = base - 30, th = 90;
     if (i === 0) { const hh = th * p; c.fillStyle = U.MAT.lowk; c.fillRect(L, L1 - hh, W, hh); U.txt(c, '低介電絕緣層（比一般氧化矽更不容易「傳話」）', w / 2, L1 - th - 14, { align: 'center', size: 14, color: '#3e4b5b' }); }
@@ -247,10 +247,10 @@
         LAYERS.forEach(([n, v], k) => {
           const y = ly + lh - (k + 1) * rowH, bw = (Math.log10(v) - 0.9) / (3.6 - 0.9) * (lw - 70), on = n === L[0];
           c.fillStyle = on ? '#b3541e' : '#e3c9b0'; c.fillRect(lx + 34, y + 2, Math.max(3, bw), rowH - 4);
-          U.txt(c, n, lx + 28, y + rowH - 4, { align: 'right', size: 11, w: on ? 700 : 500, color: on ? '#b3541e' : '#6a7888' });
-          if (on || k === 15 || k === 0) U.txt(c, v >= 1000 ? (v / 1000) + ' µm' : v + ' nm', lx + 40 + Math.max(3, bw), y + rowH - 4, { size: 11, w: on ? 700 : 500, color: on ? '#b3541e' : '#6a7888' });
+          U.txt(c, n, lx + 28, y + rowH - 4, { align: 'right', size: 13, w: on ? 700 : 500, color: on ? '#b3541e' : '#6a7888' });
+          if (on || k === 15 || k === 0) U.txt(c, v >= 1000 ? (v / 1000) + ' µm' : v + ' nm', lx + 40 + Math.max(3, bw), y + rowH - 4, { size: 13, w: on ? 700 : 500, color: on ? '#b3541e' : '#6a7888' });
         });
-        U.txt(c, '↑ 越上層越粗', lx, h - 6, { size: 12, color: '#6a7888' });
+        U.txt(c, '↑ 越上層越粗', lx, h - 6, { size: 14, color: '#6a7888' });
         // 中：放大截面（三條並排的導線，畫面上固定 60 nm 寬的視窗）
         const mx = w * 0.27, mw = w * 0.33, my = 40, mh = h - 110, S = mw / 70; // 1 nm = S px
         c.fillStyle = U.MAT.lowk; c.fillRect(mx, my, mw, mh);
@@ -276,24 +276,26 @@
         });
         // 比例尺
         c.strokeStyle = '#17202b'; c.lineWidth = 2; c.beginPath(); c.moveTo(mx + 10, my + mh + 16); c.lineTo(mx + 10 + 10 * S, my + mh + 16); c.stroke();
-        U.txt(c, '10 nm', mx + 10 + 10 * S + 6, my + mh + 20, { size: 12, color: '#3e4b5b' });
-        U.txt(c, mat === 'cu' ? '外圈深色：阻障層（電阻很高，幾乎不分擔電流）' : '釕：只要極薄的襯層', mx + mw, my + mh + 66, { align: 'right', size: 12, color: '#3e4b5b' });
-        U.electron(c, mx + 8, my + mh + 40, 4); U.txt(c, '電子', mx + 16, my + mh + 45, { size: 12, color: '#3e4b5b' });
-        U.electron(c, mx + 62, my + mh + 40, 4, true); U.txt(c, '剛撞到邊界的電子', mx + 70, my + mh + 45, { size: 12, color: '#3e4b5b' });
+        U.txt(c, '10 nm', mx + 10 + 10 * S + 6, my + mh + 20, { size: 14, color: '#3e4b5b' });
+        U.txt(c, mat === 'cu' ? '外圈深色：阻障層（電阻很高，幾乎不分擔電流）' : '釕：只要極薄的襯層', mx + mw, my + mh + 66, { align: 'right', size: 14, color: '#3e4b5b' });
+        U.electron(c, mx + 8, my + mh + 40, 4); U.txt(c, '電子', mx + 16, my + mh + 45, { size: 14, color: '#3e4b5b' });
+        U.electron(c, mx + 62, my + mh + 40, 4, true); U.txt(c, '剛撞到邊界的電子', mx + 70, my + mh + 45, { size: 14, color: '#3e4b5b' });
         // 右：電阻率曲線
         const gx = w * 0.66, gw = w - gx - 14, gy = 34, gh = h - 84;
         const X = U.lin(10, 60, gx, gx + gw), Y = U.lin(0, 22, gy + gh, gy);
         c.strokeStyle = '#9aa8b8'; c.lineWidth = 1; c.beginPath(); c.moveTo(gx, gy); c.lineTo(gx, gy + gh); c.lineTo(gx + gw, gy + gh); c.stroke();
-        for (let v = 10; v <= 60; v += 10) U.txt(c, v + '', X(v), gy + gh + 16, { align: 'center', size: 12, color: '#6a7888' });
-        U.txt(c, '線寬（nm）→', gx + gw, gy + gh + 34, { align: 'right', size: 12, color: '#3e4b5b' });
-        U.txt(c, '電阻率 ↑（示意）', gx, gy - 12, { size: 12, color: '#3e4b5b' });
+        for (let v = 10; v <= 60; v += 10) U.txt(c, v + '', X(v), gy + gh + 16, { align: 'center', size: 14, color: '#6a7888' });
+        U.txt(c, '線寬（nm）→', gx + gw, gy + gh + 34, { align: 'right', size: 14, color: '#3e4b5b' });
+        U.txt(c, '電阻率 ↑（示意）', gx, gy - 12, { size: 14, color: '#3e4b5b' });
         ['cu', 'ru'].forEach(m => { c.strokeStyle = MET[m].col; c.lineWidth = m === mat ? 3.5 : 2; c.beginPath(); for (let v = 10; v <= 60; v += 0.5) { const y = Y(Math.min(22, rho(m, v))); v === 10 ? c.moveTo(X(v), y) : c.lineTo(X(v), y); } c.stroke(); U.txt(c, MET[m].n, X(59), Y(rho(m, 59)) - 8, { align: 'right', size: 14, w: 700, color: MET[m].col }); });
         U.dot(c, X(W), Y(Math.min(22, rho(mat, W))), 6, MET[mat].col);
         c.strokeStyle = 'rgba(179,84,30,.5)'; c.setLineDash([5, 4]); c.beginPath(); c.moveTo(X(W), gy); c.lineTo(X(W), gy + gh); c.stroke(); c.setLineDash([]);
       });
       upd();
     },
-    notes: `後段最大的難題：導線越縮越細，電阻反而暴增。這一頁一次看三件事。
+    notes: `【可略】時間緊時：「電阻高會怎樣」只講前兩件（變慢、電壓不夠），釕的切換略過。
+
+後段最大的難題：導線越縮越細，電阻反而暴增。這一頁一次看三件事。
 
 先看左邊：這是後段十幾層導線各自大概多粗。最底下的 M0、M1 只有十幾奈米，越往上越粗，最上面好幾微米。拖動下面的線寬，左邊會亮出「這個線寬大約在哪一層」。今天要擔心的，是最底下這幾層。
 

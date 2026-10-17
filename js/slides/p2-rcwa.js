@@ -93,17 +93,18 @@
       <div class="col">${minimap([0, 1, 2])}
         ${U.figHTML('of-cv', '', '')}
         ${U.stepperHTML('of-st')}
-        <div class="controls guided" id="of-ctl">${U.range('of-d', '上寬', 10, 18, 0.5, 14, '')}${U.range('of-t', '高', 36, 60, 1, 48, '')}${U.range('of-p', '側壁角', 4, 20, 0.5, 12, '')}${U.seg('of-a', ACC.map(a => `RCWA ${a.n}`), 1)}</div></div>
+        <div class="controls guided" id="of-ctl">${U.range('of-d', '上寬', 10, 18, 0.5, 14, '')}${U.range('of-t', '高', 36, 60, 1, 48, '')}${U.range('of-p', '側壁角', 78, 89, 0.5, 83, '')}${U.seg('of-a', ACC.map(a => `RCWA ${a.n}`), 1)}</div></div>
       ${ppw({ id: 'of', goal: '建出 OCD 的「答案本」：每種形狀會反射出什麼光譜。', cause: 'OCD 只量得到光譜，光譜不會直接告訴你形狀；沒有答案本，就查不出線寬。',
         how: ['<b>TCAD</b> 先估形狀 → <b>TEM</b> 對照修正 → 寫成幾個參數', '填入各材料的光學常數 <b>n、k</b>', '<b>RCWA</b> 算出每個形狀的光譜，存成對照表'], icon: 'bread',
         analogy: '先照食譜推算蛋糕的樣子，再切一塊實物對照修正，把蛋糕寫成「多高、多寬、奶油多厚」，查好每種材料的音色（n、k），再預測敲起來的聲音（RCWA），記成一本表。' })}</div>`,
     init(el, ctx) {
       const { c, w, h } = U.canvas(U.$(el, '#of-cv'));
-      let top = 14, ht = 48, swa = 12, acc = 1, s = NOM, step = 0, t0 = 0;
-      const upd = () => { s = { top, bot: top + swa, h: ht, f: 8 }; };
+      let top = 14, ht = 48, ang = 83, acc = 1, s = NOM, step = 0, t0 = 0;
+      // 側壁角換算成下寬：角度越大越直，下寬越接近上寬
+      const upd = () => { s = { top, bot: top + 2 * ht / Math.tan(ang * Math.PI / 180), h: ht, f: 8 }; };
       U.bind(el, 'of-d', v => { top = v; upd(); }, v => v.toFixed(1) + ' nm');
       U.bind(el, 'of-t', v => { ht = v; upd(); }, v => v + ' nm');
-      U.bind(el, 'of-p', v => { swa = v; upd(); }, v => (Math.atan2(ht, v / 2) * 180 / Math.PI).toFixed(1) + '°');
+      U.bind(el, 'of-p', v => { ang = v; upd(); }, v => v.toFixed(1) + '°（越大越直）');
       U.onSeg(el, 'of-a', i => { acc = i; });
       guide(el, ctx, 'of', F_STEPS, [0, 1, 2, 3, 3, 'all'], i => { step = i; t0 = 0; });
       const tem = new Image(); tem.src = CREDITS.gaatem.f;
@@ -141,7 +142,7 @@
           const tx = 14 + cw2 + 26, tw = Math.min(cw2, ih * 292 / 316);
           U.txt(c, '② TEM 對照', tx + tw / 2, 40, { align: 'center', size: 16, w: 700, color: '#b3541e' });
           if (tem.complete && tem.naturalWidth) c.drawImage(tem, tx, iy, tw, tw * 316 / 292);
-          U.txt(c, '實際：圓角、斜邊、尺寸不同', tx + tw / 2, iy + ih + 20, { align: 'center', size: 13, color: '#3e4b5b' });
+          U.txt(c, '實際：圓角、斜邊、尺寸不同', tx + tw / 2, iy + ih + 20, { align: 'center', size: 13, color: '#3e4b5b' }); U.txt(c, '（示意：借用奈米片的 TEM 照片）', tx + tw / 2, iy + ih + 38, { align: 'center', size: 12, color: '#6a7888' });
           U.arrow(c, lw + 4, h / 2 - 20, lw + 44, h / 2 - 20, '#1f4fb5', 3);
           const cx = lw + 60 + (w - lw - 60) / 2, base = h - 90, S = Math.min(6, (base - 70) / 70);
           c.fillStyle = U.MAT.ox; c.fillRect(lw + 80, base, w - lw - 100, 18);
@@ -234,7 +235,7 @@
     { t: '① 查表報出 CD', d: '量到光譜，在答案本裡找最像的那一組，報出那一組的線寬。光譜完全吻合，看起來很完美。' },
     { t: '② 抽幾個點做 TEM 對照', d: '同一批位置切開做 TEM，量線寬當參考值。結果：細的量太粗、粗的量太細，OCD 有系統性偏差。' },
     { t: '③ 找原因、修模型', d: '硬遮罩配方改了，折射率 n 跟著變，模型還用舊值。重新量 n、更新答案本，點就回到一致線上。' },
-    { t: '④ 參數相關：吻合也可能錯', d: '鰭高一點、底下氧化層薄一點，光譜幾乎一模一樣：兩個參數互相代償，模型分不出來。解法是混合量測：底下的氧化層是蝕刻停止層，幾乎不被吃，蝕刻前先用膜厚機量好、固定下來。' },
+    { t: '④ 參數相關：吻合也可能錯', d: '上寬寬一點、側壁直一點，光譜幾乎一模一樣：兩個參數互相代償，模型分不出來。解法是混合量測：CD-SEM 最擅長量上寬，先量好固定給 OCD，OCD 只解側壁和高度。' },
     { t: '自己試試', d: '切換校正前後，或換一個量測點，看 OCD 和 TEM 差多少。' }
   ];
   A({
@@ -262,39 +263,41 @@
         target = i >= 2 && i <= 3 ? 1 : i < 2 ? 0 : target;
         if (i < 4) U.$$(seg, 'button').forEach((b, j) => b.classList.toggle('on', j === target));
       });
-      // ④ 參數相關：示意模型裡，鰭高 h 和底下氧化層厚 o 只以「6h＋3o」一起出現 → 沿著這條線怎麼換，光譜都一樣
-      //    （借用 specP 的 f 這一項代表氧化層；畫面上硬遮罩固定不變）
+      // ④ 參數相關：上寬變寬、下寬變窄（中間寬度不變），側壁跟著變直；示意模型裡光譜主要看中間寬度 → 兩者互相代償
+      //    混合量測：CD-SEM 從上面看、最擅長量上寬，量好固定給 OCD，只剩一個解
+      const angOf = tw => Math.atan2(48, (40 - 2 * tw) / 2) * 180 / Math.PI;   // 中間寬度固定 20 nm：下寬 = 40 − 上寬
       const corr = ct => {
         const hyb = ct > 4, m = hyb ? U.clamp(1 - (ct - 4) * 1.5, 0, 1) * (0.5 + 0.5 * Math.sin(ct * 2)) : 0.5 + 0.5 * Math.sin(ct * 2);
-        const hh = 48 + 2 * m, oo = 8 - 4 * m, sp = o => ({ top: 14, bot: 26, h: hh, f: o });
-        const lw = w * 0.3, S = Math.min(4.2, (h - 150) / 74), base = h - 70 - oo * S, cx = lw / 2;
-        c.fillStyle = U.MAT.ox; c.fillRect(20, base, lw - 40, oo * S); c.fillStyle = U.MAT.si; c.fillRect(20, base + oo * S, lw - 40, 12);
-        fin(c, cx, base, S, { top: 14, bot: 26, h: hh, f: 6 });
-        U.tag(c, `鰭高 ${hh.toFixed(1)}`, cx + 13 * S + 8, base - hh * S / 2, { size: 15, color: '#1f4fb5' });
-        U.tag(c, `底下氧化層 ${oo.toFixed(1)}`, lw - 30, base + oo * S / 2 + 6, { align: 'right', size: 15, color: '#b3541e' });
-        U.txt(c, '鰭高一點、底下氧化層薄一點…', cx, 28, { align: 'center', size: 16, w: 700, color: '#17202b' });
+        const tw = 14 + 2.5 * m, an = angOf(tw);
+        const lw = w * 0.3, S = Math.min(4.2, (h - 150) / 74), base = h - 82, cx = lw / 2;
+        c.fillStyle = U.MAT.si; c.fillRect(20, base, lw - 40, 12);
+        fin(c, cx, base, S, { top: tw, bot: 40 - tw, h: 48, f: 6 });
+        U.tag(c, `上寬 ${tw.toFixed(1)}`, cx, base - 54 * S - 14, { align: 'center', size: 15, color: '#b3541e' });
+        U.tag(c, `側壁角 ${an.toFixed(1)}°`, cx + (40 - tw) / 2 * S + 6, base - 20 * S, { size: 15, color: '#1f4fb5' });
+        U.txt(c, '上寬寬一點、側壁直一點…', cx, 28, { align: 'center', size: 16, w: 700, color: '#17202b' });
         // 中：光譜——量到的（黑）和這個形狀算出來的（虛線）一直重疊
         const gx = lw + 20, gw = w * 0.32, gy = 50, gh = h - 150;
         axes(c, gx, gy, gw, gh);
         plot(c, gx, gy, gw, gh, l => specP(l, { top: 14, bot: 26, h: 48, f: 8 }), '#2b3440', 3.5);
-        plot(c, gx, gy, gw, gh, l => specP(l, sp(oo)), '#1f7a4d', 2.2, [6, 4]);
+        plot(c, gx, gy, gw, gh, l => specP(l, { top: 14, bot: 26, h: 48, f: 8 }) + 0.004 * m * Math.sin(l / 23), '#1f7a4d', 2.2, [6, 4]);
         U.txt(c, '…光譜還是一模一樣', gx + gw / 2, 28, { align: 'center', size: 16, w: 700, color: '#17202b' });
         U.txt(c, '模型分不出是哪一組 → 線寬也可能跟著報錯', gx + gw / 2, h - 36, { align: 'center', size: 15, w: 600, color: '#b3261e' });
         // 右：參數空間——一整條線都吻合；混合量測把氧化層固定，只剩一個點
         const px = gx + gw + 60, pw = w - px - 20, py = 50, ph = h - 150;
-        const X = v => px + (v - 44) / 10 * pw, Y = v => py + ph - v / 16 * ph;
+        const X = v => px + (v - 12) / 6 * pw, Y = v => py + ph - (v - 80) / 8 * ph;
         c.strokeStyle = '#9aa8b8'; c.lineWidth = 1; c.strokeRect(px, py, pw, ph);
-        U.txt(c, '鰭高（nm）→', px + pw, py + ph + 22, { align: 'right', size: 14, color: '#3e4b5b' });
-        U.txt(c, '↑ 底下氧化層厚', px + 8, py + 20, { size: 14, color: '#3e4b5b' });
-        c.strokeStyle = 'rgba(31,122,77,.35)'; c.lineWidth = 12; c.beginPath(); c.moveTo(X(44), Y(16)); c.lineTo(X(52), Y(0)); c.stroke();
-        U.txt(c, '這整條線都吻合', X(49.2), Y(12), { size: 14, w: 600, color: '#1f7a4d' });
+        U.txt(c, '上寬（nm）→', px + pw, py + ph + 22, { align: 'right', size: 14, color: '#3e4b5b' });
+        U.txt(c, '↑ 側壁角（越上越直）', px + 8, py + 20, { size: 14, color: '#3e4b5b' });
+        c.strokeStyle = 'rgba(31,122,77,.35)'; c.lineWidth = 12; c.beginPath();
+        for (let v = 12; v <= 18.01; v += 0.25) { const yy = Y(angOf(v)); v === 12 ? c.moveTo(X(v), yy) : c.lineTo(X(v), yy); } c.stroke();
+        U.txt(c, '這整條線都吻合', X(15.2), Y(angOf(15.2)) + 34, { size: 14, w: 600, color: '#1f7a4d' });
         if (hyb) {
-          c.strokeStyle = '#b3541e'; c.lineWidth = 2; c.setLineDash([6, 4]); c.beginPath(); c.moveTo(px, Y(8)); c.lineTo(px + pw, Y(8)); c.stroke(); c.setLineDash([]);
-          U.tag(c, '蝕刻前膜厚機先量：8.0', px + 6, Y(8) - 8, { size: 14, color: '#b3541e' });
+          c.strokeStyle = '#b3541e'; c.lineWidth = 2; c.setLineDash([6, 4]); c.beginPath(); c.moveTo(X(14), py); c.lineTo(X(14), py + ph); c.stroke(); c.setLineDash([]);
+          U.tag(c, 'CD-SEM 先量上寬：14.0', X(14) + 8, py + ph - 14, { size: 14, color: '#b3541e' });
         }
-        U.dot(c, X(hh), Y(oo), 8, hyb && m < 0.02 ? '#b3541e' : '#1f4fb5');
-        U.txt(c, hyb ? '混合量測：固定一個，只剩一個解' : '光看光譜，答案不唯一', px + pw / 2, 28, { align: 'center', size: 16, w: 700, color: hyb ? '#b3541e' : '#17202b' });
-        if (hyb) U.txt(c, '→ 鰭高 = 48.0 nm', px + pw / 2, h - 36, { align: 'center', size: 16, w: 700, color: '#1f7a4d' });
+        U.dot(c, X(tw), Y(an), 8, hyb && m < 0.02 ? '#b3541e' : '#1f4fb5');
+        U.txt(c, hyb ? '混合量測：只剩一個解' : '光看光譜，答案不唯一', px + pw / 2, 28, { align: 'center', size: 16, w: 700, color: hyb ? '#b3541e' : '#17202b' });
+        if (hyb) U.txt(c, `→ 側壁角 = ${angOf(14).toFixed(1)}°`, px + pw / 2, h - 36, { align: 'center', size: 16, w: 700, color: '#1f7a4d' });
       };
       const stats = kk => {
         const xs = TEMCD, ys = TEMCD.map((x, j) => ocdOf(x, j, kk)), n = xs.length;
@@ -371,11 +374,11 @@
 
 做法第一步，查表：量到的光譜在答案本裡找最像的那一組，光譜完全吻合，報出那一組的線寬 14.1 奈米，看起來很完美。
 
-第二步，抽幾個點做 TEM 對照：把同一批位置切開，用 TEM 量線寬，當作參考值。右邊的圖，橫軸是 TEM、縱軸是 OCD，完全一致的話點會落在綠色虛線上。結果橘色趨勢線斜斜的：細的量太粗、粗的量太細，這是系統性偏差，代表模型有問題。注意，這些點都貼著同一條線，代表趨勢一致，但整條偏掉，這叫準度差。精度是另一件事：在同一個點重複量好幾次，數字穩不穩。OCD 的精度通常很好，準度要靠 TEM 校正。量測機台本身也要被管：每天量標準片確認自己沒漂，同型的機台互相比對，而且量測誤差要遠小於規格範圍，量出來的數字才能拿來判定。
+第二步，抽幾個點做 TEM 對照：把同一批位置切開，用 TEM 量線寬，當作參考值。右邊的圖，橫軸是 TEM、縱軸是 OCD，完全一致的話點會落在綠色虛線上。結果橘色趨勢線斜斜的：細的量太粗、粗的量太細，這是系統性偏差，代表模型有問題。注意，這些點都貼著同一條線，代表趨勢一致，但整條偏掉，這叫準度差。精度是另一件事：在同一個點重複量好幾次，數字穩不穩。OCD 的精度通常很好，準度要靠 TEM 校正。量測機台本身也要被管，後面 SPC 那頁會講。
 
 第三步，找原因、修模型。這個例子的原因是：鰭頂上那層硬遮罩換了配方，它的折射率 n 從 2.02 變成 1.95，就是上一頁第二步填進去的那個數字。模型還在用舊值，整本答案本都偏了。重新量 n、更新答案本之後，點就回到一致線上。
 
-第四步，時間不夠可以略過。為什麼光譜吻合還會錯？看左邊：把鰭加高一點、底下的氧化層減薄一點，算出來的光譜幾乎一模一樣。兩個參數的影響可以互相抵消，叫做參數相關。右邊的參數空間裡，整條綠線上的每一組都和量到的光譜吻合，光看光譜，答案不唯一。解法叫混合量測：底下的氧化層是蝕刻停止層，蝕刻時幾乎不被吃，只會少一點點，所以蝕刻前先用膜厚機量好，把它固定下來，OCD 只解剩下的參數，就只剩一個答案。
+【可略】第四步時間不夠可以略過。為什麼光譜吻合還會錯？看左邊：把鰭的上寬加寬一點、側壁變直一點，中間的寬度沒變，算出來的光譜幾乎一模一樣。兩個參數的影響可以互相抵消，叫做參數相關。右邊的參數空間裡，整條綠線上的每一組都和量到的光譜吻合，光看光譜，答案不唯一。解法叫混合量測：每種工具量自己最準的那個數字。CD-SEM 從上面看，最擅長量上寬，就把它量到的上寬固定給 OCD，OCD 只解剩下的側壁和高度，就只剩一個答案。這正好回扣兩頁前的 SEM。
 
 最後一步大家可以自己切換校正前後、換量測點。所以 OCD 和 TEM 是搭檔：TEM 一個點要幾小時，只抽十幾個點當參考；OCD 校正好之後，每片抽幾個量測靶，幾秒一個。就像體脂計，要定期拿到醫院的標準儀器對照。數字都是示意。建模型、找 n、k、跟 TEM 對答案、追偏差，就是 OCD 量測工程師的日常。
 

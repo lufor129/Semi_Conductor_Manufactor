@@ -62,7 +62,7 @@
     i = Math.max(0, Math.min(n - 1, i));
     if (i === Deck.cur && !(opts && opts.force)) return;
     runCleanups();
-    Deck.cur = i;
+    Deck.cur = i; Deck._builtScale = Deck.scale;
     const s = Deck.slides[i];
     const el = document.createElement('section');
     el.className = 'slide enter ' + (s.cls || '');
@@ -70,7 +70,7 @@
     try {
       el.innerHTML = s.raw ? s.render(i) : Deck.head(s, i) + s.render(i) + Deck.foot(s);
     } catch (e) { el.innerHTML = `<pre>${e.stack}</pre>`; console.error(e); }
-    el.insertAdjacentHTML('beforeend', '<div class="wm">個人製作的教育用簡報，非任何公司官方資料，與文中提及的公司無隸屬或背書關係；內容皆來自公開來源</div>'); // 每頁上方的浮水印
+    el.insertAdjacentHTML('beforeend', '<div class="wm">個人整理的教育用簡報，非任何公司官方資料，不代表任何公司（含作者任職單位）之立場；內容依公開資料整理，不含公司非公開資訊</div>'); // 每頁上方的浮水印
     stage.innerHTML = '';
     stage.appendChild(el);
     backButton(el, s, opts);
@@ -137,16 +137,21 @@
   function cumMinutes(upto) {
     let m = 0; for (let k = 0; k < upto; k++) m += Deck.slides[k].minutes || 0; return m;
   }
+  // 計時基準：按 T 時記下目前頁，計畫進度從這一頁起算（第二場從中間開講時才不會顯示超前一大截）
+  let planBase = 0;
+  const planAt = i => cumMinutes(i) - cumMinutes(planBase);
+  // 講稿段落開頭的【可略】【提示】標籤換顏色，講者一眼看得到
+  const notesHTML = s => (s.notes || '（本頁無備註）').trim().split(/\n\s*\n/).map(p => `<p>${p.trim().replace(/^【(.+?)】/, '<b class="tg">【$1】</b>')}</p>`).join('');
   function fmtMin(m) { return `${Math.floor(m)}:${String(Math.round((m % 1) * 60)).padStart(2, '0')}`; }
 
   function renderNotes() {
     if (notesEl.hidden) return;
     const s = Deck.slides[Deck.cur];
-    const total = cumMinutes(Deck.slides.length);
+    const total = planAt(Deck.slides.length);
     const el = startTime ? (Date.now() - startTime) / 60000 : 0;
-    const paras = (s.notes || '（本頁無備註）').trim().split(/\n\s*\n/).map(p => `<p>${p.trim()}</p>`).join('');
+    const paras = notesHTML(s);
     notesEl.innerHTML = `<div class="nh"><span>講者備註 · 第 ${Deck.cur + 1} 頁 · 建議 <b>${s.minutes || 0} 分</b></span>
-      <span>計畫進度 ${fmtMin(cumMinutes(Deck.cur))} → ${fmtMin(cumMinutes(Deck.cur + 1))} / 全場 ${fmtMin(total)}</span>
+      <span>計畫進度 ${fmtMin(Math.max(0, planAt(Deck.cur)))} → ${fmtMin(Math.max(0, planAt(Deck.cur + 1)))} / ${planBase ? '本場（從第 ' + (planBase + 1) + ' 頁起）' : '全場'} ${fmtMin(total)}</span>
       <span>實際經過 <b id="elapsed">${fmtMin(el)}</b>（按 T 重設計時）</span></div>${paras}`;
   }
 
@@ -163,7 +168,7 @@
       .big{font-size:40px;font-family:Menlo,monospace;color:#ffd28a}.cur{font-size:22px;font-weight:700}.nx{color:#9fb0c4;font-size:16px}
       main{padding:18px 26px;font-size:21px;line-height:1.75}main p{margin:0 0 12px}
       button{font:inherit;font-size:18px;padding:8px 18px;border-radius:4px;border:1px solid #4a5a70;background:#26344a;color:#fff;cursor:pointer}
-      .bar{height:6px;background:#26344a}.bar i{display:block;height:100%;background:#1f4fb5}
+      .bar{height:6px;background:#26344a}.bar i{display:block;height:100%;background:#1f4fb5}.tg{color:#ffd28a}
     </style></head><body><header><div><div class="cur" id="pc"></div><div class="nx" id="pn"></div></div>
       <div><span class="big" id="pt"></span> <span class="nx" id="pp"></span></div>
       <div><button id="bp">◀ 上一頁</button> <button id="bn">下一頁 ▶</button></div></header>
@@ -181,7 +186,7 @@
     if (!presenter || presenter.closed) return;
     const d = presenter.document, s = Deck.slides[Deck.cur], nx = Deck.slides[Deck.cur + 1];
     const strip = x => String(x || '').replace(/<[^>]+>/g, '');
-    const el = startTime ? (Date.now() - startTime) / 60000 : 0, plan = cumMinutes(Deck.cur);
+    const el = startTime ? (Date.now() - startTime) / 60000 : 0, plan = Math.max(0, planAt(Deck.cur));
     const q = id => d.getElementById(id);
     if (!q('pc')) return;
     q('pc').textContent = `${Deck.cur + 1} / ${Deck.slides.length}　${strip(s.title)}（建議 ${s.minutes || 0} 分）`;
@@ -190,7 +195,7 @@
     const diff = el - plan;
     q('pp').textContent = `計畫 ${fmtMin(plan)}　${diff > 1 ? '落後 ' + fmtMin(diff) : diff < -1 ? '超前 ' + fmtMin(-diff) : '準時'}`;
     q('pb').style.width = ((Deck.cur + 1) / Deck.slides.length * 100) + '%';
-    q('pm').innerHTML = (s.notes || '（本頁無備註）').trim().split(/\n\s*\n/).map(p => `<p>${p.trim()}</p>`).join('');
+    q('pm').innerHTML = notesHTML(s);
   }
   Deck.openPresenter = openPresenter;
 
@@ -222,7 +227,12 @@
     notesEl = document.getElementById('notes');
     overviewEl = document.getElementById('overview');
     fit();
-    window.addEventListener('resize', fit);
+    // 視窗大小改變（例如按 F 全螢幕）：canvas 解析度是進頁時決定的，縮放差超過一成就重建當頁，避免畫面變糊
+    let rsT = null;
+    window.addEventListener('resize', () => {
+      fit(); clearTimeout(rsT);
+      rsT = setTimeout(() => { if (Math.abs(Deck.scale / (Deck._builtScale || Deck.scale) - 1) > 0.1) { Deck.go(Deck.cur, { force: true, from: Deck._back }); } }, 300);
+    });
 
     document.addEventListener('keydown', e => {
       const t = e.target;
@@ -241,7 +251,7 @@
         case 'n': case 'N': toggle(notesEl); renderNotes(); break;
         case 'o': case 'O': toggle(overviewEl); if (!overviewEl.hidden) renderOverview(); break;
         case 'Escape': toggle(overviewEl, false); break;
-        case 't': case 'T': startTime = Date.now(); renderNotes(); renderPresenter(); break;
+        case 't': case 'T': startTime = Date.now(); planBase = Deck.cur; renderNotes(); renderPresenter(); break;
         case 'p': case 'P': openPresenter(); break;
         case 'b': case 'B': Deck.goBack(); break;
         case 'f': case 'F':

@@ -114,7 +114,9 @@
         U.txt(c, `間距 ${x.p} µm：這一小格裡有 ${(n * n).toLocaleString()} 個接點`, gx + gs / 2, gy + gs + 26, { align: 'center', size: 15, w: 700, color: '#17202b' });
       });
     },
-    notes: `上一頁講了混合鍵合怎麼做，這一頁看台積電把它做成的產品：SoIC，全名是 System on Integrated Chips，系統整合晶片。
+    notes: `【可略】時間緊時，第二個分頁（3D V-Cache）只講結論：快取從 32 MB 變 96 MB，遊戲快約 15%。
+
+上一頁講了混合鍵合怎麼做，這一頁看台積電把它做成的產品：SoIC，全名是 System on Integrated Chips，系統整合晶片。
 
 為什麼要做？好處就是前面說的：拆開做、良率好，疊起來距離最短，右上角整理了三點。在廚房比喻裡，它就是疊在主廚頭頂的層架。
 
