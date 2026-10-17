@@ -19,7 +19,6 @@
         <div id="so-p0" style="display:flex;flex-direction:column;flex:1;min-height:0">${U.figHTML('so-cv', '左：兩顆晶片疊起來（剖面）　右：0.2 × 0.2 mm 範圍內的接點（上視）', '')}</div>
         <div id="so-p1" hidden style="display:flex;flex-direction:column;flex:1;min-height:0">${U.figHTML('so-vc', '上：AMD 3D V-Cache 結構（自繪示意圖）　下：CPU 和快取之間的路', '')}</div></div>
       ${U.side({
-        supply: SUPPLY.soic,
         top: `<div class="card alt" id="so-why2" hidden><h4>為什麼 CPU 需要它？</h4><p style="font-size:16px">CPU 每算一步都要跟<b>快取</b>拿資料。快取不夠大，就得跑去更遠、更慢的記憶體拿，<b>中間那條路就成了瓶頸</b>，核心再快也在空等。<br>3D V-Cache 用 SoIC 把一塊 64 MB 快取直接疊在 CPU 上：L3 快取從 32 MB 變 96 MB，上下只隔幾微米、頻寬約 2 TB/s。AMD 宣稱 5800X3D 遊戲平均比 5900X 快約 15%。圖是第一代（Zen 3）結構，最新一代改把快取放在下面。</p></div><div class="card alt" id="so-why1"><h4>為什麼要做 SoIC？</h4><p style="font-size:16px"><b>① 距離最短</b>：上下只差幾微米，接點又密，傳資料更快、更省電<br><b>② 拆開做再疊</b>：例如 MI300 的 I/O 晶片用 6 奈米、運算晶片用 5 奈米，分開做良率更好<br><b>③ 省面積</b>：往上疊，不用攤平佔地；疊好還能再放上 CoWoS</p></div><div class="fact"><div class="v" id="so-n">—</div><div class="d" id="so-d">每平方毫米的上下接點數</div></div>`,
         extra: `<table class="t" style="font-size:16px"><tbody>
           <tr><td><b>AMD 3D V-Cache</b></td><td>快取晶片疊在 CPU 上</td></tr>
@@ -123,7 +122,7 @@ SoIC 就是把兩顆晶片直接疊在一起，中間不用微凸塊，用混合
 
 跟微凸塊比多密，上一頁已經比過了。這裡看台積電把間距一路往下推的路線：2022 年量產 9 微米，也就是 AMD 3D V-Cache 那一代；2025 年起 6 微米；2029 年目標 4.5 微米。按按看，接點一格比一格密。
 
-實際產品：AMD 的 3D V-Cache 處理器把快取疊在 CPU 上；AMD MI300 把運算晶片疊在 I/O 晶片上，再整組放上 CoWoS，3D 和 2.5D 一起用。台積電也宣布 2029 年要做 A14 疊 A14，接點密度是 N2 疊 N2 的 1.8 倍。右下角是相關的供應鏈。
+實際產品：AMD 的 3D V-Cache 處理器把快取疊在 CPU 上；AMD MI300 把運算晶片疊在 I/O 晶片上，再整組放上 CoWoS，3D 和 2.5D 一起用。台積電也宣布 2029 年要做 A14 疊 A14，接點密度是 N2 疊 N2 的 1.8 倍。
 
 切到第二個分頁，看最有名的實例：AMD 的 3D V-Cache。先講為什麼需要它。CPU 每算一步，都要跟快取拿資料；快取就是放在 CPU 旁邊、最快的小倉庫。快取不夠大，資料就得去更遠、更慢的記憶體拿，中間那條路就成了瓶頸，核心再快也只能空等。就像廚師手很快，但每道菜都要跑去遠方的倉庫拿食材。
 

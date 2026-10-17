@@ -19,7 +19,7 @@
             <div class="card"><h4>第二部分</h4><p><b>製造電晶體（九章）</b><br>畫圖、挖洞、鋪膜、摻雜與長晶、閘極、磨平，再組成電晶體、量測把關</p></div>
             <div class="card"><h4>第三部分</h4><p><b>突破摩爾定律：系統性解決</b><br>先進封裝、背面供電</p></div>
           </div>
-          <div class="meta">約 3 小時 · 77 頁＋Q&A 附錄 · 資料更新至 2026 年 9 月</div>
+          <div class="meta">約 3 小時 · 81 頁＋Q&A 附錄 · 資料更新至 2026 年 9 月</div>
         </div>
         <div class="cover-right">
           <img src="assets/img/wafer-12inch.jpg" alt="12 吋矽晶圓，表面布滿晶粒" style="position:absolute;inset:60px 60px 150px;width:calc(100% - 120px);height:calc(100% - 210px);object-fit:cover;border-radius:4px;border:1px solid var(--line)">
@@ -46,7 +46,7 @@
     render: () => {
       const parts = [
         { n: '1', t: '先進製程的演進與現況', m: '約 26 分', to: 'p1', items: ['電晶體：電壓控制的水龍頭', '縮太小會漏電 → 結構變形', '「2 奈米」名字的真相', '三大廠走到哪裡'] },
-        { n: '2', t: '製造電晶體（九章）', m: '約 101 分', to: 'p2', items: ['① 微影　② 蝕刻　③ 沉積', '④ 摻雜與磊晶　⑤ 閘極', '⑥ 磨平　⑦ 環繞式電晶體與導線', '⑧ 模擬　⑨ 檢測量測'] },
+        { n: '2', t: '製造電晶體（九章）', m: '約 108 分', to: 'p2', items: ['① 微影　② 蝕刻　③ 沉積', '④ 摻雜與磊晶　⑤ 閘極', '⑥ 磨平　⑦ 環繞式電晶體與導線', '⑧ 模擬　⑨ 檢測量測'] },
         { n: '3', t: '未來突破摩爾定律的關鍵：系統性解決', m: '約 44 分', to: 'p3', items: ['先進封裝：小晶片、HBM、各家方案、光學封裝', '把電線搬到背面', '加碼：上下疊的電晶體'] }
       ];
 

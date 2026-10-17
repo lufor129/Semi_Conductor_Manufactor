@@ -278,7 +278,6 @@
       <div class="col"><div class="controls">${U.seg('pk-c', PKC.map(x => x.n), 0)}</div>${U.figHTML('pk-cv', 'AI 晶片封裝（剖面示意，也可以直接點圖上的元件）', '')}
         <div class="controls">${U.range('pk-x', '拆開程度', 0, 100, 1, 60, '')}</div></div>
       ${U.side({
-        supply: SUPPLY.pkg,
         top: `<div class="card key"><h4 id="pk-h"></h4><p style="font-size:16.5px;margin:2px 0"><b>做什麼</b>：<span id="pk-w"></span></p><p style="font-size:16.5px;margin:2px 0"><b style="color:#1f4fb5">關鍵數字</b>：<span id="pk-n"></span></p><p style="font-size:16.5px;margin:2px 0"><b style="color:#1f7a4d">誰做</b>：<span id="pk-o"></span></p><p style="font-size:16.5px;margin:2px 0"><b style="color:#b3541e">比喻</b>：<span id="pk-a"></span></p><button class="btn" type="button" id="pk-go" style="margin-top:6px"></button></div>`,
         analogy: { icon: 'lego', t: '整顆封裝像一間餐廳廚房', p: '主廚（運算晶片）在工作檯（中介層）上做菜，冰箱（HBM）就在手邊，層架（疊上的晶片）在頭頂；門（凸塊）和後門（封裝基板）把外面的食材和電送進來。' }
       })}</div>`,
@@ -490,7 +489,6 @@
         meters: [['p4-bw', '每秒能搬']],
         extra: `<p class="gloss" id="p4-mv" style="margin:-4px 0 0;font-size:16px"></p>`,
         points: ['8–12 層記憶體晶片疊成一疊（HBM4 到 16 層）', '用「矽穿孔」讓上下層直接相通', '緊貼運算晶片：路短、線多'],
-        supply: SUPPLY.pkg4,
         analogy: { icon: 'road', t: '比喻', p: '接續廚房：一般記憶體像放在隔壁街的倉庫，只有一條小路；HBM 是把冰箱疊高、放在工作檯旁，開上千扇小門。' }
       })}</div>`,
     init: hbmInit([0, 1]),
@@ -612,7 +610,6 @@
         <div id="hb-stw" hidden>${U.stepperHTML('hb-st')}</div>
         <div class="controls" id="hb-dw" hidden><button class="btn primary" id="hb-add" type="button">放一粒灰塵</button><button class="btn" id="hb-clr" type="button">清乾淨</button></div></div>
       ${U.side({
-        supply: SUPPLY.pkg3,
         top: `<div class="card key"><h4 id="hb-h"></h4><p id="hb-p" style="font-size:16.5px"></p></div>`,
         extra: `<div class="card alt"><h4>和 HBM 的關係</h4><p style="font-size:15.5px">HBM 目前（含 HBM4）仍用微凸塊疊 12–16 層（熱壓接合或回焊）；混合鍵合正在驗證，預計疊得更高時才導入。邏輯晶片已經在用：下一頁 SoIC。</p></div>`,
         analogy: { icon: 'lego', t: '比喻', p: '不用膠水，把兩塊磨得超平的積木直接壓在一起，就牢牢黏住了。' }
@@ -683,7 +680,6 @@
       <div class="col"><div class="controls">${U.seg('gl-m', ['① 在封裝的哪一層？', '② 圓形晶圓 vs 方形面板', '③ 有機基板 vs 玻璃基板'], 0)}</div>${U.figHTML('gl-cv', '左：12 吋圓形晶圓　右：31 × 31 cm 方形面板（上視）', '')}
         <div class="controls" id="gl-c">${U.range('gl-s', '中介層大小（邊長）', 40, 110, 5, 50, ' mm')}</div></div>
       ${U.side({
-        supply: SUPPLY.glass,
         top: `<div class="card newcard"><h4>新技術：解決什麼問題？</h4><p>AI 晶片的中介層越做越大，圓形晶圓邊緣切不出完整的方塊，浪費很多；大尺寸的有機基板加熱時會翹曲，細線路也做不上去。</p><h4>誰在做？</h4><p>台積電 CoPoS（方形面板版 CoWoS）試產線已建好，約 2–3 年後量產規模化（台積電 2026 股東會）；Intel、SKC 等研發玻璃基板，約 2030 年前後導入，時程一再延後。</p></div>`,
         points: ['方形面板：大方塊排得滿，浪費少', '玻璃：很平、受熱不易翹，可以做更細的線路', '難題：玻璃易碎、整條產線要重新建立'],
         analogy: { icon: 'tile', t: '比喻', p: '用圓形的披薩皮切方形餅乾，邊邊都浪費；改用方形的麵皮，幾乎整張都用得到。' }
@@ -774,7 +770,6 @@
     render: () => `<div class="s-body">
       <div class="col"><div class="controls">${U.seg('cw-m', PKGS.map(x => x.n), 0)}<span id="cw-sw" hidden>${U.seg('cw-s', ['結構', '為何用曝光機'], 0)}</span></div>${U.figHTML('cw-cv', '側面剖面（示意）', '')}</div>
       ${U.side({
-        supply: SUPPLY.cowcmp,
         top: `<div class="card key"><h4 id="cw-h"></h4>
           <p style="font-size:17px;margin:2px 0"><b id="cw-l1">改了什麼</b>：<span id="cw-a"></span></p>
           <p style="font-size:17px;margin:2px 0"><b id="cw-l2" style="color:#1f7a4d">好處</b>：<span id="cw-b"></span></p>
@@ -949,7 +944,6 @@ CoWoP：這次改的是封裝基板，直接把它拿掉，中介層焊在高密
     render: () => `<div class="s-body">
       <div class="col"><div class="controls">${U.seg('cp-m', ['傳統：光模組插在機殼前面', '共同封裝光學 CPO', '光學引擎裡面：電怎麼變光'], 0)}</div>${U.figHTML('cp-cv', '交換器電路板上視（示意）：黃點是電訊號，紫點是光訊號', '')}</div>
       ${U.side({
-        supply: SUPPLY.cpo,
         top: `<div class="card newcard"><h4>新技術：解決什麼問題？</h4><p>電訊號在銅線上跑得越快，損失越大，得花很多電去補強。傳統光模組插在機殼前面，晶片到模組還有幾十公分的銅線。</p></div>`,
         meters: [['cp-a', '銅線長度'], ['cp-b', '每傳一位元的耗電']],
         extra: `<div class="card alt"><h4>實際產品（依公開資料）</h4><p style="font-size:15px"><b>NVIDIA</b>：Quantum-X、Spectrum-X 光子交換器，採用台積電 COUPE，宣稱比插拔式光模組省電約 3.5 倍<br><b>Broadcom</b>：Tomahawk 系列 CPO 交換器（51.2T、102.4T）<br><b>台積電 COUPE</b>：電子晶片用 SoIC 疊在光子晶片上；2026 年上封裝基板量產，比插拔式省電 2 倍、延遲少 10 倍</p></div>`,

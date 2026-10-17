@@ -20,7 +20,6 @@
 <script src="js/widgets/transistor3d.js"></script>
 <script src="js/widgets/anim.js"></script>
 <script src="js/credits.js"></script>
-<script src="js/supply.js"></script>
 <!-- SLIDES -->
 <script src="js/slides/p0-intro.js"></script>
 <script src="js/slides/p1-evolution.js"></script>
@@ -33,6 +32,7 @@
 <script src="js/slides/p2-cmp.js"></script>
 <script src="js/slides/p2-2nm.js"></script>
 <script src="js/slides/p2-rcwa.js"></script>
+<script src="js/slides/p2-wat.js"></script>
 <script src="js/slides/p2-beol.js"></script>
 <script src="js/slides/p3-future.js"></script>
 <script src="js/slides/p3-new.js"></script>
@@ -51,14 +51,17 @@
   Deck.move('asd', 'depo2');
   // ④ 磊晶與摻雜：從問題出發——摻雜（傳統離子佈植）→ 磊晶 → 選擇性磊晶邊長邊摻
   Deck.move('dope1', 'asd');
-  // ⑧ 模擬：TCAD；⑨ 檢測量測：兩種眼睛 → 檢測 → SPC → APC → 量測工具（metro → TEM → SEM → OCD）
+  // ⑧ 模擬：TCAD；⑨ 檢測量測：跟著晶圓走（頁序見下方 ⑨ 那一段）
   Deck.move('tem', 'metro');
   // GAA 九步驟之後：前中後段總覽 → 中段 → 後段 → 後段難題
   Deck.move('fmb', 'gaaflow'); Deck.move('mol', 'fmb'); Deck.move('beol', 'mol'); Deck.move('beol2', 'beol');
   // OCD 之後補充兩頁：正著算（參數化形狀＋n、k → RCWA → 光譜）、反著查（光譜 → CD，TEM 對答案、參數相關）
   Deck.move('ocdf', 'ocd'); Deck.move('ocdb', 'ocdf');
-  // ⑨：兩種眼睛總覽（eyes）→ 檢測 → 量到的數字：SPC（mloop）→ APC → 量測工具 → OCD 補充
-  Deck.move('mloop', 'insp'); Deck.move('apc', 'mloop');
+  // ⑨ 跟著一片晶圓走：三種檢查（eyes）→ 量尺寸（metro → TEM → SEM → OCD → 答案本 → 量到光譜之後）
+  //    → 找缺陷（insp）→ 數字怎麼用（SPC → APC）→ 晶圓做完（WAT① → WAT② → WAT④ 和尺寸對照）
+  Deck.move('metro', 'eyes'); Deck.move('tem', 'metro'); Deck.move('sem', 'tem'); Deck.move('ocd', 'sem'); Deck.move('ocdf', 'ocd'); Deck.move('ocdb', 'ocdf');
+  Deck.move('insp', 'ocdb'); Deck.move('mloop', 'insp'); Deck.move('apc', 'mloop');
+  Deck.move('wat', 'apc'); Deck.move('wat2', 'wat'); Deck.move('wat4', 'wat2');
   // 第三部分封裝：為什麼需要（含良率）→ AI 晶片拆解（實例）→ 2D/2.5D/3D → HBM → 混合鍵合
   Deck.move('pkg', 'pkg0');
   Deck.move('glass', 'pkg3'); Deck.move('cowcmp', 'glass'); Deck.move('cpo', 'cowcmp');

@@ -45,13 +45,10 @@
     ${o.points ? `<ul class="points simple">${o.points.map(p => `<li>${p}</li>`).join('')}</ul>` : ''}
     ${o.meters ? `<div class="meters">${o.meters.map(m => U.meterHTML(m[0], m[1])).join('')}</div>` : ''}
     ${o.extra || ''}
-    ${o.supply ? U.supplyHTML(o.supply) : ''}
     ${o.fact ? `<div class="fact"><div class="v">${o.fact.v}</div><div class="d">${o.fact.d}</div></div>` : ''}
     ${o.analogy ? `<div class="analogy" style="margin-top:auto"><div class="ic">${U.icon(o.analogy.icon)}</div><div><h4>${o.analogy.t || '比喻'}</h4><p>${o.analogy.p}</p></div></div>` : ''}
   </div>`;
 
-  /* 供應鏈小卡：rows = [[角色, 公司], …] */
-  U.supplyHTML = rows => `<div class="card supply"><h4>供應鏈（據公開報導）</h4><table>${rows.map(([r, n]) => `<tr><th>${r}</th><td>${n}</td></tr>`).join('')}</table></div>`;
 
   /* 主區圖框 */
   U.figHTML = (id, title, right, kind) => `<div class="fig grow"><div class="fig-title"><span>${title || ''}</span><span id="${id}-r">${right || ''}</span></div><div class="fig-canvas">${kind === 'svg' ? `<svg id="${id}"></svg>` : `<canvas id="${id}"></canvas>`}</div></div>`;

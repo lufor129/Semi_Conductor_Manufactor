@@ -14,7 +14,7 @@
     id: 'p2', part: 2, raw: true, cls: 'divider-slide', minutes: 0.5, short: '第二部分',
     title: '製造電晶體：六大核心技術＋組合＋模擬＋量測',
     render: () => `<div class="divider-grid"><div class="divider-num"><div class="l">Part</div><div class="n">02</div></div>
-      <div class="divider-body"><div class="s-eyebrow">PART 2 · 約 101 分鐘</div><h2>製造電晶體：九章</h2>
+      <div class="divider-body"><div class="s-eyebrow">PART 2 · 約 111 分鐘</div><h2>製造電晶體：九章</h2>
       <p class="q">晶片是<b style="color:var(--accent-2)">一層一層蓋、一層一層刻</b>出來的。每蓋一層，都要重複「鋪、畫、挖、改、磨」這幾個動作。</p>
       <div class="cards" style="max-width:1200px;grid-template-columns:repeat(3,1fr)">
         ${[['litho1', '① 微影', '用光畫出圖案'], ['etch1', '② 蝕刻', '挖掉不要的部分'], ['depo4', '③ 沉積', '鋪上新的薄膜'], ['dope1', '④ 摻雜與磊晶', '調整導電性、長出晶體'],
