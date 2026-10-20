@@ -4360,7 +4360,7 @@ CMP 化學機械平坦化，就是把表面磨平的技術。左邊是研磨機�
     title: '區域選擇性沉積：只長在需要的地方', en: 'Area-Selective Deposition',
     thesis: '傳統做法是「全部鋪滿再挖掉」。新方法讓材料<b>只長在金屬上</b>。切到「怎麼做到？」看分子層級的祕密：<b>先幫不要長的地方穿雨衣</b>。',
     render: () => `<div class="s-body">
-      <div class="col"><div class="controls">${U.seg('a1-m', ['傳統：鋪滿再挖掉', '新方法：只長在金屬上', '怎麼做到？（分子放大）', '困難點'], 0)}</div>${U.figHTML('a1-cv', '表面剖面：橘色是金屬，黃色是絕緣層', '')}<div id="a1-sw" hidden>${U.stepperHTML('a1-st')}</div><div class="controls" id="a1-hc" hidden>${U.range('a1-th', '想長的厚度', 1, 10, 0.5, 3, ' nm')}${U.seg('a1-fix', ['一口氣長完', '邊長邊修'], 0)}</div></div>
+      <div class="col"><div class="controls">${U.seg('a1-m', ['傳統：鋪滿再挖掉', '新方法：只長在金屬上', '怎麼做到？（分子放大）', '困難點'], 0)}<button class="btn" type="button" id="a1-rp">↻ 重播</button></div>${U.figHTML('a1-cv', '表面剖面：橘色是金屬，黃色是絕緣層', '')}<div id="a1-sw" hidden>${U.stepperHTML('a1-st')}</div><div class="controls" id="a1-hc" hidden>${U.range('a1-th', '想長的厚度', 1, 10, 0.5, 3, ' nm')}${U.seg('a1-fix', ['一口氣長完', '邊長邊修'], 0)}</div></div>
       ${U.side({
         top: `<div class="card key" id="a1-card"><h4 id="a1-h"></h4><div class="bigword" id="a1-t" style="font-size:24px"></div><p id="a1-d" style="font-size:18.5px"></p></div>`,
         extra: `<div class="card newcard"><h4>新技術：解決什麼問題？</h4><p>2 奈米級的導線間距只剩 20 幾奈米，微影只要對偏幾奈米，上下層就會短路或接不上。選擇性沉積「自己對準」，還省下一整輪微影和蝕刻。</p><h4>用在哪裡？</h4><p>導線層：在銅導線頂端只長一層保護蓋、讓上下層的連接孔自動對準。部分應用已量產，2 奈米之後用得更多。</p></div>`,
@@ -4379,7 +4379,9 @@ CMP 化學機械平坦化，就是把表面磨平的技術。左邊是研磨機�
       const hardCard = () => { const cyc = Math.ceil(TH3 / 2), bad = FIX ? Math.round(1 + cyc * 0.6) : Math.min(24, Math.round(Math.max(0, (Math.exp((TH3 - 2) / 1.8) - 1) * 3))), steps = FIX ? cyc * 2 : 1; card('困難點', FIX ? `邊長邊修：${steps} 道步驟` : '選擇性會失守', FIX ? `每長約 2 nm 就用輕微蝕刻把零星小島清掉，再繼續長。絕緣層上剩約 ${bad} 個缺陷，代價是步驟和時間變多。` : `長得越厚，絕緣層上越容易冒出零星的小島（缺陷）。現在厚度 ${TH3} nm，絕緣層上約 ${bad} 個。`); };
       U.bind(el, 'a1-th', v => { TH3 = v; if (m === 3) hardCard(); }, v => v + ' nm');
       U.onSeg(el, 'a1-fix', i => { FIX = i; if (m === 3) hardCard(); });
-      U.onSeg(el, 'a1-m', i => { m = i; g = 0; T = 0; U.$(el, '#a1-sw').hidden = i !== 2; U.$(el, '#a1-hc').hidden = i !== 3; if (i === 3) hardCard(); if (i === 2) stp.show(0); if (i === 0) card('需要的步驟', '4 步', '鋪滿 → 光阻曝光 → 蝕刻 → 去光阻。光阻只要對偏一點點，就做壞了。'); if (i === 1) card('需要的步驟', '不用微影', '材料自己只長在金屬上，自動對準，省下一整輪微影和蝕刻。'); });
+      U.onSeg(el, 'a1-m', i => { m = i; g = 0; T = 0; U.$(el, '#a1-sw').hidden = i !== 2; U.$(el, '#a1-hc').hidden = i !== 3; U.$(el, '#a1-rp').hidden = i === 3; if (i === 3) hardCard(); if (i === 2) stp.show(0); if (i === 0) card('需要的步驟', '4 步', '鋪滿 → 光阻曝光 → 蝕刻 → 去光阻。光阻只要對偏一點點，就做壞了。'); if (i === 1) card('需要的步驟', '不用微影', '材料自己只長在金屬上，自動對準，省下一整輪微影和蝕刻。'); });
+      // 重播：前兩個分頁從頭再畫一次；分子放大重播目前這一步
+      U.$(el, '#a1-rp').addEventListener('click', () => { g = 0; T = 0; if (m === 2) stp.show(stage); });
       const pads = [[0.08, 0.22], [0.36, 0.5], [0.64, 0.78]];
       ctx.raf((dt, t) => {
         g = Math.min(1, g + dt * 0.18);
