@@ -114,8 +114,11 @@
       <div class="col">${U.figHTML('g1-cv', '左：沿電流方向的剖面　右上：垂直切開閘極的橫切面', '')}${U.stepperHTML('g1-st')}</div>
       ${U.side({
         top: `<div class="card newcard"><h4>這一步用到的技術（點擊跳回該章）</h4><div id="g1-tech" style="display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px"></div><p id="g1-why" style="margin:0"></p><p id="g1-m" style="margin:8px 0 0;color:#a8660a;font-weight:600" hidden></p></div>`,
-        points: ['矽鍺是「犧牲層」，只是用來佔位', '內間隔層（綠）防止閘極和源汲極短路', '右上的橫切面：看「環繞」怎麼一步步形成'],
-        extra: U.legendHTML(['si', 'sige', 'nit', 'poly', 'n', 'ox', 'hk', 'metal']) + '<button class="btn" id="g1-3d" type="button">看 3D 模型 →</button>',
+        points: ['右上的橫切面：看「環繞」怎麼一步步形成'],
+        extra: `<div class="legend" style="display:grid;grid-template-columns:auto 1fr;gap:3px 10px;align-items:baseline">${[
+          ['si', '奈米片：電流走的路（底下是晶圓）'], ['sige', '犧牲層：先佔位，第 8 步溶掉'], ['nit', '間隔層、內間隔層：隔開閘極和源汲極'], ['poly', '假閘極：耐高溫先佔位，第 7 步拿掉'],
+          ['n', '源極、汲極：電流的進出口'], ['ox', '絕緣層：蓋住源汲極，磨平用'], ['hk', '閘極絕緣層：擋住漏電'], ['metal', '真正的閘極：控制電流通不通']
+        ].map(([k, u]) => `<span style="white-space:nowrap"><i style="background:${U.MAT[k]}"></i>${U.MAT_NAME[k]}</span><span>${u}</span>`).join('')}</div><button class="btn" id="g1-3d" type="button">看 3D 模型 →</button>`,
         analogy: { icon: 'bread', t: '比喻', p: '做千層蛋糕：蛋糕片之間先夾果凍，最後把果凍融掉，再灌進巧克力把每片包住。' }
       })}</div>`,
     init(el, ctx) {
