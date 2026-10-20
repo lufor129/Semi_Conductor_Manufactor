@@ -64,7 +64,6 @@ body {
 .slide { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 34px 48px 26px; font-size: 19px; line-height: 1.5; }
 .slide.enter { animation: slideIn .28s ease-out; }
 @keyframes slideIn { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .slide.enter { animation: none; } }
 
 /* ---------- 標題列 ---------- */
 .s-head { display: grid; grid-template-columns: 1fr auto; gap: 6px 24px; align-items: end; border-bottom: 1.5px solid var(--ink); padding-bottom: 10px; margin-bottom: 16px; }
