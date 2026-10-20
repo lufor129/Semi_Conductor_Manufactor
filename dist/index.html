@@ -3828,12 +3828,12 @@ NA 可以理解成鏡頭收光的角度，也就是最後一面投影鏡張得�
         ['「選擇性」是怎麼做到的？', '矽上原子直接接著底下的格子排（有「空手」可牽），馬上就長；絕緣層上要先聚成小島，起步慢很多。同時混一點氯化氫：它兩邊都吃，但矽上「長得比吃得快」，絕緣層上剛冒頭的小島「吃得比長得快」，所以只有矽上長得起來。'],
         ['邊長邊摻', '長的時候，把含磷或含硼的氣體一起混進去，長出來的源汲極本身就已經摻好。長太短接觸不好，長太長會碰到隔壁的電晶體。pFET 用矽鍺，還能順便擠緊通道，讓電洞跑更快。']
       ];
-      U.onSeg(el, 'p3-m', i => { m = i; g = 0; U.$(el, '#p3-h').textContent = TX[i][0]; U.$(el, '#p3-p').textContent = TX[i][1]; const ft = U.$(el, '#p3-cv').closest('.fig').querySelector('.fig-title span'); if (ft) ft.textContent = i === 1 ? '放大看表面（示意）：灰色圓點是氣體帶來的矽原子' : '三根鰭（剖面）'; });
+      U.onSeg(el, 'p3-m', i => { m = i; g = 0; if (i === 1) selReset(); U.$(el, '#p3-h').textContent = TX[i][0]; U.$(el, '#p3-p').textContent = TX[i][1]; const ft = U.$(el, '#p3-cv').closest('.fig').querySelector('.fig-title span'); if (ft) ft.textContent = i === 1 ? '放大看表面（示意）：矽和氯化氫同時進來，一邊長、一邊吃' : '三根鰭（剖面）'; });
       ctx.raf((dt, t) => {
         g = Math.min(1, g + dt * 0.35);
         c.clearRect(0, 0, w, h);
         const base = h * 0.8, fw = 50, fh = h * 0.45, xs = [w * 0.28, w * 0.5, w * 0.72];
-        if (m === 1) { selZoom(c, w, h, t); U.setMeter(el, 'p3-a', .95, '均勻', 'good'); U.setMeter(el, 'p3-b', .05, '幾乎沒有', 'good'); return; }
+        if (m === 1) { selZoom(c, w, h, t, dt); U.setMeter(el, 'p3-a', .95, '均勻', 'good'); U.setMeter(el, 'p3-b', .05, '幾乎沒有', 'good'); return; }
         U.box(c, 'si', 30, base, w - 60, h - base - 20);
         U.box(c, 'ox', 30, base - 40, w - 60, 40);
         xs.forEach(x => U.box(c, 'si', x - fw / 2, base - fh, fw, fh));
@@ -3869,22 +3869,68 @@ NA 可以理解成鏡頭收光的角度，也就是最後一面投影鏡張得�
           U.setMeter(el, 'p3-a', .95, '均勻', 'good'); U.setMeter(el, 'p3-b', .05, '幾乎沒有', 'good');
         }
       });
-      // 分頁②：放大看矽表面和絕緣層表面
-      function selZoom(c, w, h, t) {
-        const half = w / 2, base = h * 0.66;
+      // 分頁②：放大看矽表面和絕緣層表面。矽（灰）和氯化氫（綠）同時落下：一邊長、一邊吃
+      const Z = {};
+      const selReset = () => { Z.h = [Array(9).fill(0), Array(9).fill(0)]; Z.parts = []; Z.fx = []; Z.grow = [0, 0]; Z.eat = [0, 0]; Z.acc = [0, 0, 0, 0]; Z.hold = 0; };
+      selReset();
+      function selZoom(c, w, h, t, dt) {
+        const half = w / 2, base = h * 0.66, n = 9, R8 = 8, STEP = 16, MAXL = 6;
+        const geo = k => { const L = 30 + k * half, W = half - 80; return { L, W, sp: W / n }; };
+        const colX = (k, i) => { const g = geo(k); return g.L + (i + .5) * g.sp + (k ? ((i * 7 + Z.h[1][i] * 5) % 7) - 3 : 0); };
+        const topY = (k, i) => base - R8 - (Z.h[k][i] - 1) * STEP; // 最上面那顆原子的中心
+        dt = Math.min(dt, 0.05);
+        if (Z.hold) { Z.hold += dt; if (Z.hold > 2.2) selReset(); }
+        else {
+          // 生成：每邊每秒約 4.5 顆矽、2 個氯化氫
+          for (let k = 0; k < 2; k++) {
+            Z.acc[k] += dt * 4.5; Z.acc[k + 2] += dt * 2;
+            while (Z.acc[k] > 1) { Z.acc[k]--; const hs = Z.h[k].map((v, i) => v + Z.parts.filter(P => P.k === k && P.kind === 'si' && P.i === i).length), mn = Math.min(...hs), lows = hs.map((v, i) => [v, i]).filter(([v]) => v === mn).map(([, i]) => i); // 矽上一層一層長（先補最低的位置）
+              Z.parts.push({ k, kind: 'si', i: k ? Math.floor(Math.random() * n) : lows[Math.floor(Math.random() * lows.length)], y: 70 }); }
+            while (Z.acc[k + 2] > 1) { Z.acc[k + 2]--; const isl = Z.h[1].map((v, i) => [v, i]).filter(([v]) => v > 0).map(([, i]) => i); // 氯化氫不挑地方，絕緣層上那顆剛好打在小島上
+              Z.parts.push({ k, kind: 'hcl', i: k && isl.length && Math.random() < .95 ? isl[Math.floor(Math.random() * isl.length)] : Math.floor(Math.random() * n), y: 70 }); }
+          }
+        }
+        // 移動與落地
+        for (let q = Z.parts.length - 1; q >= 0; q--) {
+          const P = Z.parts[q]; P.y += dt * 260;
+          const hh = Z.h[P.k][P.i], land = P.kind === 'si' ? base - R8 - hh * STEP : (hh ? topY(P.k, P.i) - 14 : base - 10);
+          if (P.y < land) continue;
+          Z.parts.splice(q, 1);
+          const x = colX(P.k, P.i);
+          if (P.kind === 'si') {
+            if (P.k === 0 && hh < MAXL) { Z.h[0][P.i]++; Z.grow[0]++; }
+            else if (P.k === 1 && Math.random() < (hh ? .45 : .25) && hh < 3) { Z.h[1][P.i]++; Z.grow[1]++; } // 絕緣層上不容易黏，已經有小島的地方比較容易
+            else Z.fx.push({ x, y: land, a: 0, kind: 'off' });
+          } else if (hh) { Z.fx.push({ x, y: topY(P.k, P.i), a: 0, kind: 'eat' }); Z.h[P.k][P.i]--; Z.eat[P.k]++; }
+          else Z.fx.push({ x, y: land, a: 0, kind: 'hoff' });
+        }
+        if (!Z.hold && Math.min(...Z.h[0]) >= MAXL) Z.hold = 0.001;
+        // 畫
+        U.dot(c, w / 2 - 210, 56, 7, '#a9bcd0'); U.txt(c, '矽原子（氣體帶來）', w / 2 - 198, 61, { size: 14, color: '#17202b' });
+        U.dot(c, w / 2 + 10, 56, 6, '#2f9a63'); U.dot(c, w / 2 + 17, 52, 3, '#fff'); U.txt(c, '氯化氫（會把表面原子吃掉）', w / 2 + 24, 61, { size: 14, color: '#17202b' });
         [[0, '露出的矽表面', U.MAT.si], [1, '絕緣層表面', U.MAT.ox]].forEach(([k, name, col]) => {
-          const L = 30 + k * half, R = L + half - 50, W = R - L, n = 9, sp = W / n;
+          const { L, W } = geo(k);
           U.txt(c, name, L + W / 2, 26, { align: 'center', size: 17, w: 700, color: k ? '#a8660a' : '#1f4fb5' });
           c.fillStyle = col; c.fillRect(L, base, W, h - base - 30);
           for (let i = 0; i < n; i++) {
-            const x = L + (i + .5) * sp;
-            if (!k) { c.strokeStyle = '#1f4fb5'; c.lineWidth = 2; c.beginPath(); c.moveTo(x, base); c.lineTo(x, base - 10); c.stroke(); }
-            const f = ((t * 0.5 + i * 0.37) % 1), y = U.lerp(50, base - 16, Math.min(1, f * 1.4));
-            if (!k) { const landed = f > 0.72; U.dot(c, x, landed ? base - 16 : y, 8, '#a9bcd0'); if (landed) { c.strokeStyle = '#17202b'; c.lineWidth = 1; c.beginPath(); c.arc(x, base - 16, 8, 0, 7); c.stroke(); } }
-            else { const bounce = f > 0.72 ? (f - 0.72) * 3 : 0; U.dot(c, x + bounce * 20, f > 0.72 ? base - 16 - bounce * 120 : y, 8, `rgba(169,188,208,${f > 0.72 ? 1 - bounce : 1})`); }
+            const x = colX(k, i);
+            for (let l = 0; l < Z.h[k][i]; l++) { const y = base - R8 - l * STEP; U.dot(c, x, y, R8, '#a9bcd0'); c.strokeStyle = '#17202b'; c.lineWidth = 1; c.beginPath(); c.arc(x, y, R8, 0, 7); c.stroke(); }
+            if (!k) { const y0 = Z.h[0][i] ? topY(0, i) - R8 : base; c.strokeStyle = '#1f4fb5'; c.lineWidth = 2; c.beginPath(); c.moveTo(x, y0); c.lineTo(x, y0 - 8); c.stroke(); }
           }
-          U.txt(c, k ? '要先聚成小島才長得起來：原子多半落下又離開' : '藍色短線＝表面原子的「空手」：抓住落下的原子', L + W / 2, base + 40, { align: 'center', size: 13.5, color: '#17202b' });
+          const net = Z.grow[k] - Z.eat[k];
+          U.txt(c, k ? '剛冒頭的小島被吃得比長得快 → 長不起來' : '長得比吃得快 → 一層一層往上長', L + W / 2, base + 30, { align: 'center', size: 14, w: 700, color: k ? '#b3261e' : '#1f7a4d' });
+          U.txt(c, `長上去 ${Z.grow[k]}　被吃掉 ${Z.eat[k]}　淨 ${net >= 0 ? '+' : ''}${net}`, L + W / 2, base + 54, { align: 'center', size: 14, color: '#17202b' });
         });
+        Z.parts.forEach(P => { const x = colX(P.k, P.i); if (P.kind === 'si') U.dot(c, x, P.y, R8, '#a9bcd0'); else { U.dot(c, x, P.y, 6, '#2f9a63'); U.dot(c, x + 7, P.y - 4, 3, '#fff'); } });
+        for (let q = Z.fx.length - 1; q >= 0; q--) {
+          const F = Z.fx[q]; F.a += dt; if (F.a > .8) { Z.fx.splice(q, 1); continue; }
+          const al = 1 - F.a / .8, y = F.y - F.a * 160;
+          c.globalAlpha = al;
+          if (F.kind === 'eat') { c.strokeStyle = '#b3261e'; c.lineWidth = 2; c.beginPath(); c.arc(F.x, F.y, R8 + F.a * 18, 0, 7); c.stroke(); U.dot(c, F.x - 5, y, R8, '#a9bcd0'); U.dot(c, F.x + 6, y - 4, 6, '#2f9a63'); }
+          else U.dot(c, F.x + F.a * 30, y, F.kind === 'off' ? R8 : 6, F.kind === 'off' ? '#a9bcd0' : '#2f9a63');
+          c.globalAlpha = 1;
+        }
+        if (Z.hold) U.tag(c, `矽上長了 ${MAXL} 層，絕緣層上還是空的 → 重來一次`, w / 4, base - MAXL * STEP - 34, { align: 'center', size: 14, color: '#1f7a4d' });
         U.txt(c, '氯化氫兩邊都吃：矽上長得比吃得快 → 淨成長；絕緣層上的小島吃得比長得快 → 長不起來', w / 2, h - 10, { align: 'center', size: 14, w: 700, color: '#1f7a4d' });
       }
     },
@@ -3892,7 +3938,7 @@ NA 可以理解成鏡頭收光的角度，也就是最後一面投影鏡張得�
 
 第一個分頁，為什麼源汲極用打的不好。鰭是站著的，要摻到側面，離子得斜著打。可是鰭又高又密，前一根鰭會擋住後面一大片，灰色三角形就是打不到的陰影區，所以左右兩側摻得不一樣。而且鰭只有幾奈米寬、奈米片只有幾奈米厚，離子撞進去會把原子排列撞亂，紅色叉叉就是損傷，事後加熱也很難完全修好。
 
-第二個分頁，換個想法：不用打的，用長的，而且只長在需要的地方，這就是選擇性磊晶。「選擇性」怎麼做到？放大來看：左邊是露出的矽表面，表面原子有「空手」，也就是還沒牽到別人的鍵，氣體帶來的矽原子一落下就被抓住，照著底下排好，馬上就長。右邊是絕緣層表面，原子要先聚成一小團、像小島，才長得起來，起步慢很多，大部分落下又離開。長的同時再混一點氯化氫這種蝕刻氣體。要注意，氯化氫不會挑地方，矽上和絕緣層上它都吃。差別在於：矽上原子一落下就接上去，長得比被吃得快，淨效果是一直長；絕緣層上剛冒頭的小島只有幾顆原子、還沒長穩，被吃得比長得快，淨效果是長不起來。工程師調整長和吃的比例，讓矽上淨成長是正的、絕緣層上是負的，選擇性就是這樣做出來的。
+第二個分頁，換個想法：不用打的，用長的，而且只長在需要的地方，這就是選擇性磊晶。「選擇性」怎麼做到？放大來看：左邊是露出的矽表面，表面原子有「空手」，也就是還沒牽到別人的鍵，氣體帶來的矽原子一落下就被抓住，照著底下排好，馬上就長。右邊是絕緣層表面，原子要先聚成一小團、像小島，才長得起來，起步慢很多，大部分落下又離開。長的同時再混一點氯化氫這種蝕刻氣體。要注意，氯化氫不會挑地方，矽上和絕緣層上它都吃。差別在於：矽上原子一落下就接上去，長得比被吃得快，淨效果是一直長；絕緣層上剛冒頭的小島只有幾顆原子、還沒長穩，被吃得比長得快，淨效果是長不起來。工程師調整長和吃的比例，讓矽上淨成長是正的、絕緣層上是負的，選擇性就是這樣做出來的。畫面上灰色是矽原子、綠色是氯化氫，兩邊同時落下。看下面的計數：矽上長上去的多、被吃掉的少，淨值一路往上，一層一層長高；絕緣層上偶爾冒出一兩顆的小島，很快就被氯化氫吃掉，淨值一直在零附近。這就是邊長邊吃。
 
 第三個分頁，邊長邊摻。長的時候，把含磷或含硼的氣體一起混進去，長出來的源汲極本身就已經摻好，不用再打。長的時間要剛好：太短接觸不好，太長會碰到隔壁的電晶體短路。材料選得好還有額外好處：pFET 用矽鍺，會把通道擠緊，讓電洞跑得更快。就像與其做好麵包再打針灌餡，不如揉麵時就把餡料包進去。
 
