@@ -1139,7 +1139,8 @@ svg .hot:hover { filter: brightness(.94); }
   /* 主區圖框 */
   U.figHTML = (id, title, right, kind) => `<div class="fig grow"><div class="fig-title"><span>${title || ''}</span><span id="${id}-r">${right || ''}</span></div><div class="fig-canvas">${kind === 'svg' ? `<svg id="${id}"></svg>` : `<canvas id="${id}"></canvas>`}</div></div>`;
 
-  U.reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // 步驟動畫是教學內容，不跟系統「減少動態效果」（Windows 關掉動畫效果時會只剩最終畫面）；換頁淡入仍由 CSS 尊重該設定
+  U.reduced = () => false;
 
   /* 畫布小工具 */
   U.rrect = (c, x, y, w, h, r) => { c.beginPath(); c.roundRect ? c.roundRect(x, y, w, h, r) : c.rect(x, y, w, h); };
