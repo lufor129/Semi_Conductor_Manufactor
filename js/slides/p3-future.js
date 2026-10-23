@@ -3,19 +3,19 @@
   const A = Deck.add.bind(Deck);
 
   A({
-    id: 'p3', part: 3, raw: true, cls: 'divider-slide', minutes: 0.5, short: '第三部分',
+    id: 'p3', part: 3, raw: true, cls: 'divider-slide', minutes: 1, short: '第三部分',
     title: '未來突破摩爾定律的關鍵：系統性解決',
     render: () => `<div class="divider-grid"><div class="divider-num"><div class="l">Part</div><div class="n">03</div></div>
-      <div class="divider-body"><div class="s-eyebrow">PART 3 · 約 44 分鐘</div><h2>未來突破摩爾定律的關鍵<br><span style="color:var(--accent-2)">系統性解決</span></h2>
+      <div class="divider-body"><div class="s-eyebrow">PART 3 · 約 70 分鐘</div><h2>未來突破摩爾定律的關鍵<br><span style="color:var(--accent-2)">系統性解決</span></h2>
       <p class="q">電晶體還在縮，但光靠縮已經不夠。接下來的進步不只靠單一顆電晶體，而是<b style="color:var(--accent-2)">從整個系統下手：把晶片組起來、換個地方送電</b>。</p>
       <div class="cards c2" style="max-width:800px">
         <button type="button" class="card go-card" data-go="pkg0"><h4>① 先進封裝 →</h4><p>把小晶片像積木一樣組起來</p></button>
         <button type="button" class="card go-card" data-go="bsx"><h4>② 背面供電 →</h4><p>把電線搬到晶片背面</p></button>
       </div><p class="gloss">加碼：上下疊的電晶體 CFET、總路線圖</p></div></div>`,
     init(el) { U.$$(el, '[data-go]').forEach(c => c.onclick = () => Deck.goId(c.dataset.go)); },
-    notes: `第二部分最後，晶圓做完，WAT 和 CP 都合格，就送去切割、封裝。以前封裝只是幫晶片穿衣服、接上腳；今天 AI 晶片的封裝本身就是另一套晶圓廠製程，台積電自己做。
+    notes: `第十章最後我們看到良率公式：晶片越大，越容易被缺陷打中。晶圓做完，WAT 放行、CP 把每一顆晶片的好壞標出來，切割後只封裝好的晶片，這就是第十章那張旅程圖的第七站。以前封裝只是幫晶片穿衣服、接上腳；今天 AI 晶片的封裝本身就是另一套晶圓廠製程，台積電自己做。
 
-第三部分大約四十五分鐘。這一部分的標題是「系統性解決」：電晶體還在縮，但光靠縮已經不夠，接下來的進步不只靠單一顆電晶體，而是從整個系統下手。兩個方向：第一，把好幾顆晶片像積木一樣組起來的先進封裝，這一章會花比較多時間；第二，換個地方送電，也就是背面供電。最後加碼看上下疊的電晶體 CFET，以及總路線圖。`
+第三部分大約七十分鐘，3DIC 三頁和光通訊兩頁深入的頁面可以略過。3DIC 指的是把晶片上下疊起來、直接接通的 3D 積體電路。這一部分的標題是「系統性解決」：電晶體還在縮，但光靠縮已經不夠，接下來的進步不只靠單一顆電晶體，而是從整個系統下手。兩個方向：第一，把好幾顆晶片像積木一樣組起來的先進封裝，這一章會花比較多時間；第二，換個地方送電，也就是背面供電。最後加碼看上下疊的電晶體 CFET，以及總路線圖。`
   });
 
   /* ===== ① 先進封裝 ===== */
@@ -25,40 +25,42 @@
   const WHY = [
     { t: '縮小變慢又變貴', h: '理由 1', d: '每一代電晶體縮小的幅度越來越小，成本卻越來越高。光靠縮小，已經不划算。' },
     { t: '一顆晶片有尺寸上限', h: '理由 2', d: '曝光機一次最多只能印約 26 × 33 mm。AI 晶片需要的電晶體更多，一顆已經做不下。' },
-    { t: '大晶片良率低', h: '理由 3', d: '良率就是一片晶圓上好晶片的比例。晶片越大，越容易被缺陷打中而報廢；拆成小晶片，壞了只丟一小塊。拖動下面的滑桿試試。' },
+    { t: '大晶片良率低', h: '理由 3', d: '第十章的公式：良率 ≈ e^(−面積 × D0)，晶片越大掉得越快。同一片晶圓、同一批缺陷，做成一整顆和拆成四顆比一比。' },
     { t: '資料搬不夠快', h: '理由 4', d: '運算晶片算得很快，記憶體卻離得遠、線又少，資料送不過來。要把它們貼得更近。' }
   ];
   A({
-    id: 'pkg0', part: 3, minutes: 3.2, short: '為什麼需要先進封裝（含良率模擬）', eyebrow: EP,
+    id: 'pkg0', part: 3, minutes: 3.7, short: '為什麼需要先進封裝（含良率模擬）', eyebrow: EP,
     title: '為什麼需要先進封裝？只靠把電晶體縮小，已經不夠了', en: 'Why Advanced Packaging',
     thesis: '過去進步靠「把電晶體縮小、塞進同一顆晶片」。現在遇到四個瓶頸，所以改成<b>做好幾顆晶片，再緊緊組成一個系統</b>。切換四個理由看看。',
     render: () => `<div class="s-body">
       <div class="col"><div class="controls">${U.seg('p0-m', WHY.map((x, i) => (i + 1) + '. ' + x.t), 0)}</div>${U.figHTML('p0-cv', '四個瓶頸（示意）', '')}</div>
       ${U.side({
         top: `<div class="card key"><h4 id="p0-h"></h4><div class="bigword" id="p0-t" style="font-size:26px"></div><p id="p0-d" style="font-size:19px;margin:0"></p></div>`,
-        extra: `<div class="card" id="p0-y" hidden><h4>良率模擬</h4><div class="controls" style="flex-direction:column;align-items:stretch;gap:6px">${U.range('p1-a', '晶片面積', 100, 800, 10, 200, ' mm²')}${U.range('p1-d', '缺陷多寡（製程成熟度）', 1, 10, 1, 3, '')}<button class="btn" id="p1-r" type="button">⟳ 換一片晶圓</button></div></div>`,
-        points: ['先進封裝：把好幾顆晶片緊緊組成一個系統', '晶片之間的連線要又短又密，像同一顆晶片', '接下來：AI 晶片實例 → 2D／2.5D／3D → HBM → 混合鍵合 → SoIC → 各家方案 → 面板與玻璃 → 光學封裝'],
+        extra: `<div class="card" id="p0-y" hidden><h4>良率模擬（單位同第十章）</h4><div class="controls" style="flex-direction:column;align-items:stretch;gap:6px">${U.range('p1-a', '晶片面積', 100, 800, 10, 200, ' mm²')}${U.range('p1-d', '缺陷密度 D0', 0.05, 1, 0.05, 0.3, '')}<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="p1-r" type="button">⟳ 換一片晶圓</button><button class="btn" type="button" data-go="yield">← 回顧：良率公式</button></div></div></div>`,
+        points: ['先進封裝：把好幾顆晶片緊緊組成一個系統', '晶片之間的連線要又短又密，像同一顆晶片', '接下來：AI 晶片實例 → 2D／2.5D／3D → 2.5D：各家方案、面板與玻璃 → 3D：HBM、混合鍵合、SoIC、散熱、設計與測試 → 光學封裝'],
         analogy: { icon: 'lego', t: '比喻', p: '一個人搬不動大冰箱，就找幾個人一起抬；關鍵是大家要貼得夠近、配合得好。' }
       })}</div>`,
     init(el, ctx) {
       const { c, w, h } = U.canvas(U.$(el, '#p0-cv'));
       let m = 0, p = 0;
-      // 理由 3 的良率模擬（缺陷密度：dl＝3 約每平方公分 0.12 個，dl＝10 約 0.4 個）
-      let A0 = 200, defects = [], dl = 3;
-      const reroll = () => { defects = []; const n = Math.round(Math.PI * 150 * 150 * 0.0004 * dl); while (defects.length < n) { const x = U.rand(-150, 150), y = U.rand(-150, 150); if (x * x + y * y < 148 * 148) defects.push([x, y]); } };
+      // 理由 3 的良率模擬：和第十章 yield 同一套單位（晶圓座標單位 mm；D0＝每平方公分幾個致命缺陷）
+      let A0 = 200, defects = [], D0 = 0.3;
+      const reroll = () => { defects = []; const n = Math.round(Math.PI * 148 * 148 / 100 * D0); while (defects.length < n) { const x = U.rand(-150, 150), y = U.rand(-150, 150); if (x * x + y * y < 148 * 148) defects.push([x, y]); } };
       reroll();
       U.$(el, '#p1-r').onclick = reroll;
-      U.bind(el, 'p1-a', v => A0 = v, v => v + ' mm²');
-      U.bind(el, 'p1-d', v => { dl = v; reroll(); }, v => v < 4 ? '少（成熟）' : v > 7 ? '多（剛量產）' : '中');
+      U.$$(el, '[data-go]').forEach(b => b.onclick = () => Deck.goId(b.dataset.go));
+      U.bind(el, 'p1-a', v => A0 = v, v => `${v} mm²（${+(v / 100).toFixed(1)} cm²）`);
+      U.bind(el, 'p1-d', v => { D0 = v; reroll(); }, v => `${v.toFixed(2)} 個／cm²（${v <= 0.1 ? '成熟量產' : v >= 0.8 ? '研發初期' : '良率爬坡中'}）`);
       const wafer = (cx, cy, R, side) => {
-        const k = R / 150, n = Math.ceil(150 / side) + 1;
+        const k = R / 150, n = Math.ceil(150 / side) + 1, hit = new Set();
+        defects.forEach(([x, y]) => hit.add(Math.floor(x / side) + ',' + Math.floor(y / side)));
         let good = 0, tot = 0;
         c.fillStyle = '#e8edf3'; c.beginPath(); c.arc(cx, cy, R, 0, 7); c.fill(); c.strokeStyle = '#9aa8b8'; c.lineWidth = 1.5; c.stroke();
         for (let i = -n; i < n; i++) for (let j = -n; j < n; j++) {
           const x0 = i * side, y0 = j * side, x1 = x0 + side, y1 = y0 + side;
           if (![[x0, y0], [x1, y0], [x0, y1], [x1, y1]].every(([x, y]) => x * x + y * y < 147 * 147)) continue;
           tot++;
-          const bad = defects.some(([x, y]) => x >= x0 && x < x1 && y >= y0 && y < y1);
+          const bad = hit.has(i + ',' + j);
           if (!bad) good++;
           c.fillStyle = bad ? '#f3c1bd' : '#bfe3cc'; c.fillRect(cx + x0 * k + 0.5, cy + y0 * k + 0.5, side * k - 1, side * k - 1);
         }
@@ -72,7 +74,7 @@
         c.clearRect(0, 0, w, h);
         if (m === 0) {
           // 每一代「同樣的錢能買到的電晶體」增加幅度：早期很多，後來幾乎持平（示意）
-          const G = [['28nm', 1], ['16nm', 1.5], ['7nm', 2.2], ['5nm', 2.5], ['3nm', 2.65], ['2nm', 2.72]];
+          const G = [['28nm', 1], ['16nm', 1.5], ['7nm', 2.2], ['5nm', 2.3], ['3nm', 2.34], ['2nm', 2.36]];
           const L = 70, R = w - 40, B = h - 60, T = 60, bw = (R - L) / G.length;
           c.strokeStyle = '#9aa8b8'; c.beginPath(); c.moveTo(L, T - 20); c.lineTo(L, B); c.lineTo(R, B); c.stroke();
           U.txt(c, '同樣花一塊錢，買得到的電晶體（示意）', L, T - 30, { size: 14, color: '#6a7888' });
@@ -98,14 +100,19 @@
           }
         } else if (m === 2) {
           // 良率模擬：同一片晶圓、同一批缺陷，做成一整顆大晶片 vs 拆成 4 顆小晶片
-          const R = Math.min(w / 4 - 16, (h - 100) / 2), cy = 44 + R;
+          const R = Math.min(w / 4 - 16, (h - 190) / 2), cy = 44 + R, ya = cy + R + 28;
           const big = wafer(w / 4, cy, R, Math.sqrt(A0)), sm = wafer(w * 3 / 4, cy, R, Math.sqrt(A0 / 4));
-          const fb = big.tot ? big.good / big.tot : 0, fs = sm.tot ? sm.good / sm.tot : 0;
-          U.txt(c, `一整顆 ${A0} mm²`, w / 4, 24, { align: 'center', size: 17, w: 700 });
-          U.txt(c, `拆成 4 顆，每顆 ${Math.round(A0 / 4)} mm²`, w * 3 / 4, 24, { align: 'center', size: 17, w: 700 });
-          U.txt(c, `能用 ${Math.round(fb * 100)}%（${big.good} / ${big.tot} 顆）`, w / 4, cy + R + 28, { align: 'center', size: 18, w: 700, color: fb < 0.5 ? '#b3261e' : '#1f7a4d' });
-          U.txt(c, `能用 ${Math.round(fs * 100)}%（${sm.good} / ${sm.tot} 顆）`, w * 3 / 4, cy + R + 28, { align: 'center', size: 18, w: 700, color: fs < 0.5 ? '#b3261e' : '#1f7a4d' });
-          U.txt(c, '綠：好晶片　紅：被缺陷打中', w / 2, h - 8, { align: 'center', size: 14, color: '#6a7888' });
+          const fb = big.tot ? big.good / big.tot : 0, fs = sm.tot ? sm.good / sm.tot : 0, cm = A0 / 100, f = v => +v.toFixed(2);
+          U.txt(c, `一整顆 ${A0} mm²（${f(cm)} cm²）`, w / 4, 24, { align: 'center', size: 17, w: 700 });
+          U.txt(c, `拆成 4 顆，每顆 ${Math.round(A0 / 4)} mm²（${f(cm / 4)} cm²）`, w * 3 / 4, 24, { align: 'center', size: 17, w: 700 });
+          [[w / 4, big, fb, cm], [w * 3 / 4, sm, fs, cm / 4]].forEach(([x, r, fr, a]) => {
+            U.txt(c, `模擬：能用 ${Math.round(fr * 100)}%（${r.good} / ${r.tot} 顆）`, x, ya, { align: 'center', size: 18, w: 700, color: fr < 0.5 ? '#b3261e' : '#1f7a4d' });
+            U.txt(c, `公式：e^(−${f(a)} × ${f(D0)}) ≈ ${Math.round(Math.exp(-a * D0) * 100)}%`, x, ya + 26, { align: 'center', size: 15, color: '#3e4b5b' });
+          });
+          U.txt(c, `一顆就是一套：${big.good} 套完整產品`, w / 4, ya + 56, { align: 'center', size: 17, w: 700, color: '#17202b' });
+          U.txt(c, `可湊成 ⌊${sm.good} ÷ 4⌋ ＝ ${Math.floor(sm.good / 4)} 套完整產品`, w * 3 / 4, ya + 56, { align: 'center', size: 17, w: 700, color: '#1f4fb5' });
+          U.txt(c, '前提：每顆先經 CP 測過，只組好的（Known Good Die）', w * 3 / 4, ya + 80, { align: 'center', size: 15, color: '#1f4fb5' });
+          U.txt(c, '綠：好晶片　紅：被缺陷打中', w / 4, ya + 80, { align: 'center', size: 15, color: '#6a7888' });
         } else {
           // 記憶體牆：遠而細 vs 近而寬
           const y1 = h * 0.3, y2 = h * 0.72;
@@ -125,11 +132,13 @@
 
 過去幾十年，晶片進步的方法很單純：把電晶體縮小，同一顆晶片就能塞更多、跑更快、更便宜。但現在遇到四個瓶頸。
 
-第一，縮小變慢又變貴。早期每換一代，同樣的錢能買到的電晶體多很多；從 28 奈米之後降幅就明顯變小，到 5 奈米之後幾乎沒有變便宜，光靠縮小已經不划算。
+第一，縮小變慢又變貴。到 7 奈米之前，每換一代，同樣的錢能買到的電晶體都還多不少；5 奈米之後幾乎沒有變便宜，光靠縮小已經不划算。
 
 第二，一顆晶片有尺寸上限。曝光機一次最多只能印大約 26 乘 33 毫米，AI 晶片需要的電晶體太多，一顆已經做不下，只能拆成好幾顆。
 
-第三，大晶片良率低。良率就是一片晶圓上能用的晶片比例。切到第三個理由，右邊會出現兩個滑桿。紅點代表隨機落下的缺陷，可能是一顆微塵或一個印壞的圖案，打中一顆晶片，那顆就壞了。左右是同一片晶圓、同一批缺陷：左邊做成一整顆大晶片，右邊拆成四顆小晶片。把晶片面積拉大，大晶片越來越容易被打中，六百平方毫米時能用的只剩一半左右；拆成小的，壞掉的只丟一小塊。再把缺陷多寡拉高，模擬新製程剛量產：大晶片的良率會掉到很低。所以新製程通常先用在小的手機晶片，等良率成熟才用在大型 AI 晶片。
+第三，大晶片良率低。還記得第十章最後的良率公式嗎？良率大約是 e 的負「晶片面積乘缺陷密度 D0」次方，面積越大掉得越快。切到第三個理由，右邊兩個滑桿的單位和第十章一樣：面積，和每平方公分幾個缺陷。紅點是隨機落下的缺陷，打中一顆晶片，那顆就壞了。左右是同一片晶圓、同一批缺陷：左邊做成一整顆大晶片，右邊拆成四顆小晶片；每一邊都有模擬結果，和公式算出來的值可以對照。把面積拉到 800 平方毫米，也就是 8 平方公分，D0 拉到 1，研發初期的水準，大晶片幾乎全滅，和第十章一樣；D0 壓到 0.1 以下的成熟量產，大晶片才救得回來。所以新製程通常先做小的手機晶片，等 D0 壓下來才做大型 AI 晶片。
+
+拆成小晶片有個前提：每顆小晶片組裝前都要先經過 CP 測試，確認是好的才組，這叫 Known Good Die，簡稱 KGD。最下面那行就是把好的小晶片每四顆湊成一套。如果不先測就組，四顆都要好，整套的良率就和一整顆大晶片差不多。拆開也有代價：晶片之間要多做介面、多佔面積，組裝本身也有良率損失。
 
 第四，資料搬不夠快。運算晶片算得很快，但記憶體放在電路板上，離得遠、線又少，資料送不過來，這叫記憶體牆。把記憶體貼到運算晶片旁邊，路變短、線變多，才餵得飽。
 
@@ -140,7 +149,7 @@
   const PITCH = [
     { t: '2D：傳統覆晶', p: 130, d: '一顆晶片翻過來，用錫球直接焊在封裝基板上。', use: '家電、一般晶片：便宜、成熟；高階手機晶片改用台積電 InFO 扇出型封裝' },
     { t: '2.5D：並排在中介層上', p: 40, d: '好幾顆晶片並排放在一片「矽中介層」上，中間用很密的線互連。台積電 CoWoS 屬於這種。', use: 'AI 晶片＋HBM 記憶體並排' },
-    { t: '3D：微凸塊堆疊', p: 30, d: '晶片直接上下疊，中間用更小的微凸塊連接（間距約 30–50 µm）。', use: 'HBM 記憶體本身（12 層疊起來）' },
+    { t: '3D：微凸塊堆疊', p: 30, d: '晶片直接上下疊，中間用更小的微凸塊連接（量產多在約 25–50 µm，再小就很難；這裡以 30 µm 畫）。', use: 'HBM 記憶體本身（12 層疊起來）' },
     { t: '3D：混合鍵合（SoIC）', p: 9, d: '不用微凸塊，銅對銅直接接合，間距小到幾微米。台積電 SoIC 屬於這種。', use: '晶片直接疊晶片（台積電 SoIC，後面專頁細講）' }
   ];
   // 為什麼中介層要用曝光機：線寬比一比＋晶圓廠做法
@@ -206,7 +215,7 @@
     }
   }
   A({
-    id: 'pkg2', part: 3, minutes: 2.2, short: '2D、2.5D、3D 封裝', eyebrow: EP,
+    id: 'pkg2', part: 3, minutes: 2.3, short: '2D、2.5D、3D 封裝', eyebrow: EP,
     title: '拆開的元件怎麼接起來？2D、2.5D、3D 各有用途', en: '2D · 2.5D · 3D',
     thesis: '上一頁拆開的元件，要靠<b>接點</b>接起來。依序切換 2D、2.5D、3D、3D SoIC：它們不是一代換一代，而是<b>今天同時都在用</b>；右邊比的是<b>同樣一小塊面積裡能放幾個接點</b>。',
     render: () => `<div class="s-body w66">
@@ -249,9 +258,9 @@
 
 2.5D 是把好幾顆晶片並排放在一片矽中介層上。中介層用晶圓廠的製程做，裡面的線非常密，微凸塊間距大約 40 微米，接點密度是傳統的十倍。台積電的 CoWoS 就是這一種，AI 晶片和旁邊的 HBM 記憶體就是這樣並排接在一起的。
 
-3D 是晶片直接上下疊。用微凸塊的話間距大約 30 到 50 微米，HBM 記憶體本身十幾層就是這樣疊起來的。更先進的是混合鍵合：不用微凸塊、銅對銅直接接，間距小到 9 微米甚至更小，每平方毫米超過一萬個接點。台積電的 SoIC 屬於這種，後面有一頁專門講。
+3D 是晶片直接上下疊。用微凸塊的話，間距量產多在約 25 到 50 微米，再小就很難，HBM 記憶體本身十幾層就是這樣疊起來的。更先進的是混合鍵合：不用微凸塊、銅對銅直接接，間距小到 9 微米甚至更小，每平方毫米超過一萬個接點。台積電的 SoIC 屬於這種，後面有一頁專門講。
 
-接點越密，晶片之間能傳越多資料，但也越貴。一顆高階晶片常常同時用上好幾種：例如 AI 晶片用 2.5D 並排，旁邊的 HBM 本身又是 3D 堆疊。`
+接點越密，晶片之間能傳越多資料，但也越貴。一顆高階晶片常常同時用上好幾種：例如 AI 晶片用 2.5D 並排，旁邊的 HBM 本身又是 3D 堆疊。接下來先看 2.5D：各家怎麼把晶片並排放在中介層上；再看 3D：怎麼疊起來。`
   });
 
   /* 9. 先進封裝 */
@@ -268,12 +277,12 @@
     { n: '運算晶片', ana: '主廚：真正在做菜的人，手要快，但一直需要有人遞食材。', idx: [3], h: 'GPU／AI 運算晶片', what: '真正做計算的地方：上千個核心同時算大量的矩陣乘法。', num: '用台積電 4／3 奈米級製程；一顆接近曝光機一次能印的最大面積（約 800 mm²），裡面有近千億到上千億個電晶體。', who: '設計：NVIDIA、AMD、Google 等；製造：台積電', go: ['pkg0', '為什麼要拆成小晶片'] },
     { n: 'HBM 記憶體', ana: '主廚手邊的冰箱：食材就放在旁邊，一伸手就拿到；冰箱疊高，放得多又不佔地。', idx: [2, 5], h: 'HBM 高頻寬記憶體', what: '存放模型參數和資料，緊貼在旁邊隨時餵給運算晶片。', num: '8–12 層記憶體晶片疊成一疊，用矽穿孔上下接通；每疊 1,024 條資料線、每秒約 1.2 TB（HBM3E）。一顆 AI 晶片旁邊常放 6–8 疊。', who: 'SK 海力士、三星、美光', go: ['pkg4', 'HBM 詳解'] },
     { n: '疊上的晶片', ana: '主廚頭頂的層架：抬手就拿到，比旁邊的冰箱還近。', idx: [4], h: '疊上的晶片（部分產品才有）', what: '把晶片直接上下疊，例如運算晶片疊在 I/O 晶片上，上下只隔幾微米。', num: '用 SoIC 混合鍵合，接點間距 9 µm 以下，每 mm² 上萬個接點。不是每顆 AI 晶片都有，例如 AMD MI300 有。', who: '台積電 SoIC；例：AMD MI300', go: ['soic', 'SoIC 詳解'] },
-    { n: '矽中介層', ana: '廚房的工作檯：主廚和冰箱都放在上面，中間鋪了上萬條輸送帶，食材隨時送過去。', idx: [1], h: '矽中介層', what: '一片超密的「接線板」：讓運算晶片和 HBM 之間有上萬條又短又密的線。', num: '用矽做，線路用晶圓廠的製程做出來，比一般電路板密上百倍；整片矽的 CoWoS-S 最大約光罩面積的 3.3 倍，更大的改用 CoWoS-L。', who: '台積電 CoWoS', go: ['cowcmp', '各家方案比較'] },
+    { n: '矽中介層', ana: '廚房的工作檯：主廚和冰箱都放在上面，中間鋪了上萬條輸送帶，食材隨時送過去。', idx: [1], h: '矽中介層', what: '一片超密的「接線板」：讓運算晶片和 HBM 之間有上萬條又短又密的線。', num: '用矽做，線路用晶圓廠的製程做出來，比一般電路板密上百倍；整片矽的 CoWoS-S 最大約光罩面積的 3.3 倍，更大的改用 CoWoS-L。', who: '台積電 CoWoS（Chip on Wafer on Substrate：晶片 → 晶圓做的中介層 → 基板）', go: ['cowcmp', '各家方案比較'] },
     { n: '凸塊', ana: '每一層之間的門和插座：越往廚房裡面，門越小、越密，東西才送得又多又快。', idx: 'bump', h: '凸塊（橘點）：層與層之間的焊點', what: '負責通電和傳訊號。越往上越小、越密。', num: '晶片底下最小、最密，越往下越大：晶片 ↔ 中介層是微凸塊，中介層 ↔ 封裝基板是 C4 凸塊，最底下接主機板的是錫球。各種接法有多密，下一頁比一比。', who: '晶圓廠與封測廠', go: ['pkg2', '2D、2.5D、3D 接法'] },
     { n: '封裝基板', ana: '餐廳的後門和送貨口：把外面大街（主機板）來的食材和電，轉進廚房裡。', idx: [0], h: '封裝基板', what: '把中介層上的細線轉成粗一點的接腳，接到主機板；也負責把電送進來。', num: '玻纖樹脂做的多層板，上下用 ABF 增層做線路，十幾層。尺寸越做越大、加熱容易翹，所以正在研發玻璃基板。', who: 'Ibiden、欣興、南電、景碩（ABF 載板）', go: ['glass', '玻璃基板'] }
   ];
   A({
-    id: 'pkg', part: 3, minutes: 3, short: 'AI 晶片封裝拆解', eyebrow: EP,
+    id: 'pkg', part: 3, minutes: 4, short: 'AI 晶片封裝拆解', eyebrow: EP,
     title: '拆開一顆 AI 晶片：運算晶片、記憶體、中介層組成一個系統', en: 'CoWoS · HBM · SoIC',
     thesis: '一顆大晶片做不好、太貴，就拆成幾顆小晶片分別做，再<b>緊密組裝成一個系統</b>。拖動滑桿把封裝拆開，再<b>點選每一個元件</b>，看它做什麼、多大、誰做。',
     render: () => `<div class="s-body">
@@ -337,7 +346,7 @@
 
 第三個，疊上的晶片，像主廚頭頂的層架，抬手就拿到：部分產品會把晶片直接上下疊，例如 AMD MI300 把運算晶片疊在 I/O 晶片上，用的是 SoIC 混合鍵合。這不是每顆 AI 晶片都有。
 
-第四個，矽中介層，就是廚房的工作檯：主廚和冰箱都放在上面，中間鋪了上萬條輸送帶。它是一片超密的接線板，用晶圓廠的製程在矽上做線路，比一般電路板密上百倍，讓運算晶片和 HBM 之間有上萬條又短又密的線。這就是台積電 CoWoS 的核心。
+第四個，矽中介層，就是廚房的工作檯：主廚和冰箱都放在上面，中間鋪了上萬條輸送帶。它是一片超密的接線板，用晶圓廠的製程在矽上做線路，比一般電路板密上百倍，讓運算晶片和 HBM 之間有上萬條又短又密的線。這就是台積電 CoWoS 的核心。CoWoS 是 Chip on Wafer on Substrate 的縮寫：晶片放在用晶圓做的中介層上，再一起放到封裝基板上。
 
 第五個，凸塊，就是圖上的橘點，像各層之間的門和插座：層和層之間的焊點，負責通電和傳訊號。越往上越小、越密：晶片和中介層之間是微凸塊，中介層和封裝基板之間是 C4 凸塊，封裝基板和主機板之間是錫球。各種接法到底有多密，下一頁來比。
 
@@ -387,7 +396,7 @@
         holes.forEach(x => U.box(c, 'cu', x - 3, yy, 6, dh, { stroke: false }));
         c.globalAlpha = 1; y = yy;
       }
-      U.tag(c, '灰色＝微凸塊（銅柱頂端帶一點錫），間距約 40 µm；中間淡黃＝填膠', w / 2, 44, { align: 'center', size: 13 });
+      U.tag(c, '灰色＝微凸塊（銅柱頂端帶一點錫），間距約 25–50 µm；中間淡黃＝填膠', w / 2, 44, { align: 'center', size: 13 });
       if (p > 0.9) U.tag(c, '問題：微凸塊要空間、還要填膠，能不能直接接？→ 下一頁', w / 2, 66, { align: 'center', size: 13, color: '#b3541e' });
     }
   }
@@ -481,7 +490,7 @@
   }
   const HBM_CAPCARD = `<div class="card"><h4>記憶體有多大</h4><div class="bigword" id="p4-cap" style="font-size:24px"></div><p id="p4-capd" style="font-size:15.5px;margin:2px 0 0"></p></div>`;
   A({
-    id: 'pkg4', part: 3, minutes: 2.5, short: 'HBM：記憶體疊高、貼近', eyebrow: EP,
+    id: 'pkg4', part: 3, minutes: 2, short: 'HBM：記憶體疊高、貼近', eyebrow: EP,
     title: 'HBM：把記憶體疊高，緊貼在運算晶片旁邊', en: 'High Bandwidth Memory',
     thesis: 'AI 晶片常常不是算不夠快，而是<b>資料搬不夠快</b>。切換看看：HBM 靠「疊高＋貼近＋線超多」，每秒能搬的資料多十倍左右。',
     render: () => `<div class="s-body">
@@ -494,7 +503,7 @@
         analogy: { icon: 'road', t: '比喻', p: '接續廚房：一般記憶體像放在隔壁街的倉庫，只有一條小路；HBM 是把冰箱疊高、放在工作檯旁，開上千扇小門。' }
       })}</div>`,
     init: hbmInit([0, 1]),
-    notes: `回到這一章第一頁的第四個理由：資料搬不夠快。前面拆 AI 晶片時看到 GPU 旁邊圍著 HBM，就是廚房比喻裡的冰箱，這一頁看它為什麼搬得快。
+    notes: `接下來是 3D：把晶片疊起來。回到這一章第一頁的第四個理由：資料搬不夠快。前面拆 AI 晶片時看到 GPU 旁邊圍著 HBM，就是廚房比喻裡的冰箱，這一頁看它為什麼搬得快。
 
 先看一般顯示卡的記憶體：記憶體晶片放在電路板上，離 GPU 有好幾公分，每顆只有 32 條資料線，每秒大約只能搬 0.1 TB 多一點。就像食材放在隔壁街的倉庫，只有一條小路。
 
@@ -505,7 +514,7 @@
 那 12 層晶片，上下到底怎麼相通？下一頁放大看。`
   });
   A({
-    id: 'pkg4b', part: 3, minutes: 2.8, short: 'HBM：矽穿孔與 HBM4', eyebrow: EP,
+    id: 'pkg4b', part: 3, minutes: 3.4, short: 'HBM：矽穿孔與 HBM4', eyebrow: EP,
     title: 'HBM 怎麼疊：矽穿孔，以及 HBM4 底層交給邏輯製程', en: 'TSV & HBM4',
     thesis: '每一片記憶體晶片都有上千個<b>矽穿孔</b>：在晶圓廠做晶片的中途蝕刻出細孔、灌銅，最後磨薄才穿透。到了 <b>HBM4</b>，資料線加倍，最底下那顆晶片改用<b>邏輯製程</b>，這正是台積電的強項。',
     render: () => `<div class="s-body">
@@ -527,7 +536,7 @@
 
 切到「HBM4 有什麼不同」，左邊是目前主流的 HBM3E，右邊是 2026 年開始量產的 HBM4。最重要的一點，和台積電直接相關：最底下那顆「底層邏輯晶片」。以前它由記憶體廠用自家的 DRAM 製程做；到了 HBM4，資料線從 1,024 條加倍到 2,048 條，所以改用做邏輯晶片的製程。據報導，SK 海力士交給台積電做，三星用自家晶圓代工的 4 奈米；美光這一代仍用自家製程，預計下一代 HBM4E 跟進。容量方面，量產初期每疊 36 GB，16 層 48 GB 已經展示，規格上限是 64 GB。記憶體廠和晶圓代工廠，從這一代開始變成合作夥伴。
 
-最後注意第五步：微凸塊要佔空間、中間還要填膠，間距大約 40 微米，很難再縮。能不能不用微凸塊，直接接？這就是下一頁的混合鍵合。`
+最後注意第五步：微凸塊要佔空間、中間還要填膠，間距量產多在約 25 到 50 微米，再小就很難。能不能不用微凸塊，直接接？這就是下一頁的混合鍵合。`
   });
 
   /* 封裝 5：混合鍵合 */
@@ -557,10 +566,10 @@
     if (i === 2) { U.arrow(c, R + 16, topB - 60, R + 16, topB - 20, '#1f4fb5', 3); }
     const lab = ['舊方法：用微凸塊（銅柱＋一點錫）焊起來，中間留縫再填膠（灰色）', '① 兩面都用 CMP 磨到幾乎原子級平整，銅墊微微凹下', '② 精準對齊、室溫壓合：氧化層一碰到就黏住', '③ 加熱：銅膨脹，把縫補滿，銅對銅接成一整塊'][i];
     U.txt(c, lab, w / 2, 22, { align: 'center', size: 17, w: 700, color: i === 0 ? '#6a7888' : '#17202b' });
-    U.tag(c, i === 0 ? '接點間距約 40 µm' : '接點間距約 9 µm 以下', R - 6, h - 12, { align: 'right', size: 14, color: '#b3541e' });
+    U.tag(c, i === 0 ? '接點間距約 40 µm' : '接點間距約 9 µm 以下', R - 6, h - 36, { align: 'right', size: 14, color: '#b3541e' });
   }
   const HB_TABS = [
-    { h: '為什麼要換？', p: '微凸塊是頂端帶一點錫的小銅柱：球要空間、中間還要填膠，間距很難小於約 40 微米。混合鍵合把銅墊直接埋在表面，間距 9 微米以下，接點多約 20 倍，兩顆晶片中間幾乎沒有縫。' },
+    { h: '為什麼要換？', p: '微凸塊是頂端帶一點錫的小銅柱：球要空間、中間還要填膠，間距量產多在約 25–50 微米，再小就很難。混合鍵合把銅墊直接埋在表面，間距 9 微米以下，和 40 微米比，接點多約 20 倍，兩顆晶片中間幾乎沒有縫。' },
     { h: '怎麼做？每一步都難', p: '' },
     { h: '一粒灰塵有多致命？', p: '灰塵把兩片撐開，周圍一大圈都貼不上。一粒約 1 微米的灰塵，就可能撐出直徑好幾毫米的空洞，裡面的接點全部失效。所以要在極乾淨的環境裡做。' }
   ];
@@ -605,7 +614,7 @@
     U.txt(c, '黑點＝灰塵（放大畫）　紅圈＝被撐開、貼不上的空洞', L + W, T + H + 30, { align: 'right', size: 13, color: '#3e4b5b' });
   }
   A({
-    id: 'pkg3', part: 3, minutes: 3, short: '混合鍵合：銅對銅直接接', eyebrow: EP,
+    id: 'pkg3', part: 3, minutes: 3.1, short: '混合鍵合：銅對銅直接接', eyebrow: EP,
     title: '混合鍵合：不用微凸塊，銅對銅直接接起來', en: 'Hybrid Bonding',
     thesis: '上一頁留的問題：不用微凸塊，能不能直接接？可以，叫<b>混合鍵合</b>：把兩片表面磨到幾乎原子級平整，直接壓在一起。同一個面上有兩種接合：<b>絕緣層黏絕緣層、銅接銅</b>，所以叫「混合」。',
     render: () => `<div class="s-body w66">
@@ -638,7 +647,7 @@
     },
     notes: `上一頁留的問題：不用微凸塊，能不能直接接？可以，叫混合鍵合。按照三個分頁的順序講。
 
-第一個分頁，和微凸塊比一比。左邊是微凸塊：上下之間留著幾十微米的縫，要填膠，接點間距大約 40 微米。右邊是混合鍵合：銅墊直接埋在兩片晶片的表面，兩片直接貼在一起，中間幾乎沒有縫，間距 9 微米以下。下面的長條是每平方毫米的接點數，大約多了 20 倍。接點越多、距離越短，傳資料就越快、越省電。
+第一個分頁，和微凸塊比一比。左邊是微凸塊：上下之間留著幾十微米的縫，要填膠，接點間距量產多在 25 到 50 微米，這裡用 40 微米畫。右邊是混合鍵合：銅墊直接埋在兩片晶片的表面，兩片直接貼在一起，中間幾乎沒有縫，間距 9 微米以下。下面的長條是每平方毫米的接點數，大約多了 20 倍。接點越多、距離越短，傳資料就越快、越省電。
 
 第二個分頁，怎麼做，按下一步。第一步磨平：用第二部分的 CMP，把兩片表面磨到高低差小於大約 1 奈米，銅墊還要刻意凹下幾奈米。第二步對準、壓合：在室溫下壓在一起，兩片的絕緣層一碰到就靠化學鍵黏住，這是第一種接合；難在表面要極度乾淨，上下銅墊也要對準到幾百奈米以內。第三步加熱：銅受熱膨脹，把原本凹下去的縫補滿，上下的銅就接成一整塊，這是第二種接合。同一個面上同時有「絕緣層黏絕緣層」和「銅接銅」兩種接合，所以叫混合鍵合。加熱的溫度又不能高到傷害下面的電晶體。
 
@@ -677,12 +686,13 @@
   }
   /* 封裝 6：玻璃基板與面板級封裝 */
   A({
-    id: 'glass', part: 3, minutes: 2.5, short: '玻璃基板與面板級封裝', eyebrow: EP, badge: '新技術',
+    id: 'glass', part: 3, minutes: 3.6, short: '玻璃基板與面板級封裝', eyebrow: EP, badge: '新技術',
     title: '封裝越做越大：改用方形面板和玻璃基板', en: 'Panel-Level Packaging · Glass Substrate',
-    thesis: 'AI 晶片的封裝已經大到接近手掌。圓形晶圓切大方塊很浪費，所以改用<b>方形面板</b>；傳統有機（樹脂）基板一加熱就翹，所以改用<b>玻璃</b>。',
+    thesis: 'AI 晶片的封裝已經大到接近手掌。圓形晶圓切大方塊很浪費，所以改用<b>方形面板</b>；材料熱脹冷縮不一樣，大基板一加熱就<b>翹</b>，所以改用<b>玻璃</b>。',
     render: () => `<div class="s-body">
-      <div class="col"><div class="controls">${U.seg('gl-m', ['① 在封裝的哪一層？', '② 圓形晶圓 vs 方形面板', '③ 有機基板 vs 玻璃基板'], 0)}</div>${U.figHTML('gl-cv', '左：12 吋圓形晶圓　右：31 × 31 cm 方形面板（上視）', '')}
-        <div class="controls" id="gl-c">${U.range('gl-s', '中介層大小（邊長）', 40, 110, 5, 50, ' mm')}</div></div>
+      <div class="col"><div class="controls">${U.seg('gl-m', ['① 在封裝的哪一層？', '② 圓形晶圓 vs 方形面板', '③ 為什麼會翹？', '④ 有機基板 vs 玻璃基板'], 0)}</div>${U.figHTML('gl-cv', '左：12 吋圓形晶圓　右：31 × 31 cm 方形面板（上視）', '')}
+        <div class="controls" id="gl-c">${U.range('gl-s', '中介層大小（邊長）', 40, 110, 5, 50, ' mm')}</div>
+        <div class="controls" id="gl-c2" hidden>${U.range('gl-t', '溫度', 25, 260, 5, 25, '°C')}</div></div>
       ${U.side({
         top: `<div class="card newcard"><h4>新技術：解決什麼問題？</h4><p>AI 晶片的中介層越做越大，圓形晶圓邊緣切不出完整的方塊，浪費很多；大尺寸的有機基板加熱時會翹曲，細線路也做不上去。</p><h4>誰在做？</h4><p>台積電 CoPoS（方形面板版 CoWoS）據報導 2026 年試產線啟動，約 2028–2029 年量產；Intel、SKC 等研發玻璃基板，約 2030 年前後導入，時程一再延後。</p></div>`,
         points: ['方形面板：大方塊排得滿，浪費少', '玻璃：很平、受熱不易翹，可以做更細的線路', '難題：玻璃易碎、整條產線要重新建立'],
@@ -690,8 +700,9 @@
       })}</div>`,
     init(el, ctx) {
       const { c, w, h } = U.canvas(U.$(el, '#gl-cv'));
-      let m = 0, S = 50, p = 0;
-      U.onSeg(el, 'gl-m', i => { m = i; p = U.reduced() ? 1 : 0; U.$(el, '#gl-c').style.visibility = i === 1 ? '' : 'hidden'; const ft = U.$(el, '#gl-cv').closest('.fig').querySelector('.fig-title span'); if (ft) ft.textContent = ['AI 晶片封裝的剖面（示意）：兩個新技術改的是不同層', '中介層：左 12 吋圓形晶圓　右 31 × 31 cm 方形面板（上視）', '封裝基板加熱時的變形（側面，示意）'][i]; });
+      let m = 0, S = 50, p = 0, T = 25;
+      U.bind(el, 'gl-t', v => { T = v; }, v => v + '°C');
+      U.onSeg(el, 'gl-m', i => { m = i; p = U.reduced() ? 1 : 0; U.$(el, '#gl-c').style.visibility = i === 1 ? '' : 'hidden'; U.$(el, '#gl-c').hidden = i === 2; U.$(el, '#gl-c2').hidden = i !== 2; const ft = U.$(el, '#gl-cv').closest('.fig').querySelector('.fig-title span'); if (ft) ft.textContent = ['AI 晶片封裝的剖面（示意）：兩個新技術改的是不同層', '中介層：左 12 吋圓形晶圓　右 31 × 31 cm 方形面板（上視）', '一整疊材料加熱時（剖面，翹曲放大很多倍畫）', '封裝基板加熱時的變形（側面，示意）'][i]; });
       U.bind(el, 'gl-s', v => S = v, v => v + ' mm');
       // 在 300 mm 圓裡最多排得下幾個 S×S 方塊（試幾種網格位移取最多）
       const countCircle = s => { let best = 0; for (const ox of [0, 0.5]) for (const oy of [0, 0.5]) { let n = 0; for (let i = -8; i <= 8; i++) for (let j = -8; j <= 8; j++) { const x0 = (i + ox) * s - s / 2, y0 = (j + oy) * s - s / 2; if ([[x0, y0], [x0 + s, y0], [x0, y0 + s], [x0 + s, y0 + s]].every(([x, y]) => x * x + y * y <= 147 * 147)) n++; } if (n > best) best = n; } return best; };
@@ -721,18 +732,34 @@
           const u1 = n1 * S * S / (Math.PI * 150 * 150), u2 = n2 * S * S / (310 * 310);
           U.txt(c, `排得下 ${n1} 塊，用掉 ${Math.round(u1 * 100)}% 面積`, cx1, cy + R + 30, { align: 'center', size: 17, w: 700, color: u1 < 0.6 ? '#b3261e' : '#1f7a4d' });
           U.txt(c, `排得下 ${n2} 塊，用掉 ${Math.round(u2 * 100)}% 面積`, cx2, cy + R + 30, { align: 'center', size: 17, w: 700, color: u2 < 0.6 ? '#b3261e' : '#1f7a4d' });
+        } else if (m === 2) {
+          // 為什麼會翹：上層矽脹縮少、下層有機基板脹縮多（熱膨脹係數約 3 vs 15–17 ppm/°C）。填膠約 170°C 固化時是平的；降回室溫基板縮得多 → 拱起來；回焊時超過固化溫度 → 反向
+          const T0 = 170, bow = (T0 - T) / 145, L = 70, R = w - 220, top = h * 0.34;
+          [[top, '#a9bcd0', '矽晶片（熱膨脹約 3 ppm/°C）', 34], [top + 40, '#d9a35b', '凸塊與底部填膠', 22], [top + 70, '#8fae7a', '有機基板（約 15–17 ppm/°C）', 40]].forEach(([y, col, n, th]) => {
+            c.fillStyle = col; c.beginPath(); for (let q = 0; q <= 40; q++) { const x = L + (R - L) * q / 40, u = q / 20 - 1; c.lineTo(x, y - bow * 60 * (1 - u * u)); } for (let q = 40; q >= 0; q--) { const x = L + (R - L) * q / 40, u = q / 20 - 1; c.lineTo(x, y + th - bow * 60 * (1 - u * u)); } c.closePath(); c.fill();
+            U.tag(c, n, (L + R) / 2, y + th / 2 + 5 - bow * 60, { align: 'center', size: 13.5 });
+          });
+          const st = Math.abs(bow);
+          [L + 18, R - 18].forEach(x => { c.strokeStyle = st > 0.6 ? '#e03131' : st > 0.3 ? '#e8590c' : '#1f7a4d'; c.lineWidth = 3; c.beginPath(); c.arc(x, top + 52, 14 + st * 8, 0, 7); c.stroke(); });
+          U.tag(c, '角落的接點受力最大', L + 18, top + 140, { size: 13.5, color: '#b3261e' });
+          const rx = R + 24, warp = Math.round(Math.abs(T0 - T) * 0.6);
+          U.txt(c, '整疊翹起來', rx, top - 30, { size: 15, w: 700, color: '#17202b' });
+          U.txt(c, `約 ${warp} µm`, rx, top, { size: 26, w: 700, color: warp > 80 ? '#b3261e' : warp > 40 ? '#e8590c' : '#1f7a4d' });
+          ['翹太多：', '・角落接點裂開', '・填膠、接合面剝離', '・焊到主機板焊不平', '・開關機反覆冷熱，', '  接點慢慢疲勞'].forEach((s, k) => U.txt(c, s, rx, top + 34 + k * 24, { size: 14, w: k ? 500 : 700, color: '#3e4b5b' }));
+          U.txt(c, T > 200 ? '回焊（焊錫熔化）約 250°C：超過固化溫度，反向翹' : Math.abs(T - T0) < 25 ? '填膠約 170°C 固化：這時候是平的' : T > 90 ? '晶片運作時可到 100°C 上下' : '室溫：基板縮得比矽多，翹得最多', (L + R) / 2, h - 44, { align: 'center', size: 15, color: '#b3541e' });
+          U.txt(c, '量測也要盯：封裝後量翹曲、量所有接點是否在同一平面（共平面度）。數字為示意', (L + R) / 2, h - 16, { align: 'center', size: 14, color: '#3e4b5b' });
         } else {
           glStack(c, w - 120, 6, 100, 70, 'core', true);
           U.txt(c, '改這一層 →', w - 126, 44, { align: 'right', size: 12, w: 700, color: '#b3541e' });
           // 加熱時：樹脂基板翹曲、玻璃基板維持平整
           const e = U.ease(p), heat = 0.5 + 0.5 * Math.sin(t * 1.5);
-          [[h * 0.33, '有機（樹脂）基板：加熱就翹', 26, '#6f8f5a'], [h * 0.72, '玻璃基板：很平、不易翹', 3, '#a9d3dc']].forEach(([y, lab, amp, col]) => {
+          [[h * 0.33, '有機（樹脂）基板：加熱就翹', 26, '#6f8f5a'], [h * 0.72, '玻璃基板：熱膨脹接近矽，很平、不易翹', 3, '#a9d3dc']].forEach(([y, lab, amp, col]) => {
             const L = 60, R = w - 60, bend = amp * e * heat;
             c.fillStyle = col; c.beginPath();
-            for (let x = L; x <= R; x += 4) { const f = (x - L) / (R - L), dy = -bend * (1 - Math.pow(2 * f - 1, 2)); x === L ? c.moveTo(x, y + dy) : c.lineTo(x, y + dy); }
-            for (let x = R; x >= L; x -= 4) { const f = (x - L) / (R - L), dy = -bend * (1 - Math.pow(2 * f - 1, 2)); c.lineTo(x, y + dy + 22); }
+            for (let x = L; x <= R; x += 4) { const f = (x - L) / (R - L), dy = bend * (1 - Math.pow(2 * f - 1, 2)); x === L ? c.moveTo(x, y + dy) : c.lineTo(x, y + dy); }
+            for (let x = R; x >= L; x -= 4) { const f = (x - L) / (R - L), dy = bend * (1 - Math.pow(2 * f - 1, 2)); c.lineTo(x, y + dy + 22); }
             c.closePath(); c.fill();
-            [0.3, 0.5, 0.7].forEach(f => { const x = L + f * (R - L), dy = -bend * (1 - Math.pow(2 * f - 1, 2)); c.fillStyle = '#9fb5e3'; c.fillRect(x - 40, y + dy - 34, 80, 30); });
+            [0.3, 0.5, 0.7].forEach(f => { const x = L + f * (R - L), dy = bend * (1 - Math.pow(2 * f - 1, 2)); c.fillStyle = '#9fb5e3'; c.fillRect(x - 40, y + dy - 34, 80, 30); });
             U.txt(c, lab, w / 2, y + 56, { align: 'center', size: 17, w: 700, color: amp > 10 ? '#b3261e' : '#1f7a4d' });
           });
           U.tag(c, '封裝要經過好幾次高溫', w / 2, 24, { align: 'center', size: 15, color: '#b3541e' });
@@ -747,9 +774,13 @@ AI 晶片的封裝越做越大，已經接近一個手掌。這帶來兩個新�
 
 第一個問題：浪費。現在的中介層是從圓形的 12 吋晶圓上切出來的。切到第二個分頁，拖動滑桿把中介層變大：方塊越大，圓形晶圓邊緣切不出完整的方塊，浪費越多。右邊換成方形面板，大方塊可以整齊排滿，用到的面積比例高很多。台積電方形面板版的 CoWoS 叫 CoPoS，據報導 2026 年試產線啟動，大約 2028 到 2029 年量產。
 
-第二個問題：翹曲。切到第三個分頁。傳統的封裝基板是玻璃纖維加樹脂做的，叫有機（樹脂）基板，尺寸一大，加熱時就容易翹起來，上面的晶片和細線路就接不好。玻璃非常平、受熱不容易變形，還可以做更細的線路和穿過玻璃的導通孔。Intel、SKC 等公司都在研發玻璃基板，預計約 2030 年前後導入，時程已經一再延後。難處是玻璃易碎，整條產線都要重新建立。
+第二個問題：翹曲。切到第三個分頁，先看為什麼會翹。整個封裝是好幾種材料疊在一起：上面的矽每升高一度只脹百萬分之三左右，下面的有機基板脹百萬分之十五以上。整疊在填膠大約一百七十度固化時是平的。拖溫度滑桿：降回室溫，下面的基板縮得比上面的矽多，整疊就像雙金屬片一樣拱起來，室溫反而翹得最多；回到一百七十度附近又變平；組裝回焊大約兩百五十度，超過固化溫度，就往反方向翹。晶片每次開機、每次組裝，都要來回經歷一次。翹太多，角落的接點受力最大，會裂開；填膠和接合面會剝離；焊到主機板時也焊不平。晶片每天開機關機反覆冷熱，接點還會慢慢疲勞。所以封裝後要量翹曲、量所有接點是不是在同一平面，叫共平面度，這也是量測的工作。3D 疊起來的晶片也一樣，後面散熱那兩頁講的熱，最後都會變成這裡的應力。
 
-就像用圓形的披薩皮切方形餅乾，邊邊都浪費；改用方形的麵皮，幾乎整張都用得到。`
+切到第四個分頁，看解法之一：換基板材料。傳統的封裝基板是玻璃纖維加樹脂做的，叫有機（樹脂）基板，尺寸一大，加熱時就容易翹起來，上面的晶片和細線路就接不好。玻璃的熱膨脹係數可以調到很接近矽，所以和晶片一起受熱時幾乎不會互相拉扯，非常平、不容易變形，還可以做更細的線路和穿過玻璃的導通孔。Intel、SKC 等公司都在研發玻璃基板，預計約 2030 年前後導入，時程已經一再延後。難處是玻璃易碎，整條產線都要重新建立。
+
+就像用圓形的披薩皮切方形餅乾，邊邊都浪費；改用方形的麵皮，幾乎整張都用得到。
+
+2.5D 並排看到這裡。接下來換 3D：把晶片疊起來，先從最成熟的例子 HBM 記憶體開始。`
   });
 
   /* 封裝 6b：各家 2.5D 封裝方案比較：先看基本結構，再看每一種改了哪一層 */
@@ -760,17 +791,15 @@ AI 晶片的封裝越做越大，已經接近一個手掌。這帶來兩個新�
       chg: '起點：中介層是一整片矽。線只有約 0.5–1 µm，只能用晶圓廠曝光機在矽上做（切「為何用曝光機」）。', pro: '線路最密、技術最成熟。', con: '做不大：曝光一格約 26×33 mm，更大要拼接；大片矽又貴、良率掉、加熱會翹，上限約 3.3 倍光罩。' },
     { n: 'CoWoS-L', co: '台積電', kind: 'rdl', sub: 1, hl: 'mid', row: 1,
       chg: '改善方向：不用整片昂貴、易翹的矽，改用樹脂佈線層（線較粗、較不受曝光大小限制），只在晶片交界埋一小塊「矽橋」走最密的線；還能埋電容穩住供電。', pro: '可以做得很大：已量產約 5.5 倍，2028 年目標 14 倍，NVIDIA Blackwell 就是用這種。', con: '製程更複雜，矽橋要對得很準。' },
-    { n: 'SoIC＋CoWoS', co: '台積電，例如 AMD MI300', kind: 'si', sub: 1, hl: 'top', soic: 1, row: 2,
-      chg: '這次改的是最上面的晶片層：運算晶片用上一頁的 SoIC 疊在 I/O 晶片上（3D），整組再放上 CoWoS（2.5D）。', pro: '3D 和 2.5D 一起用：上下疊得最近，旁邊又能接 HBM，做得又密又大。它和前面各種方案是互補、不是競爭。', con: '疊起來更難散熱、更難測試：每顆晶片疊上去之前都要先確認是好的。' },
-    { n: 'CoPoS', co: '台積電', kind: 'rdl', sub: 1, hl: 'mid', panel: 1, row: 3,
-      chg: '和 CoWoS-L 一樣，但中介層改在方形面板上做（原本在圓形晶圓上）。', pro: '大塊中介層排得滿、浪費少、一次做得多。', con: '據報導 2026 年試產線啟動，約 2028–2029 年量產；設備要重新建立。' },
-    { n: 'CoWoP', co: '業界研發中（據報導）', kind: 'rdl', sub: 0, hl: 'sub', row: 4,
-      chg: '拿掉封裝基板，中介層直接焊在電路板上。', pro: '少一層材料，訊號路徑更短。', con: '電路板要做到和封裝基板一樣精細，還在研發中。' },
-    { n: '別家方案', co: 'Intel EMIB-T、三星 I-Cube', kind: 'emib', sub: 1, hl: 'sub', row: 5,
+    { n: 'CoPoS', co: '台積電', kind: 'rdl', sub: 1, hl: 'mid', panel: 1, row: 2,
+      chg: '名字裡的 P＝Panel（方形面板）：和 CoWoS-L 一樣，但中介層改在方形面板上做（原本在圓形晶圓上）。', pro: '大塊中介層排得滿、浪費少、一次做得多。', con: '據報導 2026 年試產線啟動，約 2028–2029 年量產；設備要重新建立。' },
+    { n: 'CoWoP', co: '業界研發中（據報導）', kind: 'rdl', sub: 0, hl: 'sub', row: 3,
+      chg: '名字最後的 P＝PCB（電路板）：拿掉封裝基板，中介層直接焊在電路板上。', pro: '少一層材料，訊號路徑更短。', con: '電路板要做到和封裝基板一樣精細，還在研發中。' },
+    { n: '別家方案', co: 'Intel EMIB-T、三星 I-Cube', kind: 'emib', sub: 1, hl: 'sub', row: 4,
       chg: 'Intel EMIB：只在封裝基板裡埋小矽橋，2017 年起量產；新版 EMIB-T 的矽橋再加矽穿孔。3D 疊晶片有 Foveros Direct（混合鍵合，對應 SoIC）。三星 I-Cube：和 CoWoS-S 類似的整片矽中介層。', pro: 'EMIB 便宜、能做大（Intel 規劃 2028 年超過 12 倍）；三星可一起提供晶圓和 HBM。', con: 'EMIB 只能連相鄰晶片；I-Cube 一樣受光罩大小限制。' }
   ];
   A({
-    id: 'cowcmp', part: 3, minutes: 3.5, short: 'CoWoS、CoPoS、CoWoP 與各家方案', eyebrow: EP, badge: '新技術',
+    id: 'cowcmp', part: 3, minutes: 5.5, short: 'CoWoS、CoPoS、CoWoP 與各家方案', eyebrow: EP, badge: '新技術',
     title: '各家先進封裝方案比一比', en: 'CoWoS · CoPoS · CoWoP · EMIB · I-Cube',
     thesis: 'AI 晶片的封裝都是四層：<b>晶片 → 中介層 → 封裝基板 → 電路板</b>。各家方案的差別，就在<b>中間兩層怎麼做</b>。先看「基本結構」，再切換每一種，<b>標出它改了哪一層</b>。',
     render: () => `<div class="s-body">
@@ -783,12 +812,11 @@ AI 晶片的封裝越做越大，已經接近一個手掌。這帶來兩個新�
         extra: `<table class="t" style="font-size:14px"><thead><tr><th>方案</th><th>誰</th><th>改了哪一層</th><th>狀態</th></tr></thead><tbody>
           <tr data-r="0"><td>CoWoS-S</td><td style="white-space:nowrap">台積電</td><td>起點：整片矽中介層</td><td>量產中</td></tr>
           <tr data-r="1"><td>CoWoS-L</td><td style="white-space:nowrap">台積電</td><td>中介層：樹脂佈線層＋矽橋</td><td>量產中</td></tr>
-          <tr data-r="2"><td>SoIC＋CoWoS</td><td style="white-space:nowrap">台積電</td><td>晶片層：3D 疊起來，再放上 CoWoS</td><td>量產中</td></tr>
-          <tr data-r="3"><td>CoPoS</td><td style="white-space:nowrap">台積電</td><td>中介層：改在方形面板做</td><td>2026 試產線，約 2028–29 量產（據報導）</td></tr>
-          <tr data-r="4"><td>CoWoP</td><td style="white-space:nowrap">業界</td><td>拿掉封裝基板</td><td>研發中</td></tr>
-          <tr data-r="5"><td>EMIB／EMIB-T</td><td style="white-space:nowrap">Intel</td><td>不用中介層，矽橋埋在基板</td><td>EMIB 2017 起量產；EMIB-T 2027 客戶量產</td></tr>
-          <tr data-r="5"><td>Foveros Direct</td><td style="white-space:nowrap">Intel</td><td>晶片層：3D 混合鍵合（對應 SoIC）</td><td>2026 起出貨（據報導）</td></tr>
-          <tr data-r="5"><td>I-Cube</td><td style="white-space:nowrap">三星</td><td>整片矽中介層</td><td>量產中</td></tr></tbody></table>`
+          <tr data-r="2"><td>CoPoS</td><td style="white-space:nowrap">台積電</td><td>中介層：改在方形面板做</td><td>2026 試產線，約 2028–29 量產（據報導）</td></tr>
+          <tr data-r="3"><td>CoWoP</td><td style="white-space:nowrap">業界</td><td>拿掉封裝基板</td><td>研發中</td></tr>
+          <tr data-r="4"><td>EMIB／EMIB-T</td><td style="white-space:nowrap">Intel</td><td>不用中介層，矽橋埋在基板</td><td>EMIB 2017 起量產；EMIB-T 2027 客戶量產</td></tr>
+          <tr data-r="4"><td>Foveros Direct</td><td style="white-space:nowrap">Intel</td><td>晶片層：3D 混合鍵合（對應 SoIC）</td><td>2026 起出貨（據報導）</td></tr>
+          <tr data-r="4"><td>I-Cube</td><td style="white-space:nowrap">三星</td><td>整片矽中介層</td><td>量產中</td></tr></tbody></table>`
       })}</div>`,
     init(el, ctx) {
       const { c, w, h } = U.canvas(U.$(el, '#cw-cv'));
@@ -896,9 +924,9 @@ AI 晶片的封裝越做越大，已經接近一個手掌。這帶來兩個新�
         U.txt(c, m ? `${x.n}（${x.co}）` : '基本結構：大多數 AI 晶片都長這樣', 24, 30, { size: 19, w: 700, color: '#17202b' });
       });
     },
-    notes: `【可略】時間緊時只講「基本結構 → CoWoS-S → CoWoS-L」三個分頁；SoIC＋CoWoS 上一頁已講過 MI300，CoPoS、CoWoP、別家方案指一下右邊的表格就好。
+    notes: `【可略】時間緊時只講「基本結構 → CoWoS-S → CoWoS-L」三個分頁；CoPoS、CoWoP、別家方案指一下右邊的表格就好。
 
-前面看過台積電的 CoWoS。先補一句：台積電的先進封裝有三大家族，手機晶片用 InFO 扇出型封裝，AI 晶片用 CoWoS，3D 疊晶片用 SoIC；這一頁比的是 AI 晶片用的這一類。這一頁把幾種主要的封裝方案放在一起比，先看懂共同的基本結構，再看每一種改了哪裡。右邊的表格會標出目前這一種。
+前面看過台積電的 CoWoS。先補一句：台積電的先進封裝有三大家族，手機晶片用 InFO 扇出型封裝，AI 晶片用 CoWoS，3D 疊晶片用 SoIC；這一頁比的是 AI 晶片用的這一類，也就是 2.5D：晶片並排放在中介層上；3D 疊起來的 SoIC 放在後面。這一頁把幾種主要的封裝方案放在一起比，先看懂共同的基本結構，再看每一種改了哪裡。右邊的表格會標出目前這一種。
 
 先看「基本結構」。從上到下有四層。最上面是真正在計算的運算晶片，和旁邊的 HBM 記憶體。第二層是中介層，可以想成一片超密的接線板，運算晶片和記憶體之間要傳大量資料，就是靠中介層裡上萬條細線，黃點就是正在傳的資料。第三層是封裝基板，它把中介層的細線轉成比較粗的線，才接得上最下面的電路板，也就是主機板。各家方案的差別，就在中間這兩層：中介層和封裝基板怎麼做。
 
@@ -906,9 +934,7 @@ AI 晶片的封裝越做越大，已經接近一個手掌。這帶來兩個新�
 
 CoWoS-L 就是針對這個問題的改善方向。既然大片矽做不大，就不要整片都用矽：改用線比較粗的樹脂佈線層，只在晶片和晶片、晶片和 HBM 交界、真正需要超密線路的地方，埋一小塊矽，叫矽橋；佈線層裡還能順便埋電容，讓供電更穩。這樣就能做得很大：目前量產約五點五倍光罩，2028 年目標十四倍，NVIDIA 的 Blackwell 就是用這種。
 
-下一個分頁，組合：SoIC 加 CoWoS。這次改的是最上面的晶片層：上一頁的 MI300，運算晶片用混合鍵合疊在 I/O 晶片上，整組再放上 CoWoS。所以 SoIC 不是 CoWoS 的競爭對手，而是疊在上面一起用。一顆封裝裡有十顆左右的晶片，一顆壞就整顆報廢，所以每顆疊上去前都要先測、確認是好晶片，英文叫 Known Good Die，這就是第九章 CP 的延伸。
-
-CoPoS：和 CoWoS-L 一樣，只是中介層改在方形面板上做，下一頁會詳細看。
+名字有規律：CoWoS 是 Chip on Wafer on Substrate，所以 CoPoS 的 P 是方形面板 Panel，CoWoP 最後的 P 是電路板 PCB。CoPoS：和 CoWoS-L 一樣，只是中介層改在方形面板上做，下一頁會詳細看。
 
 CoWoP：這次改的是封裝基板，直接把它拿掉，中介層焊在高密度電路板上，少一層、路更短。難處是電路板要做得跟封裝基板一樣精細，還在研發。
 
@@ -917,104 +943,9 @@ CoWoP：這次改的是封裝基板，直接把它拿掉，中介層焊在高密
 接續廚房的比喻：CoWoS-S 是一整塊大理石工作檯，又貴又做不大；CoWoS-L 是普通檯面，只在主廚和冰箱交接的地方嵌一小塊大理石；EMIB 連檯面都省了，直接在檯子底下墊幾塊小砧板。`
   });
 
-  /* CPO 頁「光學引擎裡面」：雷射 → 調變器（電控制光的明暗）→ 光纖 → 光偵測器（光變回電） */
-  function engine(c, w, h, t) {
-    const y = h * 0.42, L = 30, R = w - 30, bits = [1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1];
-    const box = (x, bw, name, sub, col) => { c.fillStyle = col; U.rrect(c, x, y - 34, bw, 68, 8); c.fill(); U.txt(c, name, x + bw / 2, y - 4, { align: 'center', size: 15, w: 700, color: '#fff' }); U.txt(c, sub, x + bw / 2, y + 18, { align: 'center', size: 12, color: '#f3eef8' }); };
-    const xL = L, xM = L + (R - L) * 0.24, xF = L + (R - L) * 0.5, xD = L + (R - L) * 0.8, bw = 120;
-    U.txt(c, '這一端：交換器／GPU 旁邊', L, 26, { size: 14, w: 700, color: '#17202b' }); U.txt(c, '另一端：別台機器', R, 26, { align: 'right', size: 14, w: 700, color: '#17202b' });
-    box(xL, bw, '① 雷射', '一直發出穩定的光', '#6b3fb0');
-    box(xM, bw, '② 調變器', '用電控制光的明暗', '#8a4fc9');
-    box(xD, bw, '④ 光偵測器', '把光變回電', '#6b3fb0');
-    // 雷射 → 調變器：連續光
-    c.strokeStyle = '#b04fc9'; c.lineWidth = 5; c.beginPath(); c.moveTo(xL + bw, y); c.lineTo(xM, y); c.stroke();
-    // 調變器 → 光纖 → 偵測器：明暗閃爍的光脈衝
-    c.strokeStyle = '#e8d4f0'; c.lineWidth = 8; c.beginPath(); c.moveTo(xM + bw, y); c.lineTo(xD, y); c.stroke();
-    U.txt(c, '③ 光纖：光可以跑很遠、幾乎不耗損', (xM + bw + xD) / 2, y - 46, { align: 'center', size: 13, w: 700, color: '#6b3fb0' });
-    const span = xD - (xM + bw), n = 12;
-    for (let k = 0; k < n; k++) { const f = ((t * 0.25) + k / n) % 1, x = xM + bw + f * span, b = bits[(k + Math.floor(t * 0.25 * n)) % bits.length]; if (b) { c.fillStyle = '#b04fc9'; c.fillRect(x - 8, y - 5, 16, 10); } }
-    // 電訊號進調變器
-    const ey = y + 90;
-    U.txt(c, '電訊號 0 1 1 0 1 …（從晶片來）', xM + bw / 2, ey + 34, { align: 'center', size: 13, color: '#a8660a' });
-    c.strokeStyle = '#c9793b'; c.lineWidth = 3; c.beginPath(); c.moveTo(xM + bw / 2, ey + 16); c.lineTo(xM + bw / 2, y + 36); c.stroke();
-    for (let k = 0; k < 3; k++) { const f = (t * 0.8 + k / 3) % 1; U.dot(c, xM + bw / 2, U.lerp(ey + 16, y + 36, f), 4.5, '#e0a33a'); }
-    // 偵測器輸出電
-    c.strokeStyle = '#c9793b'; c.lineWidth = 3; c.beginPath(); c.moveTo(xD + bw / 2, y + 36); c.lineTo(xD + bw / 2, ey + 16); c.stroke();
-    for (let k = 0; k < 3; k++) { const f = (t * 0.8 + k / 3) % 1; U.dot(c, xD + bw / 2, U.lerp(y + 36, ey + 16, f), 4.5, '#e0a33a'); }
-    U.txt(c, '還原成電訊號，送進晶片', xD + bw / 2, ey + 34, { align: 'center', size: 13, color: '#a8660a' });
-    U.tag(c, '調變器就像快門：電說 1 就讓光過、說 0 就擋住，每秒開關上千億次', w / 2, h - 46, { align: 'center', size: 14, color: '#17202b' });
-    U.tag(c, 'CPO 把調變器、光偵測器和控制電路做成「光學引擎」，放進封裝、緊貼晶片；雷射怕熱，常放在外面再用光纖送進來', w / 2, h - 18, { align: 'center', size: 13, color: '#6b3fb0' });
-  }
-  /* 封裝 7：共同封裝光學 CPO */
-  A({
-    id: 'cpo', part: 3, minutes: 2.5, short: '共同封裝光學 CPO', eyebrow: EP, badge: '新技術',
-    title: '共同封裝光學：把「光」直接接到晶片旁邊', en: 'Co-Packaged Optics · Silicon Photonics',
-    thesis: 'AI 資料中心裡，成千上萬顆 GPU 要互相傳資料。用銅線傳得越快越耗電，所以<b>把轉換成光的元件搬進封裝裡、緊貼晶片</b>，電線從幾十公分縮到幾毫米。',
-    render: () => `<div class="s-body">
-      <div class="col"><div class="controls">${U.seg('cp-m', ['傳統：光模組插在機殼前面', '共同封裝光學 CPO', '光學引擎裡面：電怎麼變光'], 0)}</div>${U.figHTML('cp-cv', '交換器電路板上視（示意）：黃點是電訊號，紫點是光訊號', '')}</div>
-      ${U.side({
-        top: `<div class="card newcard"><h4>新技術：解決什麼問題？</h4><p>電訊號在銅線上跑得越快，損失越大，得花很多電去補強。傳統光模組插在機殼前面，晶片到模組還有幾十公分的銅線。</p></div>`,
-        meters: [['cp-a', '銅線長度'], ['cp-b', '每傳一位元的耗電']],
-        extra: `<div class="card alt"><h4>實際產品（依公開資料）</h4><p style="font-size:15px"><b>NVIDIA</b>：Quantum-X、Spectrum-X 光子交換器，採用台積電 COUPE，宣稱比插拔式光模組省電約 3.5 倍<br><b>Broadcom</b>：Tomahawk 系列 CPO 交換器（51.2T、102.4T）<br><b>台積電 COUPE</b>：電子晶片用 SoIC 疊在光子晶片上；2026 年上封裝基板量產，比插拔式省電 2 倍、延遲少 10 倍</p></div>`,
-        analogy: { icon: 'road', t: '比喻', p: '貨物先用小貨車開一大段市區道路才上高鐵；改成在工廠旁邊直接設高鐵站，一出門就上車。' }
-      })}</div>`,
-    init(el, ctx) {
-      const { c, w, h } = U.canvas(U.$(el, '#cp-cv'));
-      let m = 0, mm = 0;
-      U.onSeg(el, 'cp-m', i => { m = i; U.setMeter(el, 'cp-a', i ? 0.06 : 0.9, i ? '幾毫米' : '幾十公分', i ? 'good' : 'bad'); U.setMeter(el, 'cp-b', i ? 0.28 : 1, i ? '少很多' : '高', i ? 'good' : 'bad'); const ft = U.$(el, '#cp-cv').closest('.fig').querySelector('.fig-title span'); if (ft) ft.textContent = i === 2 ? '光學引擎裡面（示意）：黃點是電訊號，紫色是光' : '交換器電路板上視（示意）：黃點是電訊號，紫點是光訊號'; });
-      ctx.raf((dt, t) => {
-        mm += (m - mm) * Math.min(1, dt * 4);
-        c.clearRect(0, 0, w, h);
-        const bx = 40, by = 40, bw = w - 80, bh = h - 90;
-        c.fillStyle = '#6f8f5a'; c.fillRect(bx, by, bw, bh); U.tag(c, '電路板', bx + 8, by + 20, { size: 13 });
-        c.fillStyle = '#2b3440'; c.fillRect(bx + bw - 14, by, 14, bh); U.txt(c, '機殼前面', bx + bw - 7, by - 8, { align: 'center', size: 13, color: '#3e4b5b' });
-        const cx = bx + bw * 0.38, cy = by + bh / 2, cs = Math.min(bh * 0.36, 130);
-        c.fillStyle = '#c7d0db'; c.fillRect(cx - cs * 0.85, cy - cs * 0.85, cs * 1.7, cs * 1.7);
-        c.fillStyle = '#9fb5e3'; c.fillRect(cx - cs / 2, cy - cs / 2, cs, cs); U.txt(c, '交換器／GPU 晶片', cx, cy + 5, { align: 'center', size: 14, w: 700 });
-        const rows = [-0.6, -0.2, 0.2, 0.6];
-        if (m === 2) { c.clearRect(0, 0, w, h); engine(c, w, h, t); return; }
-        if (m === 0) {
-          rows.forEach((r, k) => {
-            const y = cy + r * cs * 1.3, mx = bx + bw - 60;
-            c.strokeStyle = '#c9793b'; c.lineWidth = 3; c.beginPath(); c.moveTo(cx + cs / 2, cy + r * cs * 0.4); c.lineTo(cx + cs, y); c.lineTo(mx, y); c.stroke();
-            c.fillStyle = '#e3c28f'; c.fillRect(mx, y - 12, 46, 24);
-            for (let q = 0; q < 3; q++) { const f = (t * 0.5 + q / 3 + k * 0.1) % 1, x = U.lerp(cx + cs, mx, f); c.globalAlpha = 1 - f * 0.7; U.dot(c, x, y, 5 - f * 2.5, '#e0a33a'); c.globalAlpha = 1; }
-            c.strokeStyle = '#b04fc9'; c.lineWidth = 2; c.beginPath(); c.moveTo(mx + 46, y); c.lineTo(w - 10, y); c.stroke();
-          });
-          U.tag(c, '光模組（在這裡才把電變成光）', bx + bw - 70, cy + cs * 1.3 * 0.6 + 34, { align: 'right', size: 14 });
-          U.tag(c, '銅線很長：訊號越跑越弱，要花電補強', cx + cs * 1.4, by + 30, { align: 'center', size: 14, color: '#b3261e' });
-        } else {
-          rows.forEach((r, k) => {
-            const ox = cx + cs / 2 + 6, oy = cy + r * cs * 0.4;
-            c.fillStyle = '#d7b7e6'; c.fillRect(ox, oy - 10, 30, 20);
-            c.strokeStyle = '#b04fc9'; c.lineWidth = 2; c.beginPath(); c.moveTo(ox + 30, oy); c.bezierCurveTo(ox + 120, oy, bx + bw - 120, cy + r * cs * 1.3, w - 10, cy + r * cs * 1.3); c.stroke();
-            for (let q = 0; q < 3; q++) { const f = (t * 0.5 + q / 3 + k * 0.1) % 1; U.dot(c, U.lerp(ox + 30, w - 10, f), U.lerp(oy, cy + r * cs * 1.3, f), 4, '#b04fc9'); }
-          });
-          U.tag(c, '光學引擎就在晶片旁邊：銅線只剩幾毫米', cx, cy + cs + 26, { align: 'center', size: 14, color: '#1f7a4d' });
-          U.tag(c, '一出封裝就是光纖', bx + bw - 90, by + 30, { align: 'center', size: 14, color: '#6b3fb0' });
-        }
-      });
-    },
-    notes: `【可略】時間緊時只講第二個分頁的一段：「把電變光的元件搬進封裝，銅線從幾十公分縮到幾毫米」；第三個分頁和產品段落略過。
-
-這一頁是另一個新方向：共同封裝光學，英文縮寫 CPO，背後的技術叫矽光子。
-
-AI 資料中心裡，成千上萬顆 GPU 和交換器要不停互相傳資料。傳統做法是：晶片先用銅線把電訊號送到機殼前面的光模組，在那裡才把電變成光，再用光纖傳出去。問題是晶片到光模組還有幾十公分的銅線，電訊號跑得越快，在銅線上損失越大，要花很多電去補強。
-
-切到 CPO：把「電變光」的光學引擎直接搬進封裝裡，緊貼著晶片，銅線只剩幾毫米，一出封裝就是光纖。光在光纖裡可以跑很遠、損失很小。NVIDIA 在 2025 年發表這種交換器、2026 年開始出貨，產品細節最後一段再講。
-
-這些光學元件也是用晶圓廠的製程做的，所以叫矽光子。難處是雷射怕熱、光纖要對得非常準。就像貨物本來要先開一大段市區道路才上高鐵，現在直接在工廠旁邊設高鐵站。
-
-切到第三個分頁，看光學引擎裡面到底怎麼把電變成光。四個零件：第一，雷射，一直發出穩定的光；第二，調變器，就像一個超快的快門，晶片送來的電訊號說 1 就讓光通過、說 0 就擋住，每秒開關上千億次，把 0 和 1 變成光的明暗；第三，光纖，光可以跑很遠、幾乎不耗損；第四，另一端的光偵測器，把光變回電，送進下一顆晶片。CPO 把調變器和控制電路做成光學引擎，直接放進封裝、緊貼著晶片。雷射因為怕熱，常常放在外面，再用光纖把光送進來。
-
-右邊是實際產品：NVIDIA 的 Quantum-X 和 Spectrum-X 光子交換器用的是台積電的 COUPE，宣稱比插拔式光模組省電大約 3.5 倍；Broadcom 也有 Tomahawk 系列的 CPO 交換器。注意下面台積電說的 2 倍，是不同公司、比較範圍不同的數字，不能直接相比。台積電的 COUPE 把電子晶片用 SoIC 疊在光子晶片上，2026 年開始放上封裝基板量產，比插拔式省電 2 倍、延遲少 10 倍。
-
-封裝這一章到這裡：晶片做不大，就拆開再緊緊接起來，接點越來越密，連光都搬進封裝裡。接下來回到晶片本身，換一個地方送電。`
-  });
-
   /* 1b. 一張圖看懂：正面 vs 背面（剖面並排） */
   A({
-    id: 'bsx', part: 3, minutes: 2.6, short: '正面塞車 vs 背面供電', eyebrow: '第三部分 · ② 背面供電',
+    id: 'bsx', part: 3, minutes: 2.7, short: '正面塞車 vs 背面供電', eyebrow: '第三部分 · ② 背面供電',
     title: '問題與解法：電源線擠在正面，改搬到背面', en: 'Front-Side vs Backside Power',
     thesis: '左邊傳統做法：電從正面進來，要<b>穿過十幾層越來越細的導線</b>，還和訊號線搶空間。右邊搬到背面：<b>走幾層粗線就到電晶體</b>。拖動密度看差別。',
     render: () => `<div class="s-body w66">
@@ -1152,7 +1083,7 @@ AI 資料中心裡，成千上萬顆 GPU 和交換器要不停互相傳資料。
     if (!(i === 1 && p > 0.9) && !(i === 5 && p > 0.9)) U.tag(c, side, w - 44, 56, { align: 'right', size: 13, color: '#6a7888' });
   }
   A({
-    id: 'bs2', part: 3, minutes: 2.5, short: '背面供電怎麼做', eyebrow: '第三部分 · ② 背面供電',
+    id: 'bs2', part: 3, minutes: 2.3, short: '背面供電怎麼做', eyebrow: '第三部分 · ② 背面供電',
     title: '怎麼做出來：翻面、磨薄、從背面接電', en: 'Backside Power Delivery',
     thesis: '正面只留訊號線，電源改從背面直接送進電晶體。做法是<b>把整片晶圓翻過來、磨薄、再從背面接電</b>。',
     render: () => `<div class="s-body w66">
@@ -1176,6 +1107,48 @@ AI 資料中心裡，成千上萬顆 GPU 和交換器要不停互相傳資料。
 這裡也處處要量測：磨薄後剩多厚、整片翹不翹，背面的小孔有沒有對準正面的電晶體，都要先量過才能往下做。`
   });
 
+  /* 背面供電的代價：散熱變難（接在「怎麼做」之後） */
+  A({
+    id: 'bsheat', part: 3, minutes: 2, short: '背面供電的代價：散熱（可略）', eyebrow: '第三部分 · ② 背面供電',
+    title: '背面供電的代價：熱的出路變差', en: 'Backside Power · Thermal Penalty',
+    thesis: '晶片在封裝裡是面朝下裝的，散熱器在上面。背面供電之後，電晶體和散熱器之間多了<b>十幾層導線和接合層</b>，原本貼著電晶體、幫忙攤開熱點的矽也磨掉了，<b>同樣功率熱點更燙</b>。',
+    render: () => `<div class="s-body w66">
+      <div class="col">${U.figHTML('bh-cv', '剖面：晶片翻過來裝在封裝裡，散熱器在上面（示意，厚度不成比例）', '')}</div>
+      ${U.side({
+        points: ['正面供電：電晶體上面直接是厚矽，熱很快出去、也順便攤開', '背面供電：熱要先穿過導線層（絕緣層導熱差）和接合層，載體晶圓雖然也是矽，但隔得遠了', '補救：導熱更好的接合層和載體、熱感知佈局；電壓降變小可以用較低電壓省電'],
+        analogy: { icon: 'road', t: '比喻', p: '像把大門從前院搬到後院：進貨（送電）方便了，但屋裡的熱氣要多穿過幾道牆才出得去。' }
+      })}</div>`,
+    src: 'imec 等研究（溫度為示意）',
+    init(el, ctx) {
+      const { c, w, h } = U.canvas(U.$(el, '#bh-cv'));
+      // 散熱路徑剖面：晶片面朝下裝在封裝裡（覆晶），熱往上走到散熱器
+      ctx.raf((dt, t) => {
+        c.clearRect(0, 0, w, h);
+        const cols = [['正面供電：熱穿過厚矽就出去', [['散熱器', '#868e96', 26], ['矽基板（幾百 µm，導熱好）', '#a9bcd0', 120], ['電晶體（熱從這裡來）', '#c46a6a', 14], ['十幾層導線（訊號＋電源）', '#e3c28f', 50], ['凸塊、封裝基板', '#8fae7a', 30]], 3, 82],
+          ['背面供電：熱要先穿過導線層和載體', [['散熱器', '#868e96', 26], ['載體晶圓（黏上去的矽）', '#c3cfdc', 90], ['接合層', '#d9a35b', 10], ['訊號導線（絕緣層導熱差）', '#e3c28f', 50], ['電晶體（原本的矽幾乎磨光）', '#c46a6a', 16], ['背面電源網路', '#b87333', 26], ['凸塊、封裝基板', '#8fae7a', 30]], 1, 94]];
+        const cw = (w - 60) / 2;
+        cols.forEach(([title, layers, hot, T], k) => {
+          const x = 20 + k * (cw + 20), bw = cw * 0.5, bx = x + 10;
+          U.txt(c, title, x + cw / 2, 26, { align: 'center', size: 15, w: 700, color: k ? '#b3261e' : '#1f7a4d' });
+          let y = 46; const ys = [], kz = Math.min(1.7, (h - 150) / 246);
+          layers.forEach(([n, col, h0]) => { const hh = h0 * kz; c.fillStyle = col; c.fillRect(bx, y, bw, hh - 2); U.txt(c, n, bx + bw + 10, y + hh / 2 + 5, { size: 13.5, color: '#17202b' }); ys.push([y, hh]); y += hh; });
+          // 熱從電晶體往上走：每多一層熱阻大的，箭頭就變暗
+          const [ty] = ys[layers.findIndex(l => l[0].startsWith('電晶體'))];
+          for (let q = 0; q < 3; q++) { const f = (t * 0.35 + q / 3) % 1, yy = U.lerp(ty, 60, f); U.arrow(c, bx + bw * (0.3 + q * 0.2), yy, bx + bw * (0.3 + q * 0.2), yy - 14, `rgba(232,89,12,${k ? 0.9 - f * 0.6 : 0.9})`, 2.5); }
+          U.txt(c, `熱點約 ${T}°C（示意）`, x + cw / 2, y + 30, { align: 'center', size: 17, w: 700, color: k ? '#b3261e' : '#1f7a4d' });
+        });
+        U.txt(c, '補救：導熱更好的接合層和載體、熱感知佈局；電壓降變小可以用較低電壓省電，背面粗金屬也能幫忙攤熱', w / 2, h - 14, { align: 'center', size: 14, color: '#3e4b5b' });
+      });
+    },
+    notes: `【可略】時間緊只講一句：「背面供電讓電壓更穩，但電晶體和散熱器之間多了導線層和接合層，熱的出路變差，這是它的代價。」
+
+上一頁看了背面供電怎麼做：翻面、黏到載體晶圓、把原本的矽磨掉、再從背面做電源網路。這一頁看它的代價：散熱。
+
+晶片在封裝裡是面朝下裝的，散熱器在上面。看左邊，正面供電時，電晶體上面就是幾百微米的矽基板，矽導熱好，熱很快就出去，還能順便往旁邊攤開。看右邊，背面供電之後，電晶體上面變成十幾層訊號導線，導線之間的絕緣層導熱很差，接著是接合層，最後才是載體晶圓和散熱器。載體晶圓雖然也是矽，但隔著導線層和接合層，熱要先穿過這兩道關卡；原本緊貼電晶體、幫忙攤開熱點的那層矽也磨掉了。研究顯示同樣功率下熱點會更燙，圖上的數字是示意。
+
+補救的方法有導熱更好的接合層和載體、熱感知的佈局；另外電壓降變小，供電電壓可以設低一點，耗電本身也少一些，背面的粗金屬也能幫忙攤熱。所以背面供電不是只有好處，再加上 3D 堆疊，熱的問題會更嚴重，這是接下來幾年的研究重點。`
+  });
+
   /* 2b. 三種接法：越來越貼近電晶體 */
   const BSW = [
     { n: '埋入式電源軌', who: 'imec 等研究機構', d: '在電晶體旁邊的地底下埋一條電源軌，背面的穿孔接到電源軌，再從正面繞一小段到源極。', near: 0.35 },
@@ -1183,7 +1156,7 @@ AI 資料中心裡，成千上萬顆 GPU 和交換器要不停互相傳資料。
     { n: '直接背面接觸', who: '台積電 A16「Super Power Rail」（2027）；Intel 14A PowerDirect 也屬這一類（2028）', d: '背面的電直接從下方接到源極，路徑最短、最省空間，但對準要求最高，最難做。', near: 1 }
   ];
   A({
-    id: 'bs4', part: 3, minutes: 2, short: '三種接法：越來越近', eyebrow: '第三部分 · ② 背面供電',
+    id: 'bs4', part: 3, minutes: 2.5, short: '三種接法：越來越近', eyebrow: '第三部分 · ② 背面供電',
     title: '同樣是背面供電，接法有三種：一種比一種更貼近電晶體', en: 'BPR · PowerVia · Direct Backside Contact',
     thesis: '放大到單一顆電晶體，看<b>背面的電最後是怎麼接進源極的</b>。越直接，路越短、越省空間，但也越難做。',
     render: () => `<div class="s-body">
@@ -1262,7 +1235,7 @@ AI 資料中心裡，成千上萬顆 GPU 和交換器要不停互相傳資料。
 
   /* 3. 比較 */
   A({
-    id: 'bs3', part: 3, minutes: 2, short: '正面 vs 背面供電', eyebrow: '第三部分 · ② 背面供電',
+    id: 'bs3', part: 3, minutes: 1.6, short: '正面 vs 背面供電', eyebrow: '第三部分 · ② 背面供電',
     title: '正面 vs 背面供電：電壓更穩、線路更鬆', en: 'Front vs Back',
     thesis: '切換兩種設計，看電晶體那一層的「電壓地圖」：<b>越橘代表電壓掉越多，越藍越穩</b>。黑點是供電點。',
     render: () => `<div class="s-body">
@@ -1277,7 +1250,7 @@ AI 資料中心裡，成千上萬顆 GPU 和交換器要不停互相傳資料。
         <p class="gloss" style="margin:0">台積電 A16 從背面直接接到源極底部，比 Intel 18A 的 PowerVia 更貼近電晶體，但製程更難；Intel 下一代 14A 的 PowerDirect 也改成直接接觸。</p>
         <div class="analogy" style="margin-top:auto"><div class="ic">${U.icon('road')}</div><div><h4>比喻</h4><p>像電網：只有幾座大電廠時，偏遠地區電壓不穩；到處都有變電所，每一區都很穩。</p></div></div>
       </div></div>`,
-    src: 'Intel 18A 技術簡報、TSMC 2026 技術論壇、Samsung Foundry（示意圖為相對值）',
+    src: 'Intel、TSMC、Samsung 公開資料（示意）',
     init(el, ctx) {
       const { c, w, h } = U.canvas(U.$(el, '#b3-cv'));
       let m = 0, mm = 0;
@@ -1353,20 +1326,20 @@ AI 資料中心裡，成千上萬顆 GPU 和交換器要不停互相傳資料。
 
   /* 10. 總路線圖（台積電版）：每段 [起, 迄, 文字, 列內第幾條, 跳頁 id] */
   const TRACKS = [
-    ['製程（台積電）', [[2020, 2022, 'N5', 0, 'timeline'], [2022, 2025, 'N3', 0, 'timeline'], [2025, 2028, 'N2', 0, 'gaaflow'], [2026, 2028, 'N2P', 1], [2027, 2029, 'A16', 2, 'bsx'], [2028, 2029, 'A14', 0, 'timeline'], [2029, 2031, 'A13／A12', 0, 'timeline'], [2031, 2036, '之後（作者推估）', 0]]],
+    ['製程（台積電）', [[2020, 2022, 'N5', 0, 'timeline'], [2022, 2025, 'N3', 0, 'timeline'], [2025, 2028, 'N2', 0, 'gaaflow'], [2026, 2028, 'N2P', 1], [2027, 2029, 'A16', 2, 'bsx'], [2028, 2029, 'A14', 0, 'timeline'], [2029, 2031, 'A13／A12', 0, 'timeline'], [2031, 2036, '之後（作者推估）', 0], [2022, 2036, 'N5／N4、N3 家族持續量產（上排只標開始量產的年份）', 3]]],
     ['電晶體', [[2020, 2025, '鰭式（N3 是最後一代）', 0, 'struct3d'], [2025, 2032, '環繞式（奈米片）', 0, 'gaaflow'], [2032, 2036, '叉型片／CFET（預估）', 1, 'cfet']]],
-    ['微影', [[2020, 2036, '極紫外光 EUV', 0, 'litho3'], [2026, 2036, 'High-NA EUV：Intel 14A 導入，台積電到 A12 仍不用', 1, 'litho5']]],
+    ['微影', [[2020, 2036, '極紫外光 EUV', 0, 'litho3'], [2027, 2036, 'High-NA EUV：Intel 14A 導入（非台積電）；台積電到 A12 仍不用', 1, 'litho5']]],
     ['供電', [[2020, 2036, '正面供電（多數製程）', 0, 'bsx'], [2027, 2036, '背面供電：超級電軌（A16 起）', 1, 'bs4']]],
-    ['封裝', [[2020, 2036, 'CoWoS：2026 年 5.5 倍光罩 → 2028 年 14 倍', 0, 'cowcmp'], [2022, 2036, 'SoIC 3D 堆疊／混合鍵合', 1, 'soic'], [2026, 2030, 'CoPoS 方形面板（2026 試產線，據報導）', 2, 'glass'], [2030, 2036, '玻璃基板（預估）', 2, 'glass'], [2026, 2036, '共同封裝光學 CPO', 3, 'cpo']]]
+    ['封裝', [[2020, 2036, 'CoWoS：2026 年 5.5 倍光罩 → 2028 年 14 倍', 0, 'cowcmp'], [2022, 2036, 'SoIC 3D 堆疊／混合鍵合', 1, 'soic'], [2026, 2036, 'CoPoS 方形面板（2026 試產線，據報導）', 2, 'glass'], [2030, 2036, '業界：玻璃基板（預估，和 CoPoS 並行）', 4, 'glass'], [2026, 2036, '共同封裝光學 CPO', 3, 'cpo']]]
   ];
   A({
-    id: 'roadmap', part: 3, minutes: 2.5, short: '台積電總路線圖',
+    id: 'roadmap', part: 3, minutes: 2.6, short: '台積電總路線圖',
     title: '總路線圖：以台積電為例，五條路線同時前進', en: 'Roadmap 2020–2035 (compiled from public TSMC info)',
     thesis: '把今天講過的技術放回時間軸。拖動年份看每一年用什麼；<b>點任一段可以跳回那一頁</b>複習。未來的進步不是靠單一突破，而是製程、電晶體、微影、供電、封裝<b>一起往前走</b>。',
     render: () => `<div class="s-body full" style="grid-template-rows:1fr auto">
       <div class="fig" id="rm-fig"><div class="fig-canvas"><canvas id="rm-cv"></canvas></div></div>
       <div class="controls" id="rm-ctl">${U.range('rm-y', '年份', 2020, 2035, 1, 2026, '')}<div class="card key" style="flex:2"><p id="rm-t" style="font-size:18px;margin:0"></p></div></div></div>`,
-    src: '依台積電 2025–2026 年技術論壇、法說會與公開報導整理（量產年）；2027 年之後為預估',
+    src: '依台積電 2025–2026 技術論壇、法說會與公開報導整理；2027 年後為預估',
     init(el, ctx) {
       const cv = U.$(el, '#rm-cv'), { c, w, h } = U.canvas(cv);
       let Y = 2026, rects = [];
@@ -1383,11 +1356,12 @@ AI 資料中心裡，成千上萬顆 GPU 和交換器要不停互相傳資料。
       cv.style.cursor = 'pointer';
       ctx.raf(() => {
         c.clearRect(0, 0, w, h); rects = [];
-        const X = U.lin(2020, 2036, 130, w - 14), rowH = (h - 34) / TRACKS.length;
+        // 各列高度依條數分配：製程 4 條、封裝 5 條，中間三列各 2 條
+        const X = U.lin(2020, 2036, 130, w - 14), WT = [1.2, 0.75, 0.75, 0.75, 1.55], unit = (h - 34) / WT.reduce((a, b) => a + b, 0);
         c.fillStyle = '#f2f5f8'; c.fillRect(X(2027), 0, X(2036) - X(2027), h - 20);
         for (let y = 2020; y <= 2035; y++) { c.strokeStyle = '#e3e8ef'; c.beginPath(); c.moveTo(X(y), 0); c.lineTo(X(y), h - 24); c.stroke(); U.txt(c, String(y), X(y), h - 6, { align: 'center', size: 13, color: '#6a7888' }); }
         TRACKS.forEach(([n, segs], r) => {
-          const y0 = r * rowH + 6, lanes = Math.max(...segs.map(s => s[3])) + 1, node = r === 0;
+          const rowH = WT[r] * unit, y0 = WT.slice(0, r).reduce((a, b) => a + b, 0) * unit + 6, lanes = Math.max(...segs.map(s => s[3])) + 1, node = r === 0;
           U.txt(c, n, 12, y0 + rowH / 2, { size: 16, w: 700, color: '#17202b', base: 'middle' });
           segs.forEach(([a, b, s, lane, go]) => {
             const on = Y >= a && Y < b, one = node && lanes === 1, hh = one ? rowH * 0.7 : (rowH - 8) / lanes - 3, yy = one ? y0 + 4 : y0 + 2 + lane * (hh + 3);
@@ -1402,25 +1376,25 @@ AI 資料中心裡，成千上萬顆 GPU 和交換器要不停互相傳資料。
     },
     notes: `最後用一張總路線圖，把今天講過的技術放回時間軸上，以台積電為例。每一段都有虛線框，點一下可以跳回那一頁複習，問答時很好用。
 
-最上面是製程名稱：2020 年 N5、2022 年 N3，N3 是鰭式電晶體的最後一代；2025 年第四季 N2 量產，換成環繞式奈米片，2026 年是 N2 大量生產的一年，下半年加入 N2P；A16 依 2026 年技術論壇的最新路線圖在 2027 年，開始用背面供電；之後是 2028 年 A14、2029 年 A13 和 A12。A 是埃，16 埃就是 1.6 奈米級，再提醒一次，這些是世代代號，不是實際尺寸。
+最上面是製程名稱，標的是開始量產的年份：2020 年 N5、2022 年 N3，N3 是鰭式電晶體的最後一代。舊世代會持續生產很多年，所以製程列最下面那條提醒大家：2026 年 N5／N4、N3 家族還在大量生產，很多 AI 晶片用的就是它們。2025 年第四季 N2 量產，換成環繞式奈米片，2026 年是 N2 大量生產的一年，下半年加入 N2P；A16 依 2026 年技術論壇的最新路線圖在 2027 年，開始用背面供電；之後是 2028 年 A14、2029 年 A13 和 A12。A 是埃，16 埃就是 1.6 奈米級，再提醒一次，這些是世代代號，不是實際尺寸。
 
-往下四條：電晶體從鰭式到環繞式，叉型片和 CFET 預估在 2030 年代；微影一直用 EUV，High-NA EUV 由 Intel 在 14A 導入，台積電表示到 A12 都還不需要；供電從正面加上背面，台積電叫超級電軌；封裝方面，CoWoS 今年做到 5.5 倍光罩大小、2028 年目標 14 倍，SoIC 用混合鍵合把晶片疊起來，方形面板和玻璃基板接在後面，共同封裝光學也開始量產。
+往下四條：電晶體從鰭式到環繞式，叉型片和 CFET 預估在 2030 年代；微影一直用 EUV，High-NA EUV 由 Intel 在 14A 導入，這條是 Intel 的、不是台積電的，台積電表示到 A12 都還不需要；供電從正面加上背面，台積電叫超級電軌；封裝方面，CoWoS 今年做到 5.5 倍光罩大小、2028 年目標 14 倍，SoIC 用混合鍵合把晶片疊起來，方形面板 CoPoS 是台積電的方向，玻璃基板是業界另一條路，兩者會並行，共同封裝光學也開始量產。
 
 拖動年份看每一年的組合。重點是：未來的進步不是靠某一個神奇突破，而是這幾條路線同時往前走。`
   });
 
   /* 11. 總結 */
   A({
-    id: 'summary', part: 3, minutes: 1.5, short: '總結：三個關鍵趨勢',
+    id: 'summary', part: 3, minutes: 1.6, short: '總結：三個關鍵趨勢',
     title: '總結：記住三個趨勢', en: 'Key Takeaways',
     thesis: '電晶體從平面走向立體，製程從大刀闊斧走向一次一層原子，進步從「縮小」走向「系統整合」。第 12 頁的三件大事各是一個代表：<b>換結構 → 趨勢 1、換更細的光 → 趨勢 2、電線搬到背面 → 趨勢 3</b>。',
     render: () => `<div class="s-body three">
       ${[
         ['1', '結構：越包越緊、越疊越高', '平面 → 鰭式 → 環繞式 → CFET。為了關住電子，閘極從壓住變成包住，再往上疊。', 'gate', 'gaatem', [['struct3d', '結構演進 3D'], ['gatectl', '包得越緊漏電越少'], ['gaaflow', '環繞式怎麼做'], ['cfet', 'CFET']]],
-        ['2', '製程：精準到一層原子，也要量得到', 'EUV、原子層沉積、原子層蝕刻、磊晶；每一步都靠量測和檢測把關、回饋機台，良率才做得起來。', 'onion', 'atoms', [['litho3', 'EUV 光源'], ['depo2', 'ALD'], ['etch4', 'ALE'], ['eyes', '量測與檢測'], ['ocdb', 'OCD 對答案']]],
-        ['3', '系統：不只靠縮小', '先進封裝、背面供電。從整個系統下手，把晶片和送電的方式都重新設計。', 'lego', 'die', [['pkg0', '為什麼要封裝'], ['pkg', 'AI 晶片拆解'], ['pkg3', '混合鍵合'], ['bs2', '背面供電']]]
+        ['2', '製程：精準到一層原子，也要量得到', 'EUV、原子層沉積、原子層蝕刻、磊晶；每一步靠量測和檢測把關、回饋機台，良率才一格一格爬上去。', 'onion', 'atoms', [['litho3', 'EUV 光源'], ['depo2', 'ALD'], ['etch4', 'ALE'], ['eyes', '量測與檢測'], ['ocdb', 'OCD 對答案'], ['yield', '良率學習']]],
+        ['3', '系統：不只靠縮小', '先進封裝、背面供電。從整個系統下手：拆小晶片保良率、HBM 貼近運算晶片、背面供電走捷徑。', 'lego', 'die', [['pkg0', '為什麼要封裝'], ['pkg', 'AI 晶片拆解'], ['pkg3', '混合鍵合'], ['bs2', '背面供電']]]
       ].map(([n, t, d, ic, img, links]) => `<div class="fig" style="gap:14px"><div style="display:flex;gap:14px;align-items:center"><div class="analogy" style="padding:0;border:0;background:none;grid-template-columns:64px"><div class="ic">${U.icon(ic)}</div></div><div class="s-eyebrow" style="font-size:18px">趨勢 ${n}</div></div><div class="bigword">${t}</div><p style="font-size:21px;margin:0;line-height:1.55">${d}</p>
-        <div style="height:250px;flex:none;background:#1b2430;border-radius:4px;overflow:hidden"><img src="${CREDITS[img].f}" alt="" style="display:block;width:100%;height:100%;object-fit:contain"></div>
+        <div style="height:200px;flex:none;background:#1b2430;border-radius:4px;overflow:hidden"><img src="${CREDITS[img].f}" alt="" style="display:block;width:100%;height:100%;object-fit:contain"></div>
         <div><div class="gloss" style="margin-bottom:6px">回頭看（點擊跳頁）</div><div style="display:flex;flex-wrap:wrap;gap:8px">${links.map(([id, l]) => `<button class="btn" type="button" data-go="${id}">${l}</button>`).join('')}</div></div></div>`).join('')}
     </div>
     <div class="card key" style="margin-top:16px"><p style="margin:0;font-size:21px">一句話帶回家：<b>晶片的進步，是無數個「原子等級的精準」疊加起來的結果。</b></p></div>`,
@@ -1429,9 +1403,9 @@ AI 資料中心裡，成千上萬顆 GPU 和交換器要不停互相傳資料。
 
 第一，結構：為了關住電子，閘極從壓住通道變成包住通道，電晶體從平面變成鰭式、環繞式，未來還會上下疊成 CFET。卡片上的照片是一顆真實環繞式電晶體的電子顯微鏡剖面，三片奈米片被閘極包住。
 
-第二，製程：每一步都要精準到一層原子。EUV、原子層沉積、原子層蝕刻、磊晶，這些技術讓我們能做出幾奈米的結構。但做得出來還不夠，還要量得到：量測和檢測每天盯著上千道步驟，數字一偏就回饋給機台，良率才做得起來。這也是在座很多人未來的工作。
+第二，製程：每一步都要精準到一層原子。EUV、原子層沉積、原子層蝕刻、磊晶，這些技術讓我們能做出幾奈米的結構。但做得出來還不夠，還要量得到：量測和檢測每天盯著上千道步驟，數字一偏就回饋給機台，再配合第十章的良率學習，把缺陷一個一個抓出來，良率才一格一格爬上去。這也是在座很多人未來的工作。
 
-第三，系統：進步不再只靠縮小。先進封裝把好幾顆晶片組成一個系統，背面供電重新設計了送電的路。
+第三，系統：進步不再只靠縮小。先進封裝把好幾顆晶片組成一個系統：拆成小晶片保住良率，HBM 貼近運算晶片解決搬資料；背面供電重新設計了送電的路。
 
 一句話帶回家：晶片的進步，是無數個原子等級的精準疊加起來的結果。`
   });

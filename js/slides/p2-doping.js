@@ -5,7 +5,7 @@
 
   /* 1. 為什麼摻雜＋離子佈植 */
   A(Object.assign({
-    id: 'dope1', part: 2, minutes: 2.0, short: '摻雜：把雜質打進矽',
+    id: 'dope1', part: 2, minutes: 2.8, short: '摻雜：把雜質打進矽',
     title: '摻雜：把極少量的「雜質」打進矽裡，矽就會導電', en: 'Doping & Ion Implantation',
     thesis: '源極和汲極要能導電，但純矽幾乎不導電：摻一點磷變 n 型、摻一點硼變 p 型。傳統做法是用「離子佈植」像開槍一樣打進去，<b>再加熱讓雜質歸位</b>。',
     render: () => `<div class="s-body">

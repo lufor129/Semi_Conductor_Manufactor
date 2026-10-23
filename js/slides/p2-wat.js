@@ -155,7 +155,7 @@
     }
   }
   A({
-    id: 'wat', part: 2, chap: 9, eyebrow: EY, minutes: 2.5, short: 'WAT①：出廠前的健康檢查',
+    id: 'wat', part: 2, chap: 9, eyebrow: EY, minutes: 3.8, short: 'WAT①：出廠前的健康檢查',
     title: 'WAT：晶圓出廠前的健康檢查', en: 'Wafer Acceptance Test',
     thesis: '量測看「尺寸」、檢測找「缺陷」，<b>WAT 直接量「電」</b>：整片晶圓做完後，在晶片之間走道上的<b>測試結構</b>扎針，量電晶體和導線的電性。合格才放行；不合格就扣住、回推是哪一站出問題。按「下一步」一步步看。',
     render: () => `<div class="s-body w66">
@@ -358,7 +358,7 @@
     { s: 5, n: '④ 一邊偏', h: '線寬一樣，電流卻上下散開', d: '每個點的線寬都差不多，電流卻上下散開 → 也不是尺寸的問題。查 WAT 的 Vt 在晶圓上的分布：一邊高一邊低，指向閘極金屬（功函數金屬）厚度或退火不均。' }
   ];
   A({
-    id: 'wat4', part: 2, chap: 9, eyebrow: EY, minutes: 2, short: 'WAT④：和線上量測對照',
+    id: 'wat4', part: 2, chap: 9, eyebrow: EY, minutes: 3, short: 'WAT④：和線上量測對照',
     title: 'WAT 和線上量測對照：尺寸和電性對得上嗎？', en: 'Inline Metrology vs WAT',
     thesis: '每個測試點都有兩個數字：製程中 <b>OCD 量到的線寬</b>，和最後 <b>WAT 量到的電流</b>。正常時兩者排成<b>一條線</b>：線寬細一點，電流大一點。<b>點沿著線跑，問題就是尺寸；點離開這條線，就要往尺寸以外找。</b>',
     render: () => `<div class="s-body w66">
@@ -367,6 +367,7 @@
       ${U.side({
         top: `<div class="card key"><h4 id="w4-h" style="text-transform:none;letter-spacing:0;font-family:inherit;font-size:19px;font-weight:700"></h4><p id="w4-d" style="font-size:16px;margin:0"></p></div>`,
         points: ['<b>沿著線跑</b> → 問題就是尺寸', '<b>尺寸正常、電流離開線</b> → 往尺寸以外找', '廠裡也用這條線，決定線上量測的規格要訂多嚴'],
+        extra: `<div class="card" style="padding:10px 14px"><h4 style="margin-bottom:6px">第九章收尾：量測工程師的四件事</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;font-size:15.5px;line-height:1.4">${['① 選工具和量測點', '② 設管制線', '③ 判定並回饋機台', '④ 量不準時追原因'].map(x => `<span>${x}</span>`).join('')}</div></div>`,
         analogy: { icon: 'ruler', t: '比喻', p: '體重和跑步成績：體重重一點，通常跑慢一點。體重正常卻跑很慢，就不是體重的問題，要找別的原因，例如腳受傷。' }
       })}</div>`,
     init(el, ctx) {
@@ -418,6 +419,8 @@
 
 就像體重和跑步成績：體重重一點，通常跑慢一點；體重正常卻跑很慢，就要找別的原因。廠裡也靠這條線決定線上量測的規格要訂多嚴：線寬差多少，電流就會超規格。WAT 量到的電流和漏電，也是第八章 TCAD 校正、以及給晶片設計者用的元件模型的重要資料。數字都是示意。
 
-第九章到這裡。WAT 合格之後，晶圓送去 CP、切割、封裝，封裝就是第三部分要講的。`
+第九章到這裡。右邊這張小卡把整章收成一句：量測工程師每天做四件事，選工具和量測點、設管制線、判定並回饋機台、量不準時追原因。你們之後的工作，大概就是這四件事的組合。
+
+WAT 合格之後，晶圓送去 CP、切割、封裝，封裝就是第三部分要講的。在那之前，下一章先把鏡頭拉遠：一顆晶片從設計圖到量產的整條路，這些量測數據最後又怎麼變成良率。`
   });
 })();

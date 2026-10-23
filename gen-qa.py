@@ -2,6 +2,7 @@
 
 用法：python3 gen-qa.py（改完 md 後重跑一次，再跑 build-artifact.py）
 「頁」欄一律寫投影片 id（例如 mloop、wat），不寫頁碼；頁序調整也不會跳錯。寫到頁碼會直接報錯。
+答案內文也不能寫死「第 N 頁」（頁序一調就錯，改靠跳頁按鈕），寫到也會直接報錯。
 """
 import json, re, pathlib, sys
 
@@ -35,6 +36,9 @@ for line in (ROOT / 'docs/qa-by-topic.md').read_text(encoding='utf-8').splitline
         groups.append(cur)
     elif cur is not None and line.startswith('| ') and line.split('|')[1].strip().isdigit():
         c = [x.strip() for x in line.strip().strip('|').split('|')]
+        m = re.search(r'第\s*\d+\s*頁', c[2])
+        if m:
+            sys.exit(f'第 {c[0]} 題的答案寫死了頁碼「{m.group(0)}」。請刪掉，改在「頁」欄寫投影片 id，靠跳頁按鈕')
         cur['items'].append({'n': int(c[0]), 'q': c[1], 'a': c[2], 'go': pages(c[3], c[0])})
 
 out = '/* 由 gen-qa.py 從 docs/qa-by-topic.md 產生，請勿手改 */\nwindow.QA = ' + json.dumps(groups, ensure_ascii=False, indent=0) + ';\n'

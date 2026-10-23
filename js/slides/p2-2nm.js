@@ -7,14 +7,14 @@
   /* 1. GAA 專屬流程：9 步，每一步畫出用到的製程工具，右上角同步顯示垂直切開閘極的橫切面 */
   const GSTEP = [
     { t: '疊層', d: '用磊晶一層矽鍺（黃綠）、一層矽（藍）交替長上去，每層只有幾奈米。', tech: [['④ 磊晶', 'depo3']], why: '原子要一層層對齊排好，只有磊晶做得到。', m: '每層多厚、矽鍺裡有多少鍺，用 X 光繞射和光學量測反推；抽片用 TEM 確認。' },
-    { t: '切成鰭', d: '用微影畫出細線，再用蝕刻往下挖，把疊層切成一條條細長的鰭（看右上的橫切面）。', tech: [['① 微影', 'litho1'], ['② 蝕刻', 'etch1']], why: '鰭排得非常密，要靠多重曝光或 EUV 才畫得出來。' },
-    { t: '假閘極', d: '先鋪一層多晶矽，再微影、蝕刻出「假閘極」佔位，兩側加上間隔層。', tech: [['③ 沉積', 'depo1'], ['① 微影', 'litho1'], ['② 蝕刻', 'etch1']], why: '真的金屬怕後面的高溫，先用耐熱的假閘極撐著。' },
+    { t: '切成鰭', d: '用微影畫出細線，再用蝕刻往下挖，把疊層切成一條條細長的鰭（看右上的橫切面）；鰭與鰭之間填氧化矽、磨平再回蝕，做成淺溝槽隔離（STI）。', tech: [['① 微影', 'litho1'], ['② 蝕刻', 'etch1'], ['③ 沉積', 'depo1']], why: '鰭排得非常密，常用自對準多重圖案（SAQP：靠側壁把線距減半再減半）或 EUV 才畫得出來。' },
+    { t: '假閘極', d: '先鋪一層多晶矽，再微影、蝕刻出「假閘極」佔位，兩側加上間隔層。', tech: [['③ 沉積', 'depo1'], ['① 微影', 'litho1'], ['② 蝕刻', 'etch1']], why: '真的金屬怕後面的高溫，先用耐熱的假閘極撐著，最後再換掉，叫後閘極（replacement metal gate）。' },
     { t: '挖源汲極', d: '用蝕刻把假閘極兩旁的疊層挖掉，只留下閘極底下那一段。', tech: [['② 蝕刻', 'etch3']], why: '要挖得又深又直，還不能傷到閘極底下。' },
     { t: '內間隔層', d: '用只吃矽鍺的蝕刻把兩端往內溶一點，再用 ALD 整片鋪一層絕緣膜、把外面多的蝕掉，只留下缺口裡的內間隔層（綠）。', tech: [['② 選擇性蝕刻（只溶矽鍺）', 'etch1'], ['③ ALD', 'depo2']], why: '要往旁邊溶、只溶矽鍺不溶矽（選擇比極高），還要把每個小缺口都填滿。', m: '往內溶了幾奈米藏在結構裡面，從上面看不到：靠 OCD 反推，抽片用 TEM 確認。' },
     { t: '長源汲極', d: '用選擇性磊晶從奈米片兩端長出源極、汲極，一邊長一邊摻雜。', tech: [['④ 選擇性磊晶＋摻雜', 'dope3']], why: '源汲極要長成完整晶體、又要很高的濃度，邊長邊摻最好。' },
     { t: '換掉假閘極', d: '鋪上絕緣層、用 CMP 磨平到露出假閘極，再把假閘極蝕刻掉。', tech: [['③ 沉積', 'depo1'], ['⑥ CMP', 'cmp1'], ['② 蝕刻', 'etch1']], why: '要先磨平，才露得出假閘極的頂端。' },
     { t: '溶掉矽鍺', d: '用只吃矽鍺的蝕刻把夾心溶掉，矽奈米片就懸空了（兩端由源汲極撐著）。', tech: [['② 選擇性蝕刻（只溶矽鍺）', 'etch1']], why: '最難的一步：矽鍺要溶光，矽一點都不能傷。靠的是往四面八方溶、只吃矽鍺的蝕刻（氣體或藥水）。', m: '矽鍺有沒有溶乾淨、矽片有沒有被吃薄，從上面完全看不到：OCD 反推、TEM 抽查；殘留藏在片下、光學看不到：靠電子束檢測、TEM 抽查，最後看 WAT 電性。' },
-    { t: '包上閘極', d: '用 ALD 在每片奈米片四周鋪上高介電層（紫）和金屬（灰），再用 CMP 磨平：完成！', tech: [['⑤ 高介電', 'hk1'], ['③ ALD', 'depo2'], ['⑥ CMP', 'cmp1']], why: '片與片之間只有約 10 nm，只有 ALD 能從四面八方包均勻。' }
+    { t: '包上閘極', d: '用 ALD 在每片奈米片四周鋪上高介電層（紫）和金屬（灰，最貼近的一層是決定 Vt 的功函數金屬），再用 CMP 磨平：完成！', tech: [['⑤ 高介電', 'hk1'], ['③ ALD', 'depo2'], ['⑥ CMP', 'cmp1']], why: '片與片之間只有約 10 nm：要塞進高介電，加上決定 Vt 的功函數金屬（nFET、pFET 不同），只有 ALD 能從四面八方包均勻。' }
   ];
   function gaa(c, w, h, i, p, t) {
     // U.box 會把透明度重設為 1；這裡改成保留外面設定的 globalAlpha，淡入淡出才有效
@@ -87,6 +87,9 @@
     U.txt(c, '橫切面（垂直切開閘極）', icx, iy - 8, { align: 'center', size: 13, w: 600, color: '#3e4b5b' });
     U.box(c, 'si', ix + 6, ib, iw - 12, 18);
     const fwFull = iw - 24, fw = i < 1 ? fwFull : i === 1 ? U.lerp(fwFull, iw * 0.34, p) : iw * 0.34, fx = icx - fw / 2, itop = ib - N * il;
+    // 淺溝槽隔離（STI）：切完鰭後，鰭兩側的溝槽填氧化矽，閘極就坐在它上面
+    const sti = i < 1 ? 0 : i === 1 ? ph(0, 0.7, 1) : 1;
+    if (sti > 0) { c.globalAlpha = sti; U.box(c, 'ox', ix + 6, ib, fx - ix - 6, 12); U.box(c, 'ox', fx + fw, ib, ix + iw - 6 - fx - fw, 12); c.globalAlpha = 1; if (i <= 2) U.tag(c, 'STI', ix + (fx - 16 - ix) / 2, ib - 8, { align: 'center', size: 13, color: '#8a6a2e' }); }
     const igrown = i === 0 ? p * N : N;
     for (let k = 0; k < N; k++) {
       if (k >= igrown) break;
@@ -107,7 +110,7 @@
     if (i >= 2 && i <= 6) U.tag(c, '假閘極從三面跨住鰭', icx, iy + 18, { align: 'center', size: 13 });
   }
   A({
-    id: 'gaaflow', part: 2, chap: 7, eyebrow: EY, minutes: 3.5, short: '環繞式電晶體怎麼做',
+    id: 'gaaflow', part: 2, chap: 7, eyebrow: EY, minutes: 3.9, short: '環繞式電晶體怎麼做',
     title: 'GAA 怎麼做？九個步驟', en: 'GAA Nanosheet Process',
     thesis: '奈米片不是「立起來」的，而是<b>先疊好一層層材料，最後把夾在中間的矽鍺溶掉</b>，讓閘極鑽進去。每一步右邊都會標出<b>用到哪一章的技術</b>，點一下可以跳回去複習。',
     render: () => `<div class="s-body w66">
@@ -136,9 +139,9 @@
 
 第一步，疊層：用第四章的磊晶，一層矽鍺、一層矽交替長上去，每層只有幾奈米。矽是未來的通道，矽鍺只是佔位的犧牲層。右邊卡片裡的橘字是「怎麼量」：每層多厚、鍺有多少，要用 X 光和光學量測反推。
 
-第二步，切成鰭：用第一章的微影畫出細線，再用第二章的蝕刻往下挖。這一刀是切在另一個方向，所以要看右上角：整片疊層被切成一條細長的鰭。
+第二步，切成鰭：用第一章的微影畫出細線，再用第二章的蝕刻往下挖。這一刀是切在另一個方向，所以要看右上角：整片疊層被切成一條細長的鰭。鰭排得非常密，常用一種叫 SAQP 的自對準多重圖案：先印鬆的線，靠兩側長出來的側壁把線距減半、再減半。切完之後，鰭與鰭之間的溝槽填滿氧化矽、磨平再往下蝕刻一點，叫淺溝槽隔離 STI，把相鄰的電晶體隔開；右上角鰭底下淡黃色那一層就是它，之後的閘極就坐在它上面。
 
-第三步，假閘極：先用沉積鋪一層多晶矽，再微影、蝕刻出假閘極，兩側加上間隔層。後面做源汲極要加熱到上千度，真正的高介電層和金屬怕高溫，所以先用耐熱的假閘極撐著。右上角可以看到假閘極從三面跨住鰭。
+第三步，假閘極：先用沉積鋪一層多晶矽，再微影、蝕刻出假閘極，兩側加上間隔層。後面做源汲極要加熱到上千度，真正的高介電層和金屬怕高溫，所以先用耐熱的假閘極撐著。右上角可以看到假閘極從三面跨住鰭。這種先用假的、最後才換成真閘極的做法，叫後閘極，英文 replacement metal gate，鰭式時代就這樣做了。
 
 第四步，挖源汲極：用蝕刻把假閘極兩旁的疊層挖掉。
 
@@ -148,9 +151,9 @@
 
 第七步，換掉假閘極：鋪上絕緣層，用第六章的 CMP 磨平，露出假閘極的頂端，再把它蝕刻掉。
 
-第八步最關鍵，溶掉矽鍺：用只吃矽鍺、不傷矽的蝕刻，把夾心全部溶掉。這種蝕刻往四面八方溶，但只溶矽鍺，正是蝕刻那一章說的等向蝕刻的強項，可以用藥水或氣體，量產上多用氣體，不是原子層蝕刻。看右上角，矽奈米片懸空了，兩端由源汲極撐著。溶乾淨了沒、矽片有沒有被吃薄，從上面完全看不到，這是量測最難的一步。
+第八步最關鍵，溶掉矽鍺：用只吃矽鍺、不傷矽的蝕刻，把夾心全部溶掉。這種蝕刻往四面八方溶，但只溶矽鍺，正是蝕刻那一章說的等向蝕刻的強項，可以用藥水或氣體，各家做法不同、也不公開，但都不是原子層蝕刻。看右上角，矽奈米片懸空了，兩端由源汲極撐著。溶乾淨了沒、矽片有沒有被吃薄，從上面完全看不到，這是量測最難的一步。
 
-第九步，包上閘極：用 ALD 在每片奈米片的四周鋪上第五章的高介電層，再填滿金屬，最後用 CMP 磨平。右上角可以看到，每一片都被閘極四面包住，這就是「環繞式」。
+第九步，包上閘極：用 ALD 在每片奈米片的四周鋪上第五章的高介電層，再鋪決定 Vt 的功函數金屬，nFET 和 pFET 用不同的金屬，最後填滿、用 CMP 磨平。片與片之間只有十奈米左右，要塞進好幾層，多種 Vt 是最難做的地方之一。右上角可以看到，每一片都被閘極四面包住，這就是「環繞式」。
 
 就像做千層蛋糕：蛋糕片之間先夾果凍，最後把果凍融掉，再灌巧克力把每一片包住。
 
@@ -165,7 +168,7 @@
     ['④ 移除防沾塗層', '把塗層洗掉：只有金屬上長了膜，位置完全對齊，不需要光罩。']
   ];
   A({
-    id: 'asd', part: 2, chap: 3, eyebrow: '第二部分 · ③ 薄膜沉積', minutes: 3, short: '區域選擇性沉積（新技術）', badge: '新技術',
+    id: 'asd', part: 2, chap: 3, eyebrow: '第二部分 · ③ 薄膜沉積', minutes: 4.2, short: '區域選擇性沉積（新技術）', badge: '新技術',
     title: '區域選擇性沉積：只長在需要的地方', en: 'Area-Selective Deposition',
     thesis: '傳統做法是「全部鋪滿再挖掉」。新方法讓材料<b>只長在金屬上</b>。切到「怎麼做到？」看分子層級的祕密：<b>先幫不要長的地方穿雨衣</b>。',
     render: () => `<div class="s-body">
@@ -331,7 +334,7 @@
   ];
   const RECIPE = ['① 磊晶：矽 5 nm／矽鍺 10 nm，各 3 層', '② 蝕刻：切出 40 nm 寬的鰭、做假閘極', '③ 源汲極磊晶：邊長邊摻磷', '④ 加熱：1,000°C、1 秒', '⑤ 換閘極：高介電 1.5 nm＋金屬'];
   A({
-    id: 'tcad1', part: 2, chap: 8, eyebrow: EY8, minutes: 3.5, short: 'TCAD：電腦裡的虛擬工廠',
+    id: 'tcad1', part: 2, chap: 8, eyebrow: EY8, minutes: 4.6, short: 'TCAD：電腦裡的虛擬工廠',
     title: 'TCAD：先在電腦裡把電晶體「做」一次、「測」一次', en: 'Technology CAD',
     thesis: '真的做一批晶圓要 3–4 個月。TCAD 用電腦<b>模擬製程和電晶體</b>，先把幾百種設計試過，只挑最好的去真做。三個分頁：怎麼模擬、3D 模型、親手做一次虛擬實驗。',
     render: () => `<div class="s-body w66">
@@ -597,16 +600,16 @@
   /* 量測、檢測、WAT 總覽：工廠的三種檢查（接在 TCAD 之後，帶出後面的順序：量尺寸 → 找缺陷 → SPC、APC → 晶圓做完：WAT） */
   const EYE_SITES = [[0, 0], [0.5, 0], [-0.5, 0], [0, 0.5], [0, -0.5], [0.35, 0.35], [-0.35, 0.35], [0.35, -0.35], [-0.35, -0.35]];
   A({
-    id: 'eyes', part: 2, chap: 9, eyebrow: EY9, minutes: 1.5, short: '三種檢查：量測、檢測、WAT',
+    id: 'eyes', part: 2, chap: 9, eyebrow: EY9, minutes: 2.8, short: '三種檢查：量測、檢測、WAT',
     title: '量測、檢測、WAT：工廠的三種檢查', en: 'Metrology · Inspection · WAT',
     thesis: 'TCAD 要靠量測校正，但量測更大的工作是<b>每天顧產線</b>。廠裡有三種檢查：製程中，<b>量測</b>問「尺寸對不對」、<b>檢測</b>問「哪裡有缺陷」；晶圓做完後，<b>WAT</b> 直接量「電性對不對」。切換看看三種檢查各看到什麼。',
     render: () => `<div class="s-body w66">
       <div class="col"><div class="controls">${U.seg('ey-m', ['① 量測：尺寸對不對', '② 檢測：哪裡有缺陷', '③ WAT：電性對不對'], 0)}</div>
         ${U.figHTML('ey-cv', '同一片晶圓，三種檢查', '')}</div>
       ${U.side({
-        top: `<div class="card"><h4 style="margin-bottom:6px">三種檢查比一比</h4><table style="width:100%;border-collapse:collapse;font-size:14px;line-height:1.35">${[['', '量測', '檢測', 'WAT'], ['問什麼', '尺寸對不對', '哪裡有缺陷', '電性對不對'], ['什麼時候', '製程中', '製程中', '晶圓做完後'], ['得到', '線寬、膜厚、疊對', '缺陷位置和種類', '電壓、電流、電阻'], ['怎麼看', '抽幾片、量幾個點', '抽片後整片掃', '扎切割道測試結構'], ['工具', '膜厚機、CD-SEM、OCD、疊對機（TEM 當參考）', '光學掃描＋複檢 SEM、電子束', '探針卡＋測試機'], ['接下來', '交給 SPC、APC', '推回哪台機台', '放行或回推哪一站']].map((r, i) => `<tr style="border-top:${i ? '1px solid var(--line)' : '0'}">${r.map((x, j) => `<${i && j ? 'td' : 'th'} style="text-align:left;padding:4px 6px;${j === 0 ? 'color:var(--ink-3);font-weight:600;white-space:nowrap' : ''}">${x}</${i && j ? 'td' : 'th'}>`).join('')}</tr>`).join('')}</table></div>
-          <div class="card key"><h4>這一章跟著晶圓走</h4><div style="display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.45">${[['製程中', '① 量尺寸（TEM、SEM、OCD）→ ② 找缺陷（檢測）→ ③ 數字怎麼用（SPC、APC）'], ['晶圓做完', '④ WAT 量電性，和量到的尺寸對照'], ['之後', 'CP → 封裝 → FT（接第三部分）']].map(([t, d]) => `<div style="display:flex;gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:5px 8px"><b style="flex:none;width:4.5em">${t}</b><span>${d}</span></div>`).join('')}</div></div>`,
-        analogy: { icon: 'eye', t: '比喻', p: '健康檢查：量血壓、量身高是量測（數字對不對）；照胃鏡找息肉是檢測（哪裡有異常）；抽血化驗是 WAT（身體機能正不正常）。' }
+        top: `<div class="card"><h4 style="margin-bottom:6px">三種檢查比一比</h4><table style="width:100%;border-collapse:collapse;font-size:14px;line-height:1.35">${[['', '量測', '檢測', 'WAT'], ['問什麼', '尺寸對不對', '哪裡有缺陷', '電性對不對'], ['什麼時候', '製程中', '製程中', '晶圓做完後'], ['得到', '線寬、膜厚、疊對', '缺陷位置和種類', '電壓、電流、電阻'], ['怎麼看', '抽幾片、量幾個點', '抽片後整片掃', '扎切割道測試結構'], ['工具', '膜厚機、CD-SEM、OCD、疊對機（TEM 當參考）', '光學掃描＋複檢 SEM、電子束', '探針卡＋測試機'], ['接下來', '交給 SPC（統計製程管制）、APC', '推回哪台機台', '放行或回推哪一站']].map((r, i) => `<tr style="border-top:${i ? '1px solid var(--line)' : '0'}">${r.map((x, j) => `<${i && j ? 'td' : 'th'} style="text-align:left;padding:4px 6px;${j === 0 ? 'color:var(--ink-3);font-weight:600;white-space:nowrap' : ''}">${x}</${i && j ? 'td' : 'th'}>`).join('')}</tr>`).join('')}</table></div>
+          <div class="card key"><h4>這一章跟著晶圓走</h4><div style="display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.45">${[['製程中', '① 量尺寸 → ② 找缺陷 → ③ SPC、APC'], ['晶圓做完', '④ WAT 量電性，對照尺寸'], ['之後', '⑩ 從設計到量產 → CP、封裝（第三部分）']].map(([t, d]) => `<div style="display:flex;gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:5px 8px"><b style="flex:none;width:4.5em">${t}</b><span>${d}</span></div>`).join('')}</div></div>`,
+        analogy: { icon: 'eye', t: '比喻', p: '健康檢查：量血壓是量測，照胃鏡找息肉是檢測，抽血化驗是 WAT。' }
       })}</div>`,
     init(el, ctx) {
       const { c, w, h } = U.canvas(U.$(el, '#ey-cv'));
@@ -693,7 +696,7 @@
 
 切到第三種：WAT，晶圓允收測試。前兩種都在製程中途做；WAT 是整片晶圓做完之後，在晶片之間走道上的測試結構扎針，量電壓、電流、電阻，確認電晶體和導線的電性對。三種是不同的機台，在廠裡常常也是不同的團隊。就像健康檢查：量血壓、量身高是量測，照胃鏡找息肉是檢測，抽血化驗是 WAT。
 
-這一章就跟著一片晶圓走，看右下角。製程中：先看第一種檢查，量尺寸的三種工具 TEM、SEM、OCD，以及 OCD 背後的模型；再看第二種，檢測怎麼找缺陷、推回是哪台機台；接著看這些數字每天拿來做什麼，也就是 SPC 和 APC。晶圓做完：用第三種檢查 WAT 量電性，再和量到的尺寸對照。合格之後送去 CP、封裝、FT，就接到第三部分。`
+這一章就跟著一片晶圓走，路線在右邊中間那張卡。製程中：先看第一種檢查，量尺寸的三種工具 TEM、SEM、OCD，以及 OCD 背後的模型；再看第二種，檢測怎麼找缺陷、推回是哪台機台；接著看這些數字每天拿來做什麼，也就是 SPC 和 APC。晶圓做完：用第三種檢查 WAT 量電性，再和量到的尺寸對照。晶圓做完之後，第十章把鏡頭拉遠，看一個新製程怎麼從設計走到量產、良率怎麼爬上去；再來的 CP、封裝，就接到第三部分。`
   });
 
   /* 量測與檢測（兩頁）：mloop 管制圖判定＋APC；insp 缺陷地圖猜原因 */
@@ -757,12 +760,12 @@
   // 47、48 共用的分工圖：量測 → SPC（判定有沒有異常，找人處理）→ APC（自動算下一批調多少）→ 機台；on＝這一頁講的那一段
   const ctlFlow = on => `<div class="minimap" style="flex-wrap:wrap">${[['量測', ''], ['SPC 統計製程管制', '判定機台有沒有變，異常就找人處理'], ['APC 先進製程控制', '自動算出下一批要調多少'], ['機台', '']].map(([n, d], i) => `${i ? '<span class="ar">→</span>' : ''}<span class="nd${i === on ? ' on' : ''}" title="${d}">${n}${d && i === on ? `<small style="font-weight:500;margin-left:8px;opacity:.9">${d}</small>` : ''}</span>`).join('')}</div>`;
   A({
-    id: 'mloop', part: 2, chap: 9, eyebrow: EY9, minutes: 4.5, short: 'SPC：管制圖與判定',
+    id: 'mloop', part: 2, chap: 9, eyebrow: EY9, minutes: 4.8, short: 'SPC：管制圖與判定',
     title: 'SPC 統計製程管制：量完先判定', en: 'SPC · Statistical Process Control',
-    thesis: '前面量到的數字（線寬、膜厚、疊對）拿來做什麼？交給 <b>SPC</b>（Statistical Process Control，統計製程管制）：拿數字和<b>三條線</b>比，<b>判定</b>機台有沒有變、這批怎麼處理；自動修正則交給下一頁的 <b>APC</b>。依序按 ①～④ 看一遍。',
+    thesis: '前面量到的數字（線寬、膜厚、疊對，還有每片缺陷數）拿來做什麼？交給 <b>SPC</b>（Statistical Process Control，統計製程管制）：拿數字和<b>三條線</b>比，<b>判定</b>機台有沒有變、這批怎麼處理；自動修正則交給下一頁的 <b>APC</b>。依序按 ①～④ 看一遍。',
     render: () => `<div class="s-body w66">
       <div class="col">${ctlFlow(1)}<div class="controls">${U.seg('ml-sc', ['① 機台很穩', '② 開始漂', '③ 超出管制線', '④ 超出規格'], 0)}</div>
-        ${U.figHTML('ml-spc', '蝕刻後線寬的管制圖：每個點是一批晶圓的平均（目標 15.0 nm）', '')}
+        ${U.figHTML('ml-spc', '蝕刻後線寬的管制圖：每個點是一批晶圓的平均（目標 15.0 nm）', '規則與處置為示意，依各廠規範')}
         <div class="controls">${U.range('ml-d', '機台漂移（也可以自己拖）', 0, 2, 0.05, 0, ' nm')}<span id="ml-st">${U.seg('ml-s', ['曝光後量（ADI）', '蝕刻後量（AEI）'], 1)}</span></div></div>
       ${U.side({
         top: `<div class="card key"><h4 style="margin-bottom:8px">判定：最新一批（大點）落在哪？</h4><div id="ml-lad" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px">${ML_LAD.map(([k, d]) => `<div data-v="${k}" style="display:flex;gap:10px;align-items:baseline;padding:3px 8px;border-radius:6px;border:2px solid transparent;transition:.2s"><b style="min-width:9.5em;color:${ML_V[k][0]}">${ML_V[k][1].replace('（多半報廢）', '')}</b><span style="font-size:15px;color:var(--ink-2)">${d}</span></div>`).join('')}</div><p id="ml-dd" style="font-size:16px;margin:0"></p></div>`,
@@ -835,7 +838,6 @@
         if (first >= 0 && first < N - 1) { const after = vs.slice(first + 1), bad = after.filter(v => Math.abs(v - T) > SL).length; U.tag(c, `第一次超線後又跑了 ${after.length} 批` + (bad ? `，其中 ${bad} 批超出規格` : ''), gx + gw - 4, Y(T - SL) + 34, { align: 'right', size: 14, color: bad ? '#b3261e' : '#a8660a' }); }
         const nBad = vs.filter(v => Math.abs(v - T) > SL).length;
         if (nBad) U.tag(c, stn === 0 ? `↺ ${nBad} 批洗掉重做：救回來了，但多花時間和成本` : `✕ ${nBad} 批已經蝕刻：多半報廢`, gx + gw - 4, Y(T - SL) + 62, { align: 'right', size: 15, color: stn === 0 ? '#1f7a4d' : '#b3261e' });
-        U.txt(c, '管制規則與處置流程為示意，實際依各廠規範', gx + gw, gy + 8, { align: 'right', size: 13, color: '#6a7888' });
         U.txt(c, `最新一批（大點）：${last.toFixed(2)} nm`, gx, h - 16, { size: 15, w: 700, color: '#17202b' });
         if (V !== lastV) {
           lastV = V; D.textContent = ML_V[V][2];
@@ -857,16 +859,18 @@ SPC 的核心是這張管制圖，每個點是一批晶圓量出來的平均線�
 
 ③ 超出管制線：點跑進黃色區，還在規格內，產品通常沒問題，但機台已經變了，判定 ADJUST，要調機台。超出管制線，廠裡叫 OOC；超出規格叫 OOS。
 
-④ 超出規格：點跑進紅色區。這時要看是在哪一站量的。點一超出規格，圖上方就會出現流程條，下面也會出現「曝光後量／蝕刻後量」的切換：曝光之後量一次，蝕刻之後再量一次，廠裡分別叫 ADI 和 AEI。下面切「曝光後量」：流程條亮的是第一個量測站，超規格的點變成綠色空心圈加一個回頭箭頭，因為這時候圖案還只是光阻，洗掉重新曝光就好，叫 REWORK，廠裡說重工，右上角寫「幾批洗掉重做、救回來了」，代價只是時間和成本。切回「蝕刻後量」：同樣的漂移，同樣幾批，現在變成紅色叉叉，因為圖案已經挖進下面的材料，挖掉的回不來，整批先扣住，工程師評估，多半報廢。所以廠裡會在曝光後先量一次，在還救得回來的時候把關。實際上曝光後量的是光阻線寬，目標值和蝕刻後不一樣，這裡畫在同一個刻度上方便比較。右上角的計數也看一下：第一次超線之後，如果沒人處理，又跑了十幾批，其中好幾批超出規格，這就是晚處理的代價。
+④ 超出規格：點跑進紅色區。這時要看是在哪一站量的。點一超出規格，圖上方就會出現流程條，下面也會出現「曝光後量／蝕刻後量」的切換：曝光之後量一次，蝕刻之後再量一次，廠裡分別叫 ADI 和 AEI。下面切「曝光後量」：流程條亮的是第一個量測站，超規格的點變成綠色空心圈加一個回頭箭頭，因為這時候圖案還只是光阻，洗掉重新曝光就好，叫 REWORK，廠裡說重工，管制圖右下角寫「幾批洗掉重做：救回來了」，代價只是時間和成本。切回「蝕刻後量」：同樣的漂移，同樣幾批，現在變成紅色叉叉，因為圖案已經挖進下面的材料，挖掉的回不來，整批先扣住，工程師評估，多半報廢。所以廠裡會在曝光後先量一次，在還救得回來的時候把關。實際上曝光後量的是光阻線寬，目標值和蝕刻後不一樣，這裡畫在同一個刻度上方便比較。管制圖右下角的計數也看一下：第一次超線之後，如果沒人處理，又跑了十幾批，其中好幾批超出規格，這就是晚處理的代價。
 
 還有一個關鍵：超線的時候，第一步不是怪機台，而是先確認量測本身沒出錯。每一張管制圖都附一份事先寫好的處置清單，超線時照著一步一步查，廠裡叫 OCAP。量測機台每天要量標準片，確認自己沒漂；同一型的幾台機台要互相比對，量同一片要得到一樣的數字；量測本身的誤差也要遠小於規格範圍，量出來的數字才有意義。另外量測都是抽樣：每批抽幾片、每片量幾個到幾十個點，不是每片每顆都量。管制規則和處置流程，各廠都有自己的規範，畫面上是示意。
+
+管制圖上不只放尺寸。檢測掃到的每片缺陷數，也一樣上管制圖：每一站有平常的缺陷基準，叫 baseline；某一批突然暴增，叫 excursion，要馬上扣貨查機台。機台本身每天也要跑一片乾淨的監控片，進機台走一趟再掃一次，看多了幾顆微粒，叫 adder，超線就停機清理。
 
 這一頁的處置都要靠人：工程師看到警報、去查、去調機台。能不能讓系統每批自己修？下一頁就是 APC。`
   });
 
   /* APC：批次對批次的自動修正（回饋＋前饋）；修正力道、量測準不準、調整量的管制 */
   A({
-    id: 'apc', part: 2, chap: 9, eyebrow: EY9, minutes: 4, short: 'APC：自動修正怎麼算',
+    id: 'apc', part: 2, chap: 9, eyebrow: EY9, minutes: 4.9, short: 'APC：自動修正怎麼算',
     title: 'APC 先進製程控制：自動算出下一批要調多少', en: 'APC · Advanced Process Control',
     thesis: '<b>APC</b>（Advanced Process Control，先進製程控制）把量測接回機台：<b>這批偏多少，下一批就反過來補一部分</b>。補多少是門學問：太保守追不上，太衝會<b>來回震盪</b>；量測不準，APC 會把<b>量錯的數字也當真</b>去調。',
     render: () => `<div class="s-body w66">
@@ -966,7 +970,7 @@ SPC 和 APC 都建立在一個前提：量到的數字要準，這也是前面�
   });
 
   A({
-    id: 'insp', part: 2, chap: 9, eyebrow: EY9, minutes: 2, short: '檢測：缺陷地圖',
+    id: 'insp', part: 2, chap: 9, eyebrow: EY9, minutes: 3.3, short: '檢測：缺陷地圖',
     title: '檢測：找出缺陷，推回是哪台機台', en: 'Inspection · Defect Map',
     thesis: '<b>檢測</b>不量尺寸，而是在整片晶圓上找<b>缺陷</b>：微粒、刮痕、短路。流程是<b>掃描 → 複檢 → 分類</b>，最後看缺陷在晶圓上的<b>分布形狀</b>，就能推回是哪台機台出問題。看完動畫，猜猜看原因。',
     render: () => `<div class="s-body w66">
@@ -975,8 +979,8 @@ SPC 和 APC 都建立在一個前提：量到的數字要準，這也是前面�
         <div class="controls"><span style="font-size:17px;color:var(--ink-2)">猜原因：</span><span id="ml-g" style="display:flex;gap:6px;flex-wrap:wrap"></span><span id="ml-sc2" style="margin-left:auto;font-size:16px;color:var(--ink-2)"></span></div></div>
       ${U.side({
         top: `<div class="card key"><h4 id="ml-h"></h4><p id="ml-dd" style="font-size:17px;margin:0"></p></div>`,
-        points: ['光學掃描：每顆晶粒和<b>隔壁晶粒比對</b>，不一樣的地方就是可疑點', '靈敏度兩難：調太高<b>誤報</b>一堆，調太低會<b>漏抓</b>', '抽片後整片掃；複檢 SEM 才抽點放大看', '藏在裡面的缺陷（片下殘留、接觸孔沒通）光學看不到 → <b>電子束檢測</b>：看得更小、還看得出電性，但很慢，只抽關鍵區'],
-        analogy: { icon: 'eye', t: '比喻', p: '健康檢查：量血壓、量身高是量測（數字對不對）；照胃鏡找息肉是檢測（哪裡有異常）。' }
+        points: ['光學掃描：每顆晶粒和<b>隔壁晶粒比對</b>，不一樣的地方就是可疑點（盲點：光罩上的缺陷每顆都有，比不出來，第十章講光罩）', '靈敏度兩難：調太高<b>誤報</b>一堆，調太低會<b>漏抓</b>', '抽片後整片掃；複檢 SEM 才抽點放大看', '藏在裡面的缺陷（片下殘留、接觸孔沒通）光學看不到 → <b>電子束檢測</b>：看得更小、還看得出電性，但很慢，只抽關鍵區', '量產時<b>每片缺陷數也上管制圖</b>：某批突然暴增（excursion）就扣貨查機台'],
+        analogy: { icon: 'eye', t: '比喻', p: '健康檢查：量血壓是量測（數字對不對）；照胃鏡找息肉是檢測（哪裡有異常）。' }
       })}</div>`,
     init(el, ctx) {
       let pi = 0, pt = 0, guess = -1;
@@ -1051,13 +1055,15 @@ SPC 和 APC 都建立在一個前提：量到的數字要準，這也是前面�
 
 看動畫，分四步。
 
-第一步，光學掃描。光學檢測機台把整片晶圓掃一遍。它不知道正確答案長怎樣，方法是把每一顆晶粒和隔壁晶粒比對：右邊三顆晶粒，圖案本來一模一樣，中間這顆多了一個點，和左右都不一樣，就標成可疑點。這時候只知道哪裡怪怪的，不知道是什麼。靈敏度調太高，會抓到一大堆其實沒事的誤報；調太低又會漏抓，這是檢測工程師每天在拿捏的。
+第一步，光學掃描。光學檢測機台把整片晶圓掃一遍。它不知道正確答案長怎樣，方法是把每一顆晶粒和隔壁晶粒比對：右邊三顆晶粒，圖案本來一模一樣，中間這顆多了一個點，和左右都不一樣，就標成可疑點。這時候只知道哪裡怪怪的，不知道是什麼。靈敏度調太高，會抓到一大堆其實沒事的誤報；調太低又會漏抓，這是檢測工程師每天在拿捏的。這招也有盲點：如果缺陷來自光罩，每一顆晶粒同一個位置都有，和隔壁比對完全一樣，就比不出來；一格只放一顆大晶片時特別麻煩。光罩怎麼另外檢查，第十章會講。
 
 第二步，複檢。用複檢 SEM 抽幾個可疑點放大看，到底是刮痕、短路、微粒，還是其實沒事。注意它和前面量線寬的 CD-SEM 是不同用途的機台。
 
 第三步，分類。哪些是這次要找的缺陷，標紅色；哪些是其他來源，標灰色。
 
 第四步，看紅點在晶圓上的分布形狀，推回是哪台機台出問題。請大家猜：一條弧線，通常是 CMP 刮傷；每個曝光格同一個位置都有，是光罩髒了；集中在外圈，是邊緣的蝕刻或沉積不均，或晶邊的膜剝落；一團擠在一起，是機台掉了微粒。後面還有四張進階題：集中在正中央，是塗佈機或沉積噴頭；一條筆直的線，是搬運手臂刮到，和 CMP 的弧線不一樣，因為手臂是直線移動；半徑中間繞一整圈，是 CMP 研磨頭某一圈壓力不對；只有半邊，是晶圓放偏或夾盤一邊溫度不同。每張只給四個選項，右下角會記錄破解幾張。時間緊的話，猜前兩張就好，其他留給有興趣的人課後玩。
+
+量產時，檢測最大量的工作其實是天天數缺陷：每一站每片掃到幾顆，也畫成管制圖，平常的水準叫 baseline，某一批突然暴增叫 excursion，就扣貨、查機台；機台每天也跑乾淨的監控片，看多掉了幾顆微粒。下一頁的管制圖，就是這樣用的。
 
 量測的數字、檢測的缺陷地圖，每天都在大量產生。接下來看這些數字拿來做什麼：SPC。`
   });
@@ -1069,7 +1075,7 @@ SPC 和 APC 都建立在一個前提：量到的數字要準，這也是前面�
     { k: 'ocd', n: '光學散射 OCD', d: '打一道光到切割道上的週期性量測靶，分析反射光譜，用模型反推 3D 形狀。', speed: .95, model: .9, real: .2, harm: 0 }
   ];
   A({
-    id: 'metro', part: 2, chap: 9, eyebrow: EY9, minutes: 1.6, short: '量測：怎麼看見奈米',
+    id: 'metro', part: 2, chap: 9, eyebrow: EY9, minutes: 2.5, short: '量測：怎麼看見奈米',
     title: '量尺寸的三種工具：TEM、SEM、OCD', en: 'Metrology Toolbox',
     thesis: '量測最常量的是 <b>CD</b>（Critical Dimension，關鍵尺寸，例如線寬）。TEM、SEM 用電子<b>直接看</b>；OCD 打光、再用模型<b>反推</b>。沒有一種全能：越快的越依賴模型，越直接的越慢、越要破壞。',
     render: () => `<div class="s-body">
@@ -1218,7 +1224,7 @@ SPC 和 APC 都建立在一個前提：量到的數字要準，這也是前面�
     }
   }
   A({
-    id: 'tem', back: 'metro', part: 2, chap: 9, eyebrow: EY9 + '：量測', minutes: 2.2, short: '量測①：穿透式電子顯微鏡 TEM',
+    id: 'tem', back: 'metro', part: 2, chap: 9, eyebrow: EY9 + '：量測', minutes: 1.9, short: '量測①：穿透式電子顯微鏡 TEM',
     title: '穿透式電子顯微鏡 TEM：讓電子穿過超薄切片', en: 'TEM',
     thesis: '想看清電晶體內部，只能把它<b>切開、削到比電晶體還薄</b>，再讓電子穿過去成像。最清楚，但晶片就毀了。',
     render: () => `<div class="s-body w66">
@@ -1248,7 +1254,7 @@ SPC 和 APC 都建立在一個前提：量到的數字要準，這也是前面�
   const OCD_S = [[26, 28], [20, 30], [12, 55], [14, 30]];
   const spec = (lam, wd, ht) => 0.5 + 0.22 * Math.cos(4 * Math.PI * ht * 15 / lam + wd * 0.04) + 0.14 * Math.cos(2 * Math.PI * wd * 25 / lam);
   A({
-    id: 'ocd', back: 'metro', part: 2, chap: 9, eyebrow: EY9 + '：量測', minutes: 2.6, short: '量測③：光學散射 OCD',
+    id: 'ocd', back: 'metro', part: 2, chap: 9, eyebrow: EY9 + '：量測', minutes: 3.7, short: '量測③：光學散射 OCD',
     title: '光學散射 OCD：從反射光的顏色反推形狀', en: 'Optical CD / Scatterometry',
     thesis: 'OCD 不用看清楚，而是靠<b>反推</b>：不同形狀的結構，反射出來的各種顏色強弱都不一樣。試著調整左邊的猜測，<b>讓藍線和黑線重疊</b>，就找到了模型裡最像的形狀。',
     render: () => `<div class="s-body">
@@ -1336,28 +1342,29 @@ SPC 和 APC 都建立在一個前提：量到的數字要準，這也是前面�
   const RECAP = [
     ['litho1', '① 微影', '用光畫出圖案', '光越細，畫得越細；EUV 是目前最細的光', 'pen'],
     ['etch1', '② 蝕刻', '挖掉不要的部分', '電漿讓牆壁又直又深', 'shovel'],
-    ['depo1', '③ 沉積', '鋪上新的薄膜', 'ALD 一輪一薄層，每個角落都一樣厚', 'paint'],
+    ['depo4', '③ 沉積', '鋪上新的薄膜', 'ALD 一輪一薄層，每個角落都一樣厚', 'paint'],
     ['dope1', '④ 摻雜與磊晶', '調整導電性、長出晶體', '源汲極改成長晶體時就摻好', 'bullet'],
     ['hk1', '⑤ 閘極與高介電', '做出最關鍵的開關', '換成更厚但一樣有效的絕緣牆，擋住漏電', 'wall'],
     ['cmp1', '⑥ 平坦化', '把每一層磨平', '好幾種材料要一起磨到一樣平', 'sand'],
     ['gaaflow', '⑦ 環繞式與導線', '把技術組合起來', '疊千層、挖夾心做出奈米片，再接上十幾層導線', 'bread'],
     ['tcad1', '⑧ 模擬', '電腦裡的虛擬工廠', '先算再做，但一定要拿真實量測來校正', 'chip'],
-    ['eyes', '⑨ 檢測量測', '工廠的三種檢查', '量尺寸、找缺陷，SPC 判定、APC 修正；做完用 WAT 量電性', 'eye']
+    ['eyes', '⑨ 檢測量測', '工廠的三種檢查', '量尺寸、找缺陷，SPC 判定、APC 修正；做完用 WAT 量電性', 'eye'],
+    ['d2m', '⑩ 從設計到量產', '從設計圖到量產', 'PDK 定規則、下線做光罩；靠 TV 和良率學習爬到量產', 'road']
   ];
   A({
     id: 'p2sum', part: 2, eyebrow: '第二部分 · 小結', minutes: 1.5, short: '第二部分總整理',
-    title: '第二部分小結：九件事，一頁看完', en: 'Part 2 Recap',
-    thesis: '這些技術不是各做各的，而是<b>在同一個循環裡反覆搭配</b>：鋪、畫、挖、改、磨，重複上千步，每一步都要精準到原子。就像蓋一棟很多層的大樓，每層都走同一套工序。點任一格可以回到那一章。',
-    render: () => `<div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;min-height:0">
-      ${RECAP.map(([id, n, what, key, ic]) => `<button type="button" class="fig" data-go="${id}" style="text-align:left;cursor:pointer;font:inherit;gap:12px;justify-content:center;padding:18px 20px">
-        <div style="display:flex;gap:12px;align-items:center"><div class="analogy" style="padding:0;border:0;background:none;grid-template-columns:56px"><div class="ic" style="width:56px;height:56px">${U.icon(ic)}</div></div><div class="bigword" style="font-size:27px">${n}</div></div>
-        <div style="font-size:23px;color:var(--accent);font-weight:700">${what}</div>
-        <div style="font-size:21px;color:var(--ink-2);line-height:1.5">${key}</div></button>`).join('')}
+    title: '第二部分小結：十件事，一頁看完', en: 'Part 2 Recap',
+    thesis: '這些技術不是各做各的，而是<b>在同一個循環裡反覆搭配</b>：鋪、畫、挖、改、磨，重複上千步，每一步都要精準到原子。就像蓋一棟很多層的大樓，每層都走同一套工序。點任一格，可以回到那一章。',
+    render: () => `<div style="flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;min-height:0">
+      ${RECAP.map(([id, n, what, key, ic]) => `<button type="button" class="fig" data-go="${id}" style="text-align:left;cursor:pointer;font:inherit;gap:10px;justify-content:flex-start;padding:22px 16px">
+        <div style="display:flex;gap:12px;align-items:center"><div class="analogy" style="padding:0;border:0;background:none;grid-template-columns:44px"><div class="ic" style="width:44px;height:44px">${U.icon(ic)}</div></div><div class="bigword" style="font-size:22px">${n}</div></div>
+        <div style="font-size:19px;color:var(--accent);font-weight:700">${what}</div>
+        <div style="font-size:18.5px;color:var(--ink-2);line-height:1.5">${key}</div></button>`).join('')}
 </div>`,
     init(el) { U.$$(el, '[data-go]').forEach(b => b.onclick = () => Deck.goId(b.dataset.go)); },
     notes: `第二部分到這裡結束，用一頁回顧。
 
-微影用光畫圖，光越細畫得越細；蝕刻用電漿挖出又直又深的溝；沉積鋪上薄膜，ALD 一輪一薄層、每個角落都一樣厚；摻雜與磊晶調整矽的導電性、長出晶體，源汲極改成長晶體時就摻好；閘極換成高介電材料，擋住穿牆漏電；平坦化把每一層磨平；第七章把這些技術組合起來：疊千層、挖夾心做出環繞式電晶體，再用中段、後段接上十幾層導線；第八章 TCAD 先在電腦裡模擬，但它太理想，最後要靠第九章：工廠的三種檢查，製程中量測量尺寸、檢測找缺陷，數字交給 SPC 判定、APC 修正；晶圓做完再用 WAT 量電性，合格才送去 CP、封裝；量測工程師做四件事：選工具和量測點、設管制線、判定並回饋機台、量不準時追原因。OCD 最快，但答案來自模型，要定期拿 TEM 對答案。
+微影用光畫圖，光越細畫得越細；蝕刻用電漿挖出又直又深的溝；沉積鋪上薄膜，ALD 一輪一薄層、每個角落都一樣厚；摻雜與磊晶調整矽的導電性、長出晶體，源汲極改成長晶體時就摻好；閘極換成高介電材料，擋住穿牆漏電；平坦化把每一層磨平；第七章把這些技術組合起來：疊千層、挖夾心做出環繞式電晶體，再用中段、後段接上十幾層導線；第八章 TCAD 先在電腦裡模擬，但它太理想，最後要靠第九章：工廠的三種檢查，製程中量測量尺寸、檢測找缺陷，數字交給 SPC 判定、APC 修正；晶圓做完再用 WAT 量電性，合格才送去 CP、封裝；量測工程師做四件事：選工具和量測點、設管制線、判定並回饋機台、量不準時追原因。OCD 最快，但答案來自模型，要定期拿 TEM 對答案。第十章把鏡頭拉遠：設計者照 PDK 畫圖、下線做光罩，新製程靠 TV 和可靠度驗證走到量產，再靠良率學習把缺陷一個個抓掉。
 
 記住一句話：鋪一層、畫圖、挖掉、調整、磨平，重複上千步，每一步都要精準到原子，也都要量得到。`
   });

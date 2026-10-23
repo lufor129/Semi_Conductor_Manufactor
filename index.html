@@ -33,9 +33,12 @@
 <script src="js/slides/p2-2nm.js"></script>
 <script src="js/slides/p2-rcwa.js"></script>
 <script src="js/slides/p2-wat.js"></script>
+<script src="js/slides/p2-d2m.js"></script>
 <script src="js/slides/p2-beol.js"></script>
 <script src="js/slides/p3-future.js"></script>
 <script src="js/slides/p3-new.js"></script>
+<script src="js/slides/p3-3dic.js"></script>
+<script src="js/slides/p3-optics.js"></script>
 <script src="js/slides/p9-end.js"></script>
 <script src="js/qa-data.js"></script>
 <script src="js/slides/p9-qa.js"></script>
@@ -62,14 +65,20 @@
   Deck.move('metro', 'eyes'); Deck.move('tem', 'metro'); Deck.move('sem', 'tem'); Deck.move('ocd', 'sem'); Deck.move('ocdf', 'ocd'); Deck.move('ocdb', 'ocdf');
   Deck.move('insp', 'ocdb'); Deck.move('mloop', 'insp'); Deck.move('apc', 'mloop');
   Deck.move('wat', 'apc'); Deck.move('wat2', 'wat'); Deck.move('wat4', 'wat2');
+  // 第十章：從設計到量產，接在第九章之後、第二部分小結之前
+  Deck.move('d2m', 'wat4'); Deck.move('pdk', 'd2m'); Deck.move('npi', 'pdk'); Deck.move('a14case', 'npi'); Deck.move('yield', 'a14case');
   // 第三部分封裝：為什麼需要（含良率）→ AI 晶片拆解（實例）→ 2D/2.5D/3D → HBM → 混合鍵合
   Deck.move('pkg', 'pkg0');
   Deck.move('glass', 'pkg3'); Deck.move('cowcmp', 'glass'); Deck.move('cpo', 'cowcmp');
   // 微影：OPC 之後接曲線光罩與 GPU 運算微影
   Deck.move('cmask', 'litho6');
   Deck.move('bs3', 'bsx');
+  Deck.move('bsheat', 'bs2'); // 背面供電：做法之後接代價（散熱）
   // 第三部分新增：SoIC 接在混合鍵合後；各家方案排在玻璃基板前
   Deck.move('soic', 'pkg3'); Deck.move('glass', 'cowcmp');
+  // 先進封裝依序：為什麼 → 拆解 → 2D／2.5D／3D 總覽 → 2.5D（各家方案、面板與玻璃）→ 3D（HBM、矽穿孔、混合鍵合、SoIC、3DIC 量測／散熱／設計測試）→ 光學封裝
+  Deck.move('cowcmp', 'pkg2'); Deck.move('glass', 'cowcmp'); Deck.move('pkg4', 'glass'); Deck.move('pkg4b', 'pkg4'); Deck.move('pkg3', 'pkg4b'); Deck.move('soic', 'pkg3');
+  Deck.move('therm3d', 'soic'); Deck.move('therm3d2', 'therm3d'); Deck.move('dt3d', 'therm3d2'); Deck.move('opt1', 'dt3d'); Deck.move('cpo', 'opt1');
   // 沉積、磊晶與摻雜、閘極各頁：標題旁加「⌂ 全貌」按鈕，跳回薄膜全貌頁
   ['depo1', 'depo2', 'asd', 'depo3', 'dope1', 'dope3', 'hk1'].forEach(id => { const s = Deck.slides.find(x => x.id === id); if (s) s.hub = 'depo4'; });
   // 標題旁的橘色標籤：2 nm 世代才導入的新技術、A16 起才有的背面供電、其他新技術、未來技術

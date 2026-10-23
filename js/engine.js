@@ -2,12 +2,12 @@
    每頁用 Deck.add({ id, part, title, minutes, render(h) -> html, init(el, ctx), notes }) 註冊 */
 (function () {
   const W = 1600, H = 900;
-  /* 第二部分的章節列：[編號, 名稱, 該章第一頁 id]；頁面用 chap: 1–9 指定所屬章節 */
+  /* 第二部分的章節列：[編號, 名稱, 該章第一頁 id]；頁面用 chap: 1–10 指定所屬章節 */
   const CHAPS = [
     [1, '微影', 'litho1'], [2, '蝕刻', 'etch1'], [3, '沉積', 'depo4'], [4, '摻雜磊晶', 'dope1'],
-    [5, '閘極', 'hk1'], [6, '平坦化', 'cmp1'], [7, '環繞式', 'gaaflow'], [8, '模擬', 'tcad1'], [9, '檢測量測', 'eyes']
+    [5, '閘極', 'hk1'], [6, '平坦化', 'cmp1'], [7, '環繞式', 'gaaflow'], [8, '模擬', 'tcad1'], [9, '檢測量測', 'eyes'], [10, '設計到量產', 'd2m']
   ];
-  const PARTS = { 0: '開場', 1: '第一部分 · 演進與現況', 2: '第二部分 · 製造電晶體（九章）', 3: '第三部分 · 突破摩爾定律', 4: '台積電篇', 9: '結尾' };
+  const PARTS = { 0: '開場', 1: '第一部分 · 演進與現況', 2: '第二部分 · 製造：從電晶體到量產（十章）', 3: '第三部分 · 突破摩爾定律', 4: '台積電篇', 9: '結尾' };
 
   const Deck = {
     slides: [],
@@ -26,7 +26,7 @@
     let flow = '';
     if (s.chap) { // 右上角的章節列：亮起目前所在的章，點名稱跳到該章第一頁
       flow = '<div class="miniflow" aria-label="第二部分章節">' + CHAPS.map(([k, n, go]) =>
-        `<span class="${k === s.chap ? 'on' : ''}" data-chap="${go}" title="跳到第 ${k} 章">${'①②③④⑤⑥⑦⑧⑨'[k - 1]} ${n}</span>`).join('') + '</div>';
+        `<span class="${k === s.chap ? 'on' : ''}" data-chap="${go}" title="跳到第 ${k} 章">${'①②③④⑤⑥⑦⑧⑨⑩'[k - 1]} ${n}</span>`).join('') + '</div>';
     }
     return `<header class="s-head">
       <div class="s-eyebrow"><span class="num">${String(i + 1).padStart(2, '0')}</span><span>${esc(s.eyebrow || PARTS[s.part] || '')}</span></div>
@@ -52,6 +52,22 @@
     Deck.scale = sc;
   }
 
+  /* 互動狀態：離頁前記下分頁鈕、逐步動畫、滑桿，按 B 回來或視窗縮放重建時還原（不用從第 1 步重來） */
+  Deck._state = {};
+  function snapState(el) {
+    const st = { seg: [], step: [], rng: [] };
+    el.querySelectorAll('.seg[id]').forEach(b => { const k = [...b.querySelectorAll('button')].findIndex(x => x.classList.contains('on')); if (k >= 0) st.seg.push([b.id, k]); });
+    el.querySelectorAll('.stepper[id]').forEach(b => { const d = [...b.querySelectorAll('.dots i')]; const k = d.findIndex(x => x.classList.contains('on')); if (k >= 0) st.step.push([b.id, k]); });
+    el.querySelectorAll('input[type=range][id]').forEach(r => st.rng.push([r.id, r.value]));
+    return st;
+  }
+  function applyState(el, st) {
+    const q = id => el.querySelector('#' + CSS.escape(id));
+    st.seg.forEach(([id, k]) => { const b = q(id), bt = b && b.querySelectorAll('button')[k]; if (bt && !bt.classList.contains('on')) bt.click(); }); // 先切分頁（分頁會換掉下面的內容）
+    st.rng.forEach(([id, v]) => { const r = q(id); if (r && r.value !== v) { r.value = v; r.dispatchEvent(new Event('input', { bubbles: true })); } });
+    st.step.forEach(([id, k]) => { const b = q(id), d = b && b.querySelectorAll('.dots i')[k]; if (d && k > 0) d.click(); });
+  }
+
   function runCleanups() {
     cleanups.forEach(fn => { try { fn(); } catch (e) { console.error(e); } });
     cleanups = [];
@@ -61,6 +77,8 @@
     const n = Deck.slides.length;
     i = Math.max(0, Math.min(n - 1, i));
     if (i === Deck.cur && !(opts && opts.force)) return;
+    const old = stage.querySelector('section.slide');
+    if (old && Deck.slides[Deck.cur]) { try { Deck._state[Deck.slides[Deck.cur].id] = snapState(old); } catch (e) { console.error(e); } }
     runCleanups();
     Deck.cur = i; Deck._builtScale = Deck.scale;
     const s = Deck.slides[i];
@@ -77,7 +95,7 @@
     el.querySelectorAll('.miniflow [data-chap]').forEach(sp => { if (!sp.classList.contains('on')) sp.onclick = () => Deck.goId(sp.dataset.chap); });
     if (s.hub) { // 回到章節全貌頁（全貌頁會出現「回到第 N 頁」，可以來回跳）
       const t = Deck.slides.find(x => x.id === s.hub), eb = el.querySelector('.s-eyebrow');
-      if (t && eb && Deck.slides[Deck._back] !== t) { const b = document.createElement('button'); b.type = 'button'; b.className = 'backbtn hubbtn'; b.textContent = '⌂ ' + String(t.short || t.title).replace(/<[^>]+>/g, ''); b.onclick = () => Deck.goId(s.hub); eb.appendChild(b); }
+      if (t && eb && Deck.slides[Deck._back] !== t) { const b = document.createElement('button'); b.type = 'button'; b.className = 'backbtn hubbtn'; b.textContent = '⌂ ' + String(t.hubShort || t.short || t.title).replace(/<[^>]+>/g, ''); b.onclick = () => Deck.goId(s.hub); eb.appendChild(b); }
     }
     if (s.init) {
       const ctx = {
@@ -95,6 +113,8 @@
         timeout(fn, ms) { const id = setTimeout(fn, ms); cleanups.push(() => clearTimeout(id)); return id; }
       };
       try { s.init(el, ctx); } catch (e) { console.error('init error on slide', i + 1, e); }
+      const keep = opts && (opts.returning || opts.keep) && Deck._state[s.id];
+      if (keep) { try { applyState(el, keep); } catch (e) { console.error('restore error on slide', i + 1, e); } }
     }
     progress.style.width = ((i + 1) / n * 100) + '%';
     hudNum.textContent = `${i + 1} / ${n}`;
@@ -231,7 +251,7 @@
     let rsT = null;
     window.addEventListener('resize', () => {
       fit(); clearTimeout(rsT);
-      rsT = setTimeout(() => { if (Math.abs(Deck.scale / (Deck._builtScale || Deck.scale) - 1) > 0.1) { Deck.go(Deck.cur, { force: true, from: Deck._back }); } }, 300);
+      rsT = setTimeout(() => { if (Math.abs(Deck.scale / (Deck._builtScale || Deck.scale) - 1) > 0.1) { Deck.go(Deck.cur, { force: true, from: Deck._back, keep: true }); } }, 300);
     });
 
     document.addEventListener('keydown', e => {
