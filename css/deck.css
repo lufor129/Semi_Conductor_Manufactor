@@ -286,5 +286,20 @@ svg .hot:hover { filter: brightness(.94); }
 .controls.guided.live { visibility: visible; }
 /* 供應鏈小卡（第三部分） */
 .slide [hidden] { display: none !important; }
+/* Colorfigures 機台立體圖（SEM、TEM 頁的「機台」分頁；圖本身在 iframe 裡） */
+.cf-pv { display: contents; }
+.fig.cf-mach { padding: 0; overflow: hidden; background: #f2efe7; gap: 0; }
+.fig.cf-mach .fig-title { padding: 10px 16px 0; }
+.cf-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+/* 第 43 頁 Low-k／High-k 對照小表 */
+.card.lkhk { padding: 8px 12px 10px; background: #fff; }
+.card.lkhk table.t { font-size: 15px; }
+.card.lkhk table.t th { font-family: var(--font-cjk); font-size: 14.5px; letter-spacing: 0; color: var(--ink); font-weight: 700; padding: 4px 8px; }
+.card.lkhk table.t td { padding: 4px 8px; line-height: 1.35; }
+.card.lkhk table.t td:first-child { color: var(--ink-3); white-space: nowrap; padding-left: 0; }
+.card.lkhk i.sw { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -1px; border: 1px solid rgba(0,0,0,.18); }
+.card.lkhk p { font-size: 15px; margin-top: 6px; }
+.card.lkhk a { color: var(--accent); white-space: nowrap; margin-left: 4px; }
+
 /* 每頁上方的浮水印 */
 .slide .wm { position: absolute; top: 8px; left: 0; right: 0; text-align: center; font-size: 12px; color: var(--ink-3); opacity: .65; letter-spacing: .04em; pointer-events: none; z-index: 20; }

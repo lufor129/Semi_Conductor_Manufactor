@@ -29,6 +29,8 @@
 
 ![閘極漏電](docs/demo/gate-leakage.gif)
 
+**檢測：SEM、TEM 機台**：切到「機台」分頁，看可以旋轉、透視的立體機台，照真實流程放晶圓、插樣品桿、開電子束、掃描或拍照；每一步都能暫停，點零件標籤會跳出說明。
+
 **檢測：缺陷地圖**：看缺陷在晶圓上的分布形狀，猜是哪台機台出問題（8 張地圖）。
 
 ![缺陷地圖](docs/demo/defect-map.gif)
@@ -106,13 +108,14 @@ python3 build-artifact.py  # 打包成 dist/index.html
 
 所有照片都是開放授權（CC0、CC BY、CC BY-SA）或公有領域，作者、原始網址與授權條款逐張列在 `js/credits.js`，簡報最後一頁「參考資料與圖片來源」也會列出；標「縮圖」「裁切」的是修改過的版本。沒有開放授權圖片可用的地方，改用程式自繪的示意圖。
 
-`docs/demo/` 裡的截圖與 GIF 是簡報畫面錄製，畫面中出現的照片來源同上。轉用 CC BY-SA 圖片時，請沿用相同授權並標示作者。`vendor/three.min.js` 是 three.js r160（MIT License），版權宣告保留在檔案開頭。
+`docs/demo/` 裡的截圖與 GIF 是簡報畫面錄製，畫面中出現的照片來源同上。轉用 CC BY-SA 圖片時，請沿用相同授權並標示作者。`vendor/three.min.js` 是 three.js r160（MIT License），版權宣告保留在檔案開頭。SEM、TEM 頁的機台立體圖用 [Colorfigures](https://april-zhu.com/colorfigures) 繪圖引擎（April Zhu，MIT License）繪製，引擎原始碼在 `figs/cf-core.js`，授權全文在 `figs/CF-LICENSE`。
 
 ## 授權
 
 - 程式碼與簡報文字：[MIT License](LICENSE)。
 - 圖片：依各自的授權（見上一節與 `js/credits.js`），不在 MIT 授權範圍內。
 - `vendor/three.min.js`：three.js 的 MIT License。
+- `figs/cf-core.js`（與打包進 `js/widgets/cf-figs.js` 的引擎部分）：Colorfigures 的 MIT License（`figs/CF-LICENSE`）。
 
 ## 說明
 

@@ -172,6 +172,13 @@
       U.txt(c, '重複十幾次：越往上，導線越粗、間距越大', w / 2, 30, { align: 'center', size: 15, w: 700, color: '#17202b' });
     }
   }
+  /* Low-k 和 High-k 常被搞混：一個在後段導線之間、要電容小；一個在前段閘極底下、要電容大 */
+  const LKHK = `<div class="card lkhk"><table class="t"><thead><tr><th></th><th><i class="sw" style="background:${U.MAT.lowk}"></i>Low-k 低介電</th><th><i class="sw" style="background:${U.MAT.hk}"></i>High-k 高介電</th></tr></thead><tbody>
+    <tr><td>在哪裡</td><td>導線和導線之間（後段）</td><td>閘極正下方（前段）</td></tr>
+    <tr><td>電場要</td><td><b>擋住</b>：鄰線不互相干擾</td><td><b>傳過去</b>：閘極管得住通道</td></tr>
+    <tr><td>好處</td><td>訊號跑得快、更省電</td><td>牆能做厚，電子漏不過去</td></tr>
+    <tr><td>材料</td><td>摻碳氧化矽（k 約 2.5–3）</td><td>氧化鉿 HfO₂（k 約 20）</td></tr>
+  </tbody></table><p>k 是絕緣牆「傳電場」的本事，二氧化矽是 3.9。像隔著牆用磁鐵：導線之間要擋住，用 <b>low-k</b>；閘極要隔牆吸住電子，用 <b>high-k</b>。<a href="#" data-go="hk1">回顧：高介電閘極 →</a></p></div>`;
   A({
     id: 'beol', part: 2, chap: 7, eyebrow: EY, minutes: 2.5, short: '後段 BEOL：導線一層層疊',
     title: '後段：十幾層銅導線，一層一層往上蓋', en: 'Dual Damascene',
@@ -180,7 +187,7 @@
       <div class="col">${U.figHTML('be-cv', '後段剖面（示意）', '')}${U.stepperHTML('be-st')}</div>
       ${U.side({
         points: ['雙鑲嵌：溝槽＋導孔一次灌、一次磨，省一輪填銅和 CMP', '底層間距二十幾奈米、線寬十幾奈米；頂層粗到好幾微米', '電源線和訊號線都擠在這裡 → 背面供電的由來'],
-        extra: U.legendHTML(['lowk', 'tin', 'cu']) + '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-go="cmp2" type="button">回顧：銅導線 →</button><button class="btn" data-go="bsx" type="button">預告：背面供電 →</button></div>',
+        extra: U.legendHTML(['lowk', 'tin', 'cu']) + '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-go="cmp2" type="button">回顧：銅導線 →</button><button class="btn" data-go="bsx" type="button">預告：背面供電 →</button></div>' + LKHK,
         analogy: { icon: 'road', t: '比喻', p: '城市交通：最底層是密密麻麻的巷弄，往上是市區道路，最上面是又寬又直的高速公路。' }
       })}</div>`,
     init(el, ctx) {
@@ -194,7 +201,15 @@
 
 最後，重複十幾次。最底下幾層最細，間距只有二十幾奈米、線寬十幾奈米，負責附近電晶體之間的連線；越往上越粗，最上面好幾微米，負責長距離傳訊號和送電。就像城市交通，從巷弄一路接到高速公路。
 
-注意，電源線和訊號線都擠在這十幾層裡，這就是第三部分背面供電要解決的問題。下一頁看後段最大的難題：銅線太細了。`
+注意，電源線和訊號線都擠在這十幾層裡，這就是第三部分背面供電要解決的問題。下一頁看後段最大的難題：銅線太細了。
+
+【Low-k 和 High-k 別搞混】右邊這張表。兩個都是絕緣材料，差別在 k：k 就是絕緣牆「傳電場」的本事，一般的二氧化矽是 3.9，比它低叫 low-k，比它高叫 high-k。用第五章的比喻：隔著一道牆用磁鐵吸東西。
+
+Low-k 用在後段，填在導線和導線之間。這裡我們希望牆「擋住」電場：隔壁兩條線靠得很近，電場傳得過去，一條線的訊號就會干擾另一條；而且每條線切換時都要充放電，牆越會傳電場，要充的電越多，訊號越慢、越耗電。所以換成摻碳的氧化矽，k 大約 2.5 到 3，有的還做成多孔，甚至直接留空氣，空氣的 k 接近 1。代價是材料又鬆又軟，磨平和蝕刻時要很小心。
+
+High-k 用在前段，閘極的正下方。這裡反過來，希望牆「傳過去」：閘極要隔著這道牆，用電場把通道打開、關掉，電場傳得越好，閘極越管得住。以前的二氧化矽只能一直做薄，薄到電子會直接穿牆漏電；換成氧化鉿，k 大約 20，傳電場的本事強很多，牆就能做厚，電場照樣過得去，電子卻漏不過去。
+
+一句話：導線之間要擋，用 low-k；閘極底下要傳，用 high-k。`
   });
 
   /* ---------- 後段的難題：銅太細了——線寬在後段長什麼樣子、為什麼電阻暴增 ---------- */

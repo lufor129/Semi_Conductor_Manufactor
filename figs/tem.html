@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TEM</title></head><body>
+<script src="core.js"></script>
+<script src="cf-kit.js"></script>
+<script>
+/* TEM（穿透式電子顯微鏡），故障分析實驗室裡看 FIB 薄片用的那種
+   x = 深度（前面在 +x：測角台、觀察窗朝這邊），y = 寬度（+y 是操作台那一側），z = 高度；1 單位 ≈ 1 cm。
+   真實流程：
+   1. 插入樣品桿：薄片（FIB 從晶圓上挖下來、削到 10–30 nm）黏在 3 mm 的銅網上，夾在樣品桿前端 →
+      樣品桿從架上拿起、對準測角台的孔 → 先推到氣鎖停住、抽真空 → 推到底，薄片停在物鏡上下極靴中間。
+   2. 打開電子束：高壓產生器把電子加速到 200 kV（第一次才要升壓）→ 打開槍閥 → 電子往下穿過聚光透鏡、
+      穿過薄片 → 物鏡成像 → 中間鏡、投影鏡一級一級放大 → 打在螢光幕上（從觀察窗看得到綠光）。
+   3. 放大倍率：改中間鏡的電流，螢幕上的視野從一整排電晶體、一顆電晶體，到一顆一顆的原子柱。
+   4. 拍照：螢光幕掀起來，電子直接打在下方的相機上 → 影像存進電腦。
+   5. 取出樣品桿：先關槍閥 → 退到氣鎖、通大氣 → 拉出來放回架上。
+   零件（每個都固定在另一個零件上）：
+   底座     底座本體 . 4 個腳 . 前面維修門 . 通風孔 . 銘牌
+            內部：渦輪分子泵 . 前級真空泵 . 前級管 . 控制電路插箱與 4 片電路板 . 4 個防震座
+   相機     相機外殼（掛在觀察室底下）. 相機電路盒 . 感測器（在觀察室底板中央）
+   觀察室   本體 . 觀察窗（框、鉛玻璃）. 螢光幕（後緣有鉸鏈，可掀起）. 抽氣管
+   鏡筒     投影鏡段 . 中間鏡段 . 法蘭 . 物鏡段 . 法蘭 . 聚光鏡段 . 槍閥段 . 加速管 . 頂蓋 . 離子泵 . 槍閥閥殼與氣缸 .
+            測角台（正面環、孔、氣鎖燈、馬達盒）. 冷阱銅棒
+            內部：發射尖端與座 . 4 片加速電極 . 槍閥閥板 . C1、C2 線圈 . 聚光光圈 . 物鏡上下線圈與極靴 . 冷阱夾片 .
+            兩組中間鏡線圈 . 兩組投影鏡線圈
+   樣品桿   前端夾片 . 銅網與薄片 . 桿身 . O 形環 . 握把 . 尾蓋
+   冷卻     液態氮杜瓦瓶（瓶身、瓶頸、蓋子）
+   高壓     高壓產生器（本體、絕緣套管、警示牌）. 高壓電纜
+   操作台   桌面 . 兩片側板 . 螢幕（支架、底座）. 控制面板（旋鈕、軌跡球）. 鍵盤 . 樣品桿架（兩個 V 型座） */
+
+const AX = [40, 40], SPZ = 135;                                    // 鏡筒軸；樣品高度
+const PED = { x0:6, x1:74, y0:6, y1:74, z0:4, z1:58 };
+const PEDP = rrUV(PED.y0, PED.z0, PED.y1, PED.z1, 4);
+const VC = { x0:22, x1:58, y0:22, y1:58, z0:70, z1:100 };
+const SCR = { z:74, r:12, hx:28 };                                 // 螢光幕：水平圓板，鉸鏈在後緣 x = 28
+const COLS = [[100, 112, 14, 'm'], [112, 124, 14, 'm'], [124, 127, 17, 'steel'], [127, 143, 19, 'm'], [143, 146, 17, 'steel'],
+  [146, 166, 14, 'm'], [166, 178, 12, 'steel'], [178, 204, 15, 'cer'], [204, 208, 9, 'metal']];
+const GON = { x0:56, x1:68, r:7 };
+const DEW = { x:40, y:72, r:6, z0:124, z1:150 };
+const MX = 48.06, IMG = { y0:94, y1:132, z0:82, z1:108 };
+const IW = IMG.y1 - IMG.y0, IH = IMG.z1 - IMG.z0;
+const H_REST = [54, 129, 79.9], H_OUT = [72, 40, SPZ], H_LOCK = [58, 40, SPZ], H_IN = [40, 40, SPZ];
+const STEEL = { l:'#e3e7ea', m:'#b9c0c5', d:'#838c92' }, COPPER = { l:'#f0b07a', m:'#d08a52', d:'#9a5a2c' }, HOTCU = matOf('#ffb35a');
+const PCBM = { l:'#4fa36a', m:'#2f8a4a', d:'#1d5f31' }, GEARM = { l:'#7c8389', m:'#5c6369', d:'#3b4146' };
+const CONSM = matOf('#ece9e0'), WOODM = matOf('#d9c7a3'), TANKM = matOf('#c7ccd1'), HANDM = matOf('#3a3f45'), DEWM = matOf('#dfe4e8');
+const PHOS = '#8af0ae';
+const MAGS = [
+  { btn:'低倍：一整排電晶體', fov:'約 400 nm', bar:.25, barT:'100 nm', cue:'低倍：一整排電晶體，先找到要看的那一顆' },
+  { btn:'中倍：一顆電晶體', fov:'約 60 nm', bar:.113, barT:'10 nm', cue:'中倍：一顆環繞式閘極電晶體，三片奈米片被閘極包住' },
+  { btn:'高倍：看到原子', fov:'約 5 nm', bar:.2, barT:'1 nm', cue:'高倍：一排一排的原子柱，上面約 1 nm 的絕緣層也看得清楚' }];
+// 點標籤跳出的說明
+window.CF_DESC = {
+  '電子槍': '放出電子的地方。TEM 多用場發射槍：電子束亮、能量整齊，高倍才看得到原子。',
+  '加速電極': '一層一層的電極把電子加速到 200 kV。能量越高，越穿得過薄片，解析度也越好。',
+  '槍閥': '電子槍和鏡筒之間的閥門。換樣品時關上，保護電子槍那一段的超高真空。',
+  '聚光透鏡': '線圈的磁場像玻璃透鏡一樣折彎電子，控制照到樣品上的電子束多大、多亮。',
+  '物鏡': '最關鍵的一道透鏡：薄片就夾在它的上下極靴中間，第一次成像，決定解析度。',
+  '樣品薄片': '用 FIB（聚焦離子束）從晶圓上挖下來，削到 10–30 nm 薄，電子才穿得過去。',
+  '樣品桿': '前端夾著 3 mm 的銅網，薄片黏在上面。從側面插進測角台，可以傾斜樣品對準晶格。',
+  '中間鏡': '改它的電流就改放大倍率：螢幕上從一整排電晶體一路放大到原子。',
+  '投影鏡': '最後幾級放大，把影像投到螢光幕或相機上。',
+  '螢光幕': '電子打到會發綠光，從觀察窗用肉眼看即時影像；拍照時掀起來，讓電子打到相機。',
+  '相機': '螢光幕掀起後，電子直接打在相機的感測器上，存成數位影像。',
+  '離子泵': '沒有轉動零件的真空泵，讓電子槍附近維持超高真空（約 10⁻⁷ Pa 以下）。',
+  '渦輪分子泵': '高速旋轉的葉片把氣體分子打出去，抽走鏡筒和觀察室的空氣；電子撞到空氣就會散掉。',
+  '電子光學鏡筒': '電子從上往下走：電子槍 → 聚光透鏡 → 樣品 → 物鏡 → 中間鏡 → 投影鏡 → 螢光幕。',
+  '液態氮杜瓦瓶': '液態氮讓樣品旁的冷阱降到約攝氏零下 190 度，把雜質吸住，薄片才不會被汙染。',
+  '控制面板': '調焦、移動樣品、改倍率用的旋鈕和軌跡球。',
+  '測角台': '樣品桿插進來的地方：能前後左右移動、傾斜樣品。旁邊的燈號顯示氣鎖狀態。',
+  '觀察窗': '鉛玻璃窗，從這裡看螢光幕；鉛擋住電子打到金屬時產生的 X 光。',
+  '操作螢幕': '顯示相機拍到的影像、倍率和比例尺。',
+  '高壓產生器': '產生 200 kV 的高壓，經過高壓電纜送到鏡筒頂端的電子槍。' };
+
+/* ---------- 小工具 ---------- */
+const disc = (cx, cy, z0, z1, r, M, hole = .8) => cyl(cx, cy, z0, z1, r, M, toneI, .6, 28) + fill(pd(on(PZ(z1 + .03), ellUV(cx, cy, hole, hole, 12))), '#1d1a16');
+const beamOn = st => st.valve > .5 && st.kv > 190;
+const imgOn = st => beamOn(st) && st.bz < SCR.z + 1 && st.on === 'in';
+const lockCol = st => st.lock === 1 ? '#e2483d' : st.lock === 2 ? '#43c25c' : st.lock === 3 ? '#f4b829' : '#8d877a';
+// 鏡筒側面的一圈圈刻線（只畫朝向觀眾的半圈）
+function ringLines(cx, cy, r, zs, col){
+  const [a0, a1] = nearHalf(); let d = '';
+  for (const z of zs){ const arc = []; for (let i = 0; i <= 18; i++){ const a = (a0 + (a1 - a0) * i / 18) * Math.PI / 180; arc.push([cx + r * Math.cos(a), cy + r * Math.sin(a), z]); } d += pd(arc, false); }
+  return `<path d="${d}" fill="none" stroke="${col}" stroke-width=".7"/>`;
+}
+
+/* ---------- 樣品桿：沿 x 方向，st.h 是銅網中心；只畫 xa..xb 這一段（跨過測角台時分段，才能各自排前後） ---------- */
+function gridSvg(x, y, z){
+  return fill(pd(on(PZ(z), ellUV(x, y, 1.5, 1.5, 18))), COPPER.m) + ink(pd(on(PZ(z), ellUV(x, y, 1.5, 1.5, 18))), .5)
+    + fill(pd(on(PZ(z + .02), ellUV(x, y, 1.05, 1.05, 16))), COPPER.l) + fill(pd(on(PZ(z + .04), rectUV(x - .5, y - .14, x + .5, y + .14))), '#4a4f8a');
+}
+function holderParts(st, xa, xb){
+  const [hx, hy, hz] = st.h, out = [];
+  const seg = (x0, x1, r, M, w = .7) => { const a = Math.max(hx + x0, xa), b = Math.min(hx + x1, xb);
+    if (b - a > .05) out.push({ box:[[a, hy - r, hz - r], [b, hy + r, hz + r]], svg: cylX(a, b, hy, hz, r, M, toneI, w, 16) }); };
+  const a = Math.max(hx - 1.9, xa), b = Math.min(hx + 4, xb);
+  if (b - a > .05) out.push({ box:[[a, hy - 1.9, hz - .35], [b, hy + 1.9, hz + .45]], svg: box(a, hy - 1.9, hz - .35, b, hy + 1.9, hz + .35, STEEL, toneI, .6)
+    + (a <= hx - 1.5 && b >= hx + 1.5 ? gridSvg(hx, hy, hz + .37) : '') });
+  seg(4, 30, .9, STEEL);
+  seg(30, 33, 1.7, DARK);
+  seg(33, 47, 2.6, HANDM, 1);
+  seg(47, 49, 2.0, METAL);
+  return out;
+}
+
+/* ---------- 電子束 ---------- */
+const BEAMW = [[200, .12], [196, .5], [182, 1.1], [172, 1.4], [160, .45], [152, 1.3], [146.8, .9], [136, .9], [135, .9], [133, .3], [127, 1.5],
+  [121, .5], [115, 1.3], [110, .4], [104, 1.2], [100, 2], [SCR.z, 9], [VC.z0, 10]];
+const wAt = z => { for (let i = 0; i < BEAMW.length - 1; i++){ const [za, wa] = BEAMW[i], [zb, wb] = BEAMW[i + 1]; if (z <= za && z >= zb) return wa + (wb - wa) * (za - z) / (za - zb); } return .1; };
+const beamEnd = st => st.scr > .5 ? VC.z0 + .1 : SCR.z + .3;
+function beamSvg(st, zLo, zHi){
+  if (st.kv < 1) return '';
+  const lo = Math.max(zLo, st.valve > .5 ? Math.max(st.bz, beamEnd(st)) : 172.6), hi = Math.min(zHi, 200);
+  if (hi - lo < .2) return '';
+  const zs = []; for (let z = hi; z > lo; z -= .8) zs.push(z); zs.push(lo);
+  const Lp = [], Rp = [], core = [];
+  for (const z of zs){ const q = P(AX[0], AX[1], z), w = wAt(z) * CAM_K; Lp.push([q[0] - w, q[1]]); Rp.push([q[0] + w, q[1]]); core.push(q); }
+  const op = Math.min(1, st.kv / 200);
+  let s = `<path d="M${[...Lp, ...Rp.reverse()].map(p => f(p[0]) + ' ' + f(p[1])).join('L')}Z" fill="#5b8cff" opacity="${f(.42 * op)}"/>`
+    + `<path d="M${core.map(q => f(q[0]) + ' ' + f(q[1])).join('L')}" fill="none" stroke="#2457d6" stroke-width="1" opacity="${f(op)}"/>`;
+  if (st.phase !== 'idle'){   // 動作中才畫往下跑的電子（靜止時不重畫，省電）；暫停時停在原地
+    const t = cfNow(st) / 1000, top = 200, bot = st.valve > .5 ? Math.max(st.bz, beamEnd(st)) : 172.6;
+    for (let i = 0; i < 12; i++){ const u = (t * .45 + i / 12) % 1, z = top - u * (top - bot);
+      if (z < lo || z > hi) continue;
+      const q = P(AX[0], AX[1], z), dx = wAt(z) * .7 * Math.sin(i * 2.4) * CAM_K;
+      s += `<circle cx="${f(q[0] + dx)}" cy="${f(q[1])}" r="1.1" fill="#dfe9ff" stroke="${INK}" stroke-width=".4"/>`; }
+  }
+  return s;
+}
+
+/* ---------- 底座 ---------- */
+function pedBody(m){
+  const F = facing([1, 0, 0]), B = facing([-1, 0, 0]);
+  let s = '';
+  if (F) s += fill(pd(on(PX(PED.x1), PEDP)), tone([1, 0, 0], m));
+  if (B) s += fill(pd(on(PX(PED.x0), PEDP)), tone([-1, 0, 0], m));
+  s += extrude(PEDP, PED.x0, PED.x1, m);
+  if (F){ const fx = PED.x1 + .15, front = tone([1, 0, 0], m);
+    s += shape(on(PX(fx), rrUV(12, 9, 68, 34, 3)), mix(front, '#000000', .05), 1.1);
+    for (let z = 14; z <= 26; z += 4) s += shape(on(PX(fx + .05), rrUV(18, z, 40, z + 1.6, .8)), mix(front, '#000000', .14), .5);
+    s += shape(on(PX(fx), rrUV(46, 42, 62, 50, 1.2)), mix(front, '#ffffff', .6), .8) + tx(fx + .1, 54, 44.4, 'TEM', 4.2, INK, 800);
+  }
+  if (facing([0, 1, 0])){ const sm = tone([0, 1, 0], m);
+    for (let z = 14; z <= 30; z += 4) s += shape(on(PY(PED.y1 + .15), rrUV(20, z, 60, z + 1.6, .8)), mix(sm, '#000000', .25), .5); }
+  if (F) s += ink(pd(on(PX(PED.x1), PEDP)), 2);
+  if (B) s += ink(pd(on(PX(PED.x0), PEDP)), 2);
+  return s + hullInk([...on(PX(PED.x0), PEDP), ...on(PX(PED.x1), PEDP)], 2.8);
+}
+function pedInside(){
+  const items = [], put = (b, svg) => items.push({ box:b, svg });
+  put([[15.5, 51.5, 12], [28.5, 64.5, 37]], cyl(22, 58, 12, 34, 6.5, STEEL, toneI, .9, 28) + cyl(22, 58, 34, 37, 8, GEARM, toneI, .9, 28));   // 渦輪分子泵
+  items.push(...cfWire([[22, 58, 37], [22, 58, 57.6]], '#8d949a', 1.4));
+  put([[44, 46, 8], [66, 68, 26]], box(44, 46, 8, 66, 68, 26, matOf('#7f9bb5'), toneI, 1)
+    + (facing([1, 0, 0]) ? [12, 16, 20].map(z => line([[66.05, 50, z], [66.05, 64, z]], .5)).join('') : ''));                                // 前級真空泵
+  items.push(...cfWire([[28.5, 58, 16], [36, 58, 16], [44, 58, 18]], '#8d949a', 1));
+  let cage = box(44, 10, 10, 68, 32, 11.5, DARK, toneI, .8);
+  for (const y of [13, 18, 23, 28]) cage += box(47, y, 11.5, 65, y + .8, 40, PCBM, toneI, .6);
+  put([[44, 10, 10], [68, 32, 40]], cage);                                                                                                // 控制電路插箱
+  for (const [x, y] of [[12, 12], [68, 12], [12, 68], [68, 68]]) put([[x - 3.5, y - 3.5, PED.z1 - 6], [x + 3.5, y + 3.5, PED.z1]], cyl(x, y, PED.z1 - 6, PED.z1, 3.5, DARK, toneI, .8, 18));   // 防震座
+  return cfDepth(items);
+}
+function pedItem(m, k){
+  const body = pedBody(m);
+  if (k <= 0) return body;
+  return xrGhost(body, '', k, PEDP, PED.x0, PED.x1, m) + `<g opacity="${f(k)}">${pedInside()}</g>`;
+}
+
+/* ---------- 相機、觀察室 ---------- */
+function camSvg(){
+  return cyl(40, 40, PED.z1, VC.z0, 10, DARK, tone, 1.2, 28) + box(49.6, 35, 60, 55, 45, 68, DARK, tone, 1);
+}
+function screenPts(st){
+  const th = st.scr * 80 * Math.PI / 180;
+  return ellUV(40, 40, SCR.r, SCR.r, 32).map(([x, y]) => { const dx = x - SCR.hx; return [SCR.hx + dx * Math.cos(th), y, SCR.z + dx * Math.sin(th)]; });
+}
+function vcBody(st, m){
+  let s = box(VC.x0, VC.y0, VC.z0, VC.x1, VC.y1, VC.z1, m, tone, 1.4);
+  if (facing([1, 0, 0])){ const wx = VC.x1 + .1, glow = imgOn(st) ? 1 - st.scr : 0;
+    s += shape(on(PX(wx), rrUV(28, 76, 52, 95, 3)), METAL.m, 1.1);
+    s += fill(pd(on(PX(wx + .05), rrUV(29.5, 77.5, 50.5, 93.5, 2.2))), '#2f4a42');
+    if (glow > .02) s += fill(pd(on(PX(wx + .08), ellUV(40, 82.5, 9.5, 4.2, 24))), PHOS, `opacity="${f(.85 * glow)}"`);
+    s += `<path d="${pd(on(PX(wx + .1), [[33, 91], [36, 80]]), false)}" fill="none" stroke="#ffffff" stroke-width="1.6" opacity=".38"/>`;
+    s += ink(pd(on(PX(wx + .05), rrUV(29.5, 77.5, 50.5, 93.5, 2.2))), 1);
+  }
+  return s;
+}
+function vcInside(st){
+  let s = '';
+  const sen = on(PZ(VC.z0 + .05), rectUV(33, 33, 47, 47));
+  s += fill(pd(sen), st.expo > 0 ? '#ffe9a8' : '#2b3a55') + ink(pd(sen), .8);
+  let g = ''; for (let v = 35; v < 47; v += 2) g += pd([[v, 33, VC.z0 + .07], [v, 47, VC.z0 + .07]], false) + pd([[33, v, VC.z0 + .07], [47, v, VC.z0 + .07]], false);
+  s += `<path d="${g}" fill="none" stroke="${st.expo > 0 ? '#e0b54a' : '#45577a'}" stroke-width=".4"/>`;
+  s += box(SCR.hx - 1.6, 34, SCR.z - 1.4, SCR.hx, 46, SCR.z, GEARM, toneI, .6);   // 鉸鏈座
+  s += shape(screenPts(st), imgOn(st) && st.scr < .05 ? PHOS : '#dfe8cf', 1);
+  return s + beamSvg(st, VC.z0, VC.z1);
+}
+function vcItem(st, m, k){
+  const body = vcBody(st, m);
+  if (k <= 0) return body;
+  return `<g opacity="${f(1 - .8 * k)}">${body}</g><g opacity="${f(k)}">${vcInside(st)}</g>`;
+}
+
+/* ---------- 鏡筒（外殼、離子泵、槍閥、測角台都算鏡筒的一部分，一起排前後） ---------- */
+function colShell(st, m){
+  const [x, y] = AX, out = [], put = (b, svg) => out.push({ box:b, svg });
+  const mat = { m, steel:STEEL, cer:CERAMIC, metal:METAL };
+  COLS.forEach(([z0, z1, r, key]) => {
+    let s = cyl(x, y, z0, z1, r, mat[key], tone, key === 'm' ? 1.3 : 1.1, 40);
+    if (key === 'cer') s += ringLines(x, y, r, [182, 186, 190, 194, 198], mix(CERAMIC.d, '#000000', .1));
+    if (z0 === 124 || z0 === 143) for (let a = 0; a < 360; a += 45){ const t = a * Math.PI / 180; s += shape(on(PZ(z1 + .03), ellUV(x + 15.6 * Math.cos(t), y + 15.6 * Math.sin(t), .7, .7, 8)), METAL.m, .4); }
+    put([[x - r, y - r, z0], [x + r, y + r, z1]], s); });
+  // 離子泵（背面，接在槍閥段）
+  put([[16, 34, 166], [26, 46, 180]], box(16, 34, 166, 26, 46, 180, METAL, tone, 1.1));
+  for (const [y0, y1] of [[31.6, 34], [46, 48.4]]) put([[16.5, y0, 167], [25.5, y1, 179]], box(16.5, y0, 167, 25.5, y1, 179, DARK, tone, .9));
+  put([[26, 38, 171], [28.6, 42, 175]], cylX(26, 28.6, 40, 173, 2, METAL, tone, .8, 14));
+  // 槍閥閥殼＋氣缸（+y 側）
+  put([[35, 51.5, 168.5], [45, 60, 175.5]], box(35, 51.5, 168.5, 45, 60, 175.5, STEEL, tone, 1));
+  put([[37.8, 60, 169.8], [42.2, 67, 174.2]], rod([40, 60, 172], [40, 67, 172], 2.2, DARK, tone, .9));
+  // 冷阱銅棒：從杜瓦瓶接進物鏡段
+  put([[38, 58.6, SPZ - 2], [42, 66.2, SPZ + 2]], rod([40, 58.6, SPZ], [40, 66.2, SPZ], 2, METAL, tone, .9));
+  // 測角台（+x 側）：樣品桿的入口，正面有氣鎖燈；上面是馬達盒
+  let g = cylX(GON.x0, GON.x1, 40, SPZ, GON.r, STEEL, tone, 1.2, 28);
+  if (facing([1, 0, 0])){ g += shape(on(PX(GON.x1 + .05), ellUV(40, SPZ, 4.2, 4.2, 20)), METAL.m, .8) + fill(pd(on(PX(GON.x1 + .1), ellUV(40, SPZ, 1.7, 1.7, 14))), '#1d1a16');
+    g += act('lock', shape(on(PX(GON.x1 + .1), ellUV(45.4, SPZ + 3.6, .95, .95, 12)), lockCol(st), .5)); }
+  put([[GON.x0, 33, SPZ - GON.r], [GON.x1, 47, SPZ + GON.r]], g);
+  put([[59, 36.5, SPZ + 6.4], [66, 43.5, SPZ + 10.4]], box(59, 36.5, SPZ + 6.4, 66, 43.5, SPZ + 10.4, DARK, tone, 1));
+  return cfDepth(out);
+}
+function colInside(st){
+  const [x, y] = AX, out = [], put = (b, svg) => out.push({ box:b, svg });
+  const lens = st.phase === 'mag' ? HOTCU : COPPER;
+  put([[x - 3, y - 3, 199], [x + 3, y + 3, 202]], cyl(x, y, 199, 202, 3, CERAMIC, toneI, .6, 18));                                // 尖端座
+  put([[x - .8, y - .8, 196.4], [x + .8, y + .8, 199]], rod([x, y, 199], [x, y, 196.4], .8, st.kv > 1 ? HOTCU : METAL, toneI, .5, .05));   // 場發射尖端
+  for (const [z, r] of [[194.4, 6], [190, 7.5], [186, 7.5], [182, 7.5]]) put([[x - r, y - r, z], [x + r, y + r, z + .7]], disc(x, y, z, z + .7, r, STEEL, 1.1));
+  const vy = 13 * st.valve;
+  put([[x - 5, y - 5 + vy, 171.4], [x + 5, y + 5 + vy, 172.6]], box(x - 5, y - 5 + vy, 171.4, x + 5, y + 5 + vy, 172.6, GEARM, toneI, .6));   // 槍閥閥板
+  put([[x - 11, y - 11, 157], [x + 11, y + 11, 164]], cfCoil(x, y, 157, 164, 11, COPPER, 1.6));
+  put([[x - 11, y - 11, 148.5], [x + 11, y + 11, 155]], cfCoil(x, y, 148.5, 155, 11, COPPER, 1.6));
+  put([[x - 6, y - 6, 146.4], [x + 6, y + 6, 146.9]], disc(x, y, 146.4, 146.9, 6, STEEL, .5));                                      // 聚光光圈
+  put([[x - 16, y - 16, 138], [x + 16, y + 16, 142.5]], cfCoil(x, y, 138, 142.5, 16, COPPER, 3));
+  put([[x - 5.5, y - 5.5, 136.2], [x + 5.5, y + 5.5, 138]], rod([x, y, 138], [x, y, 136.2], 5.5, STEEL, toneI, .7, 2.2));           // 上極靴
+  put([[x - 16, y - 16, 127.5], [x + 16, y + 16, 132]], cfCoil(x, y, 127.5, 132, 16, COPPER, 3));
+  put([[x - 5.5, y - 5.5, 132], [x + 5.5, y + 5.5, 133.8]], rod([x, y, 132], [x, y, 133.8], 5.5, STEEL, toneI, .7, 2.2));           // 下極靴
+  put([[x - 3, 43.5, SPZ - .4], [x + 3, 58.6, SPZ + .4]], rod([x, 58.6, SPZ], [x, 46, SPZ], .7, COPPER, toneI, .5) + box(x - 3, 43.5, SPZ - .4, x + 3, 46, SPZ + .4, COPPER, toneI, .5));   // 冷阱
+  for (const [z0, z1] of [[118, 122.5], [113, 117]]) put([[x - 11, y - 11, z0], [x + 11, y + 11, z1]], cfCoil(x, y, z0, z1, 11, lens, 1.6));
+  for (const [z0, z1] of [[106, 110.5], [101, 105]]) put([[x - 11, y - 11, z0], [x + 11, y + 11, z1]], cfCoil(x, y, z0, z1, 11, COPPER, 1.6));
+  if (st.on === 'in' || st.on === 'lock') out.push(...holderParts(st, -1e9, GON.x1));
+  // 離子泵在鏡筒外面，透視時照樣畫實心（標籤才指得到）
+  put([[16, 34, 166], [26, 46, 180]], box(16, 34, 166, 26, 46, 180, METAL, toneI, 1));
+  for (const [y0, y1] of [[31.6, 34], [46, 48.4]]) put([[16.5, y0, 167], [25.5, y1, 179]], box(16.5, y0, 167, 25.5, y1, 179, DARK, toneI, .8));
+  put([[26, 38, 171], [28.6, 42, 175]], cylX(26, 28.6, 40, 173, 2, METAL, toneI, .7, 14));
+  return cfDepth(out);
+}
+function columnItem(st, m, k){
+  const shell = colShell(st, m);
+  if (k <= 0) return shell;
+  return `<g opacity="${f(1 - .8 * k)}">${shell}</g><g opacity="${f(k)}">${colInside(st)}${beamSvg(st, VC.z1, 208)}</g>`;
+}
+
+/* ---------- 杜瓦瓶、高壓產生器 ---------- */
+function dewarSvg(){
+  return cyl(DEW.x, DEW.y, DEW.z0, DEW.z1, DEW.r, DEWM, tone, 1.2, 28) + ringLines(DEW.x, DEW.y, DEW.r, [128, 146], DEWM.d)
+    + cyl(DEW.x, DEW.y, DEW.z1, DEW.z1 + 3, 3.2, DEWM, tone, 1, 20) + cyl(DEW.x, DEW.y, DEW.z1 + 3, DEW.z1 + 5, 4, DARK, tone, 1, 20);
+}
+function tankSvg(){
+  let s = box(-34, 8, 0, -6, 44, 52, TANKM, tone, 1.4);
+  if (facing([-1, 0, 0])) s += shape(on(PX(-34.1), rrUV(18, 30, 34, 42, 1.2)), '#f4c430', .9) + shape(on(PX(-34.15), rectUV(25, 32.5, 27, 39.5)), INK, 0);
+  if (facing([0, 1, 0])) for (let z = 8; z <= 20; z += 4) s += shape(on(PY(44.15), rrUV(-30, z, -10, z + 1.6, .8)), mix(tone([0, 1, 0], TANKM), '#000000', .25), .5);
+  return s + cyl(-20, 26, 52, 57, 4, CERAMIC, tone, 1, 20);
+}
+
+/* ---------- 操作台、螢幕 ---------- */
+const sY = s => IMG.y1 - s * IW, sZ = t => IMG.z0 + t * IH;
+const mr = (s0, t0, s1, t1, c) => fill(pd(on(PX(MX), rectUV(sY(s1), sZ(t0), sY(s0), sZ(t1)))), c);
+const mrr = (s0, t0, s1, t1, r, c) => fill(pd(on(PX(MX), rrUV(sY(s1), sZ(t0), sY(s0), sZ(t1), r))), c);
+const me = (s, t, rs, rt, c) => fill(pd(on(PX(MX + .01), ellUV(sY(s), sZ(t), rs * IW, rt * IH, 10))), c);
+const mt = (s, t, str, size, col) => tx(MX + .03, sY(s), sZ(t), str, size, col, 700);
+const hash = i => { const v = Math.sin(i * 12.9898) * 43758.5453; return v - Math.floor(v); };
+function imgLow(){
+  let s = mr(0, 0, 1, 1, '#c6c6c6') + mr(0, 0, 1, .26, '#9a9a9a');
+  for (let i = 0; i <= 8; i++){ const c = i / 8; s += mr(Math.max(0, c - .034), .26, Math.min(1, c + .034), .44, '#878787') + mr(Math.max(0, c - .014), .44, Math.min(1, c + .014), .68, '#2a2a2a'); }   // 源極汲極＋接點
+  for (let i = 0; i < 8; i++){ const c = (i + .5) / 8;
+    s += mr(c - .028, .26, c + .028, .6, '#3b3b3b') + mr(c - .028, .6, c + .028, .64, '#e4e4e4');                                          // 閘極＋頂蓋
+    for (const t of [.3, .345, .39]) s += mr(c - .032, t, c + .032, t + .018, '#d4d4d4'); }                                                // 奈米片
+  for (let i = 0; i < 8; i++) s += mr(i / 8 + .012, .72, (i + 1) / 8 - .012, .765, '#2f2f2f');                                              // M0
+  for (let i = 0; i < 4; i++) s += mr(i / 4 + .02, .82, (i + 1) / 4 - .02, .86, '#555555');                                                  // M1
+  return s;
+}
+function imgMid(){
+  let s = mr(0, 0, 1, 1, '#cdcdcd') + mr(0, 0, 1, .2, '#a0a0a0') + mr(.4, .2, .6, .3, '#a0a0a0');
+  s += mr(.18, .26, .82, .86, '#3c3c3c') + mr(.18, .86, .82, .91, '#e6e6e6');
+  for (const c of [.39, .54, .69]) s += mrr(.32, c - .046, .68, c + .046, 1.1, '#e9e9e9') + mrr(.335, c - .032, .665, c + .032, .8, '#b0b0b0');
+  return s;
+}
+function imgHigh(){
+  let s = mr(0, 0, 1, 1, '#3e3e3e') + mr(0, .64, 1, .9, '#737373') + mr(0, .9, 1, 1, '#2a2a2a');
+  for (let i = 0; i < 46; i++) s += me(hash(i), .65 + hash(i + 99) * .24, .007, .01, '#9a9a9a');
+  for (let r = 0; r < 7; r++) for (let c = 0; c < 13; c++){ const u = (c + (r % 2) * .5 + .3) / 13, v = .16 + r * .07; if (u > .985) continue;
+    s += me(u - .011, v, .0085, .012, '#ececec') + me(u + .011, v, .0085, .012, '#ececec'); }
+  return s;
+}
+const IMGS = [imgLow, imgMid, imgHigh];
+function scaleBar(i){
+  const g = MAGS[i], s1 = .05 + g.bar;
+  return mr(.05, .045, s1, .062, '#ffffff') + mt(s1 + .09, .03, g.barT, 1.5, '#ffffff');
+}
+function monitorSvg(st){
+  let s = shape(on(PX(MX - .03), rectUV(IMG.y0 - 1.5, IMG.z0 - 1.5, IMG.y1 + 1.5, IMG.z1 + 1.5)), '#1d2a26', .9);
+  if (!imgOn(st)){
+    const msg = st.on !== 'in' ? 'NO SAMPLE' : st.kv < 1 ? 'HT OFF' : st.kv < 199 ? 'HT ' + Math.round(st.kv) + ' kV' : 'BEAM OFF';
+    return s + mt(.5, .45, msg, 2.4, PHOS);
+  }
+  const k = st.magK;
+  if (k < 1) s += `<g opacity="${f(1 - k)}">${IMGS[st.magFrom]()}${scaleBar(st.magFrom)}</g>`;
+  s += `<g opacity="${f(k)}">${IMGS[st.mag]()}${scaleBar(st.mag)}</g>`;
+  s += mr(0, .925, 1, 1, '#1d2a26') + mt(.2, .94, 'TEM 200 kV', 1.3, PHOS)
+    + mt(.82, .94, st.phase === 'shoot' && st.t < 1.45 ? 'EXPOSE' : st.shots ? 'SAVED ' + st.shots : 'LIVE', 1.3, PHOS);
+  if (st.flash > .01) s += mr(0, 0, 1, 1, '#ffffff').replace('/>', ` opacity="${f(st.flash)}"/>`);
+  return s;
+}
+function deskItems(st){
+  const it = [], F = facing([1, 0, 0]);
+  for (const y of [93, 130]) it.push({ box:[[46, y, 0], [88, y + 3, 72]], svg: box(46, y, 0, 88, y + 3, 72, CONSM, tone, 1.1) });
+  it.push({ box:[[44, 92, 72], [90, 134, 75]], svg: box(44, 92, 72, 90, 134, 75, WOODM, tone, 1.3) });
+  it.push({ box:[[44.5, 108, 75], [50.5, 118, 75.8]], svg: box(44.5, 108, 75, 50.5, 118, 75.8, DARK, toneI, .8) });
+  it.push({ box:[[46.2, 112.2, 75.8], [47.8, 113.8, 80]], svg: rod([47, 113, 75.8], [47, 113, 80], .8, METAL, toneI, .7) });
+  it.push({ box:[[46, 92, 80], [48, 134, 110]], svg: box(46, 92, 80, 48, 134, 110, DARK, tone, 1.2) + (F ? act('screen', monitorSvg(st)) : '') });
+  let pnl = box(66, 96, 75, 80, 106, 77.4, CERAMIC, toneI, .9);
+  for (const [x, y] of [[69, 98.5], [69, 103.5], [73, 101]]) pnl += cyl(x, y, 77.4, 78.8, 1.1, DARK, toneI, .6, 14);
+  pnl += cyl(77, 101, 77.4, 78.3, 1.7, matOf('#c8423a'), toneI, .6, 18);
+  it.push({ box:[[66, 96, 75], [80, 106, 78.8]], svg: pnl });
+  let kb = box(64, 108, 75, 74, 124, 75.9, CERAMIC, toneI, .8), kg = '';
+  for (let x = 65.5; x < 73; x += 1.6) kg += pd([[x, 109, 75.92], [x, 123, 75.92]], false);
+  for (let y = 110; y < 123; y += 1.7) kg += pd([[64.8, y, 75.92], [73.2, y, 75.92]], false);
+  it.push({ box:[[64, 108, 75], [74, 124, 75.9]], svg: kb + `<path d="${kg}" fill="none" stroke="#bdb8a6" stroke-width=".4"/>` });
+  for (const x of [60, 80]) it.push({ box:[[x, 127, 75], [x + 3, 131, 79]], svg: box(x, 127, 75, x + 3, 131, 79, GEARM, toneI, .7) });   // 樣品桿架
+  return it;
+}
+
+/* ---------- 場景 ---------- */
+const B_ALL = [-34, 121, 0, 134, 0, 218];
+function scene(st, m){
+  const k = ease(st.xr || 0);
+  let s = castShadow([...on(PX(PED.x0), PEDP), ...on(PX(PED.x1), PEDP), [AX[0] - 15, AX[1], 208], [AX[0] + 15, AX[1], 208], [AX[0], AX[1] - 15, 208], [AX[0], AX[1] + 15, 208]])
+    + castShadow([[-34, 8, 0], [-6, 8, 0], [-6, 44, 0], [-34, 44, 0], [-34, 8, 52], [-6, 8, 52], [-6, 44, 52], [-34, 44, 52]])
+    + castShadow([[44, 92, 72], [90, 92, 72], [90, 134, 72], [44, 134, 72], [46, 93, 0], [88, 93, 0], [88, 133, 0], [46, 133, 0], [46, 92, 110], [48, 134, 110]]);
+  const items = [];
+  for (const [x, y] of [[11, 11], [69, 11], [11, 69], [69, 69]]) items.push({ box:[[x - 3, y - 3, 0], [x + 3, y + 3, PED.z0]], svg: cyl(x, y, 0, PED.z0, 3, DARK, toneI, 1, 14) });
+  items.push({ box:[[PED.x0, PED.y0, PED.z0], [PED.x1, PED.y1, PED.z1]], svg: pedItem(m, k) });
+  items.push({ box:[[30, 30, PED.z1], [55, 50, VC.z0]], svg: camSvg() });
+  items.push(...cfWire([[22, 58, 57.6], [22, 58, 64], [24, 56, 69.6]], '#8d949a', 1.4));
+  items.push({ box:[[VC.x0, VC.y0, VC.z0], [VC.x1, VC.y1, VC.z1]], svg: vcItem(st, m, k) });
+  items.push({ box:[[16, 21, 100], [GON.x1, 67, 208]], svg: columnItem(st, m, k) });
+  items.push({ box:[[DEW.x - DEW.r, DEW.y - DEW.r, DEW.z0], [DEW.x + DEW.r, DEW.y + DEW.r, DEW.z1 + 5]], svg: act('dewar', dewarSvg()) });
+  items.push({ box:[[-34, 8, 0], [-6, 44, 57]], svg: tankSvg() });
+  items.push(...cfWire([[40, 40, 209.6], [40, 40, 214], [28, 40, 218], [-12, 40, 218], [-20, 32, 215], [-20, 26, 208], [-20, 26, 57.4]], '#2b2b2b', 1.4, 10));
+  const inGon = st.on === 'in' || st.on === 'lock';
+  items.push(...holderParts(st, inGon ? GON.x1 : -1e9, 1e9));
+  items.push(...deskItems(st).map(it => k > 0 ? { box: it.box, svg: `<g opacity="${f(1 - .75 * k)}">${it.svg}</g>` } : it));
+  s += cfDepth(items);
+  s += cfCallouts(k > .6 ? insideLabels(st) : surfaceLabels(st), B_ALL);
+  return s;
+}
+function insideLabels(st){
+  const moving = st.phase === 'insert' || st.phase === 'remove', [hx, hy, hz] = st.h;
+  const scP = screenPts(st)[8];
+  return [
+    { at:[AX[0], AX[1], 197.5], text:'電子槍', on: st.kv > 1 },
+    { at:cfNear(AX[0], AX[1], 7.5, 186.7), text:'加速電極', on: st.phase === 'hv' },
+    { at:[AX[0], AX[1] + 5 + 13 * st.valve, 172.6], text:'槍閥', on: st.phase === 'open' || st.phase === 'close' },
+    { at:cfNear(AX[0], AX[1], 11, 160), text:'聚光透鏡', on: beamOn(st) },
+    { at:cfNear(AX[0], AX[1], 16, 140), text:'物鏡', on: beamOn(st) },
+    { at:[hx, hy, hz + .4], text:'樣品薄片', on: false },
+    { at:[hx + 24, hy, hz + .9], text:'樣品桿', on: moving },
+    { at:cfNear(AX[0], AX[1], 11, 118), text:'中間鏡', on: st.phase === 'mag' },
+    { at:cfNear(AX[0], AX[1], 11, 104), text:'投影鏡', on: beamOn(st) },
+    { at:scP, text:'螢光幕', on: imgOn(st) && st.scr < .05 },
+    { at:[44, 40, VC.z0 + .1], text:'相機', on: st.expo > 0 },
+    { at:[16, 40, 177], text:'離子泵', on: false },
+    { at:cfNear(22, 58, 6.5, 26), text:'渦輪分子泵', on: false } ];
+}
+function surfaceLabels(st){
+  const F = facing([1, 0, 0]), moving = st.phase === 'insert' || st.phase === 'remove', [hx, hy, hz] = st.h;
+  return [
+    { at:cfNear(AX[0], AX[1], 14, 158), text:'電子光學鏡筒', on: beamOn(st) },
+    { at:[hx + 40, hy, hz + 2.6], text:'樣品桿', on: moving },
+    { at:cfNear(DEW.x, DEW.y, DEW.r, 142), text:'液態氮杜瓦瓶', on: false },
+    { at:[73, 101, 77.4], text:'控制面板', on: false },
+    ...(F ? [{ at:[GON.x1 + .1, 44.5, SPZ - 4], text:'測角台', on: st.lock === 1 || st.lock === 3 },
+             { at:[VC.x1 + .1, 46, 90], text:'觀察窗', on: imgOn(st) && st.scr < .05 },
+             { at:[MX, 113, IMG.z1 + 1], text:'操作螢幕', on: st.phase === 'shoot' }] : [{ at:[-20, 26, 52], text:'高壓產生器', on: st.phase === 'hv' }]) ];
+}
+
+/* ---------- 動作（一個狀態物件、一個時鐘；按鈕會先補上缺的步驟） ---------- */
+function carry(t){   // 從架上拿起、移到測角台前面（t：0 → 1.45 秒）
+  const a = cfSeg(t, 0, .45), b = cfSeg(t, .35, 1.35), z1 = cfLerp(H_REST[2], 104, a);
+  return [cfLerp(H_REST[0], H_OUT[0], b), cfLerp(H_REST[1], H_OUT[1], b), cfLerp(z1, H_OUT[2], b)];
+}
+const PH = {
+  insert: { T: 4.7, cues: [[0, '樣品桿前端夾著 FIB 削好的薄片；從架上拿起，對準測角台的孔'], [1.85, '先停在氣鎖抽真空，免得把空氣帶進鏡筒'], [3.75, '推到底：薄片停在物鏡正中間，就在電子束的路上']],
+    at(st, t){
+      if (t < 1.45){ st.h = carry(t); st.on = 'air'; }
+      else if (t < 3.75){ st.h = [cfLerp(H_OUT[0], H_LOCK[0], cfSeg(t, 1.45, 1.85)), 40, SPZ]; st.on = 'lock'; }
+      else { st.h = [cfLerp(H_LOCK[0], H_IN[0], cfSeg(t, 3.75, 4.6)), 40, SPZ]; st.on = 'in'; }
+      st.lock = t < 1.85 ? 0 : t < 3.6 ? 1 : 2;
+    } },
+  remove: { T: 3.5, cues: [[0, '退到氣鎖，氣鎖通大氣，樣品桿才拉得出來'], [2.0, '放回架上']],
+    at(st, t){
+      if (t < 1.6){ st.h = [cfLerp(H_IN[0], H_LOCK[0], cfSeg(t, 0, .6)), 40, SPZ]; st.on = t < .6 ? 'in' : 'lock'; st.lock = t < .6 ? 2 : 3; }
+      else if (t < 2.0){ st.h = [cfLerp(H_LOCK[0], H_OUT[0], cfSeg(t, 1.6, 2.0)), 40, SPZ]; st.on = 'lock'; st.lock = 3; }
+      else { st.h = carry(Math.max(0, 1.45 - (t - 2.0))); st.on = t >= 3.45 ? 'desk' : 'air'; st.lock = 0; }
+    } },
+  hv: { T: 2.0, cues: [[0, '加高壓：電子被加速到 20 萬伏特，速度約光速的七成']],
+    at(st, t){ st.kv = 200 * cfSeg(t, 0, 1.9); } },
+  open: { T: 1.5, cues: [[0, '打開槍閥：電子穿過薄片，透鏡一級一級把影像放大，打在螢光幕上']],
+    at(st, t){ st.valve = cfSeg(t, 0, .4); st.bz = cfLerp(172.6, SCR.z, cfSeg(t, .4, 1.4)); } },
+  close: { T: .7, cues: [[0, '先關上槍閥，擋住電子束']],
+    at(st, t){ st.valve = 1 - cfSeg(t, 0, .4); if (t >= .4) st.bz = 172.6; } },
+  mag: { T: 1.0, cues: [[0, st => MAGS[st.mag].cue]],
+    at(st, t){ st.magK = cfSeg(t, 0, .9); } },
+  shoot: { T: 2.2, cues: [[0, '螢光幕掀起來，電子直接打在下方的相機上'], [1.45, '拍好了：影像存進電腦']],
+    at(st, t){
+      st.scr = cfSeg(t, 0, .5) * (1 - cfSeg(t, 1.6, 2.1));
+      st.expo = t > .55 && t < 1.45 ? 1 : 0;
+      st.flash = t > 1.45 ? 1 - cfSeg(t, 1.45, 1.95) : 0;
+      if (t >= 1.45 && !st.shotDone){ st.shotDone = true; st.shots++; }
+    } },
+};
+let ui, pauser, loopOn = false;
+function phStart(st, name){
+  st.phase = name; st.t = 0; st.said = -1; st.cue = '';
+  if (name === 'mag'){ st.magFrom = st.mag; st.mag = st.magTo; st.magK = 0; }
+  if (name === 'shoot') st.shotDone = false;
+}
+function loop(){   // 時鐘：暫停時停下，按「繼續」再叫一次
+  if (loopOn) return; loopOn = true;
+  ui.animate(dt => { const s = ui.st;
+    if (s.phase === 'idle' || s.paused){ loopOn = false; return false; }
+    const ph = PH[s.phase]; s.t += dt; ph.at(s, Math.min(s.t, ph.T));
+    (ph.cues || []).forEach(([ct, msg], i) => { if (s.t >= ct && s.said < i){ s.said = i; s.cue = typeof msg === 'function' ? msg(s) : msg; ui.flash(s.cue, 3000); } });
+    if (s.t >= ph.T){ s.phase = 'idle'; if (s.queue.length) phStart(s, s.queue.shift()); }
+    return true; });
+}
+function run(queue){ const st = ui.st; st.queue = queue.slice(1); phStart(st, queue[0]); loop(); }
+const busyNote = () => pauser.busy();
+const toBeam = st => [...(st.on === 'desk' ? ['insert'] : []), ...(st.kv < 199 ? ['hv'] : []), ...(beamOn(st) ? [] : ['open'])];
+function doInsert(st){ if (st.phase !== 'idle') return busyNote(); if (st.on !== 'desk') return ui.flash('樣品桿已經插好了'); run(['insert']); }
+function doBeam(st){ if (st.phase !== 'idle') return busyNote(); if (beamOn(st)) return ui.flash('電子束已經開著了'); run(toBeam(st)); }
+function doMag(st, i){
+  if (st.phase !== 'idle') return busyNote();
+  if (!beamOn(st)){ st.mag = st.magFrom = st.magTo = i; st.magK = 1; return run(toBeam(st)); }
+  if (i === st.mag) return ui.flash('已經是這個倍率了');
+  st.magTo = i; run(['mag']);
+}
+function doShoot(st){ if (st.phase !== 'idle') return busyNote(); run([...toBeam(st), 'shoot']); }
+function doRemove(st){ if (st.phase !== 'idle') return busyNote(); if (st.on === 'desk') return ui.flash('樣品桿已經放在架上了'); run([...(st.valve > .02 ? ['close'] : []), 'remove']); }
+
+ui = mountFigure({
+  fig:'TEM', turn:'full', title:'TEM', credit:false,
+  size:[155, 134, 218], center:[44, 67], palette:'mint',
+  state:{ phase:'idle', t:0, paused:false, pauseAt:0, cue:'', on:'desk', h:H_REST.slice(), lock:0, kv:0, valve:0, bz:172.6, mag:0, magFrom:0, magTo:0, magK:1, scr:0, expo:0, flash:0, shots:0, shotDone:false, said:-1, queue:[] },
+  scene,
+  stats: st => [ { label:'加速電壓', value: Math.round(st.kv) + ' kV' }, { label:'視野寬度', value: imgOn(st) ? MAGS[st.mag].fov : '—' } ],
+  buttons:[
+    { label:'插入樣品桿', onClick: doInsert },
+    { label:'打開電子束', onClick: doBeam },
+    { label:'放大倍率', choices: st => MAGS.map((g, i) => ({ label: g.btn + (i === st.mag && imgOn(st) ? '（目前）' : ''), onClick: () => doMag(st, i) })) },
+    { label:'拍照', onClick: doShoot },
+    { label:'取出樣品桿', onClick: doRemove },
+    { label:'暫停', onClick: () => pauser.toggle() },
+  ],
+  acts:{ screen: st => doShoot(st), dewar: () => cfNote(ui, '【液態氮杜瓦瓶】' + CF_DESC['液態氮杜瓦瓶']), tag: cfTagAct,
+    lock: st => cfNote(ui, st.lock === 1 ? '紅燈：氣鎖正在抽真空' : st.lock === 3 ? '黃燈：氣鎖正在通大氣' : st.on === 'in' ? '綠燈：樣品桿已經插好' : '氣鎖燈：插樣品桿時會亮') },
+  params:(st, q) => {
+    const hp = q.get('holder');
+    if (hp === 'in'){ st.on = 'in'; st.h = H_IN.slice(); st.lock = 2; }
+    if (hp === 'lock'){ st.on = 'lock'; st.h = H_LOCK.slice(); st.lock = 1; }
+    if (hp === 'air'){ st.on = 'air'; st.h = H_OUT.slice(); }
+    if (q.has('carry')){ st.on = 'air'; st.h = carry(+q.get('carry')); }
+    if (q.get('beam') === '1'){ st.on = 'in'; st.h = H_IN.slice(); st.lock = 2; st.kv = 200; st.valve = 1; st.bz = SCR.z; }
+    for (const key of ['kv', 'valve', 'bz', 'scr', 'expo', 'flash', 'shots']) if (q.has(key)) st[key] = +q.get(key);
+    if (q.has('mag')) st.mag = st.magFrom = st.magTo = +q.get('mag');
+    if (q.has('phase')) st.phase = q.get('phase');
+  },
+});
+xrMount(() => ui, () => '');
+pauser = cfPause(ui, loop);
+</script></body></html>

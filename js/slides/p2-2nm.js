@@ -1132,20 +1132,39 @@ SPC 和 APC 都建立在一個前提：量到的數字要準，這也是前面�
 接續健康檢查的比喻：TEM 像切片化驗，最準但要開刀；SEM 像照相看外觀；OCD 像體脂計，量電阻再用模型推算，最快，但準不準要看模型。接下來五頁：TEM、SEM、OCD，最後兩頁深入 OCD 的模型。`
   });
 
+  /* 原理／機台分頁：「機台」是 Colorfigures 立體圖（js/widgets/cf-figs.js），第一次切過去才載入；
+     放在 iframe 裡，圖的程式和樣式不會和簡報互相干擾 */
+  const cfMachHTML = title => `<div class="fig grow cf-mach" style="display:none"><div class="fig-title"><span>${title}</span><span></span></div><div class="fig-canvas"></div></div>`;
+  function cfTabs(el, segId, name, title) {
+    const pv = U.$(el, '.cf-pv'), mach = U.$(el, '.cf-mach');
+    U.onSeg(el, segId, i => {
+      pv.style.display = i ? 'none' : '';
+      mach.style.display = i ? '' : 'none';
+      if (i && !U.$(mach, 'iframe') && window.CF) {
+        const fr = document.createElement('iframe');
+        fr.className = 'cf-frame'; fr.title = title; fr.srcdoc = CF.page(name);
+        U.$(mach, '.fig-canvas').appendChild(fr);
+      }
+    });
+  }
+
   /* 量測 A：SEM */
   A({
     id: 'sem', back: 'metro', part: 2, chap: 9, eyebrow: EY9 + '：量測', minutes: 2.2, short: '量測②：電子顯微鏡 SEM',
     title: '電子顯微鏡 SEM：用電子束「掃」過表面，量出線寬', en: 'CD-SEM',
     thesis: 'TEM 要把晶片切開；SEM 不用切，用聚焦到約 1 奈米的電子束<b>從上方掃描表面</b>。電子打到<b>邊緣會噴出特別多電子</b>，所以邊緣最亮；再用<b>演算法</b>從亮度曲線判定邊在哪裡，算出線寬。',
     render: () => `<div class="s-body">
-      <div class="col">${U.figHTML('sm-cv', '左：電子束掃描（剖面）　右：一點一點拼出來的影像與亮度曲線', '')}
+      <div class="col"><div class="controls">${U.seg('sm-view', ['原理', '機台'], 0)}</div>
+        <div class="cf-pv">${U.figHTML('sm-cv', '左：電子束掃描（剖面）　右：一點一點拼出來的影像與亮度曲線', '')}
         <div class="controls">${U.range('sm-w', '實際線寬', 10, 40, 1, 22, ' nm')}</div></div>
+        ${cfMachHTML('CD-SEM 機台：拖曳可旋轉，按「透視」看內部')}</div>
       ${U.side({
         top: `<div class="fact"><div class="v" id="sm-v">—</div><div class="d" id="sm-vd">SEM 報出的線寬（演算法從亮邊判定）</div></div>`,
         points: ['電子束直徑約 1 nm，比光細幾百倍', '線寬靠演算法從亮度曲線判定兩個邊', '限制：只看得到表面；電子會讓光阻縮一點'],
         analogy: { icon: 'eye', t: '比喻', p: '用手電筒斜照一塊浮雕：凸起的邊緣最亮。但亮邊本身有寬度，邊要畫在哪裡，得先定好一套規則。' }
       })}</div>`,
     init(el, ctx) {
+      cfTabs(el, 'sm-view', 'sem', 'CD-SEM 機台立體圖');
       const { c, w, h } = U.canvas(U.$(el, '#sm-cv'));
       let lw = 22, scan = 0;
       U.bind(el, 'sm-w', v => { lw = v; scan = 0; }, v => v + ' nm');
@@ -1189,7 +1208,9 @@ SPC 和 APC 都建立在一個前提：量到的數字要準，這也是前面�
 
 還有兩個限制。第一，SEM 只看得到表面，洞底、奈米片底下看不到。第二，量光阻時，電子會讓光阻縮一點，量越多次縮越多，所以同一個點不能一直量。實務上每批抽幾片、每片抽幾十個點，不是每片都量。
 
-就像用手電筒斜照浮雕，邊緣最亮，但邊要畫在哪裡，得先定好規則。下一頁看最快、完全不接觸的方法：OCD。`
+就像用手電筒斜照浮雕，邊緣最亮，但邊要畫在哪裡，得先定好規則。下一頁看最快、完全不接觸的方法：OCD。
+
+【機台分頁】切到「機台」看 CD-SEM 的立體圖：依序按「放入晶圓」「移到量測點」「掃描量線寬」；打開「透視」可以看晶圓怎麼從晶圓盒經過真空預備室送進腔體，電子束怎麼一行一行掃。動畫跑到一半可以按「暫停」停在那一步講解，按「繼續」接著跑；點任何一個零件標籤，會跳出一兩句說明。`
   });
 
   /* 量測 B：TEM */
@@ -1228,13 +1249,16 @@ SPC 和 APC 都建立在一個前提：量到的數字要準，這也是前面�
     title: '穿透式電子顯微鏡 TEM：讓電子穿過超薄切片', en: 'TEM',
     thesis: '想看清電晶體內部，只能把它<b>切開、削到比電晶體還薄</b>，再讓電子穿過去成像。最清楚，但晶片就毀了。',
     render: () => `<div class="s-body w66">
-      <div class="col">${U.figHTML('tm-cv', 'TEM 樣品製作與成像（逐步）', '')}${U.stepperHTML('tm-st')}</div>
+      <div class="col"><div class="controls">${U.seg('tm-view', ['原理', '機台'], 0)}</div>
+        <div class="cf-pv">${U.figHTML('tm-cv', 'TEM 樣品製作與成像（逐步）', '')}${U.stepperHTML('tm-st')}</div>
+        ${cfMachHTML('TEM 機台：拖曳可旋轉，按「透視」看內部')}</div>
       ${U.side({
         points: ['看得到原子，是校正其他工具的「參考」', '要把晶片切壞，一個樣品要幾小時到一天', '也有誤差：影像是整片薄片的投影，切的位置也會影響'],
         fact: { v: '約 10–30 nm', d: '樣品要削到的厚度，比一顆電晶體還薄，電子才穿得過' },
         analogy: { icon: 'eye', t: '比喻', p: '切片化驗：最準，但要開刀取樣；而且要切成像紙一樣薄的一片，對著光才看得清楚每一層。' }
       })}</div>`,
     init(el, ctx) {
+      cfTabs(el, 'tm-view', 'tem', 'TEM 機台立體圖');
       const img = new Image(); img.src = CREDITS.gaatem.f;
       const steps = ['找到位置', '挖兩個坑', '削成薄片', '電子穿過', '看到結果'].map((t, i) => ({ t, d: '', draw: (c, w, h, p, tt) => temStep(c, w, h, i, p, tt, img) }));
       U.animSteps(el, ctx, { canvas: 'tm-cv', stepper: 'tm-st', steps, interval: 2800 });
@@ -1245,7 +1269,9 @@ SPC 和 APC 都建立在一個前提：量到的數字要準，這也是前面�
 
 代價是晶片被切壞了，而且一個樣品要花幾小時到一天。所以 TEM 用在研發、找問題原因，以及當作其他量測的「參考」，不能每片都做。
 
-注意，TEM 也不是絕對的真值。影像是整片薄片疊起來的投影，薄片裡如果包含不只一個結構，邊界就會糊掉；切在哪個位置、薄片多厚，也會影響量到的數字。所以業界叫它「參考量測」。下一頁看不用切開的方法：SEM。`
+注意，TEM 也不是絕對的真值。影像是整片薄片疊起來的投影，薄片裡如果包含不只一個結構，邊界就會糊掉；切在哪個位置、薄片多厚，也會影響量到的數字。所以業界叫它「參考量測」。下一頁看不用切開的方法：SEM。
+
+【機台分頁】切到「機台」看 TEM 的立體圖：按「插入樣品桿」「打開電子束」，再用「放大倍率」從一整排電晶體放大到原子；打開「透視」可以看電子一路穿過薄片、被透鏡一級一級放大，最後打在螢光幕上。動畫跑到一半可以按「暫停」停在那一步講解，按「繼續」接著跑；點任何一個零件標籤，會跳出一兩句說明。`
   });
 
   /* 量測 C：OCD */

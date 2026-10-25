@@ -36,7 +36,7 @@
         <p class="gloss" style="margin:0">網址存取日期：2026 年 9 月</p></div>
       <div class="col" style="min-height:0;overflow:auto"><div class="fig-title"><span>照片與顯微影像</span></div>
         <table class="t" style="font-size:12.5px;line-height:1.2"><tbody>${Object.values(CREDITS).map(c => `<tr><td style="padding:1px 6px">${c.t} · <span style="color:var(--ink-3)">${c.by}</span>${c.url ? `<div class="mono" style="color:var(--ink-3);font-size:10px;word-break:break-all">${c.url}</div>` : ''}</td><td style="white-space:nowrap;padding:1px 6px">${c.licUrl ? `<a href="${c.licUrl}" target="_blank" rel="noopener noreferrer">${c.lic}</a>` : c.lic}</td></tr>`).join('')}</tbody></table>
-        <p class="gloss" style="margin:0">標「縮圖」「裁切」的為本簡報修改過的版本；其餘圖解、動畫與 3D 模型皆為本簡報自行繪製。</p></div>
+        <p class="gloss" style="margin:0">標「縮圖」「裁切」的為本簡報修改過的版本；其餘圖解、動畫與 3D 模型皆為本簡報自行繪製；SEM、TEM 頁的機台立體圖以 Colorfigures 繪圖引擎（April Zhu，MIT 授權，<a href="https://april-zhu.com/colorfigures" target="_blank" rel="noopener noreferrer">april-zhu.com/colorfigures</a>）繪製。</p></div>
     </div>`,
     notes: `最後一頁是參考資料和圖片來源。產業資料整理到 2026 年 9 月，路線圖隨時可能變動；成本、密度等數字是業界估計；動畫是為了幫助理解的示意，不是精確的模擬。謝謝大家，歡迎提問。`
   });
